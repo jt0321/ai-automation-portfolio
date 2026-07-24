@@ -440,6 +440,55 @@
       min-width: 4.5rem;
       text-align: center;
     }
+
+    .score-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      padding: 0.6rem 1.5rem;
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-muted);
+    }
+
+    .score-toolbar input[type="number"] {
+      width: 4.5rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: var(--radius-sm);
+      padding: 0.25rem 0.5rem;
+      font-size: 0.8rem;
+      font-family: inherit;
+    }
+
+    .score-toolbar input[type="range"] {
+      accent-color: var(--accent);
+    }
+
+    .toolbar-btn {
+      background: var(--bg-card);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.25rem 0.6rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .toolbar-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
   </style>
 </head>
 <body>
@@ -515,13 +564,35 @@
           <span class="score-title" id="visualized-title">Beethoven Op. 111</span>
           <span style="color:var(--text-muted)">|</span>
           <span id="visualized-measures" style="color:var(--text-muted)">Measures 1-4</span>
-          <span style="flex:1"></span>
+        </div>
+      </div>
+
+      <div class="score-toolbar" id="score-toolbar" style="display:none;">
+        <div class="toolbar-group">
           <button class="nav-btn" id="prev-page-btn" title="Previous page" onclick="goToPage(currentPage - 1)">&#8249;</button>
           <span id="page-indicator">Page 1 / 1</span>
           <button class="nav-btn" id="next-page-btn" title="Next page" onclick="goToPage(currentPage + 1)">&#8250;</button>
         </div>
+
+        <div class="toolbar-group">
+          <label for="page-jump-input">Page</label>
+          <input type="number" id="page-jump-input" min="1" value="1" onkeydown="if(event.key==='Enter'){jumpToPageInput(); event.preventDefault();}">
+          <button class="toolbar-btn" onclick="jumpToPageInput()">Go</button>
+        </div>
+
+        <div class="toolbar-group">
+          <label for="measure-jump-input">Measure</label>
+          <input type="number" id="measure-jump-input" min="0" value="1" onkeydown="if(event.key==='Enter'){jumpToMeasureInput(); event.preventDefault();}">
+          <button class="toolbar-btn" onclick="jumpToMeasureInput()">Go</button>
+        </div>
+
+        <div class="toolbar-group" style="flex:1; min-width: 10rem;">
+          <label for="zoom-slider">Zoom</label>
+          <input type="range" id="zoom-slider" min="20" max="150" step="2" value="42" style="flex:1" oninput="onZoomChange(this.value)">
+          <span id="zoom-value" style="min-width:2.5rem; text-align:right;">42%</span>
+        </div>
       </div>
-      
+
       <div id="score-viewer-container">
         <div class="empty-state" id="score-empty-state">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -554,6 +625,17 @@
     let currentPage = 1;
     let pageCount = 1;
     let pendingHighlight = null; // {start, end} to apply after the next render
+    let currentScale = 42; // percent; purely a rendering zoom — verified this does NOT
+                            // affect Verovio's pagination/layout, only the output SVG size
+
+    // Letter-ish page, thin margins, in Verovio's native 1/10mm units.
+    // Verovio's automatic engraving can't reproduce a specific publisher's
+    // pagination (systems-per-page is an editorial choice, not present in
+    // the source Humdrum/MEI data), so this is a fixed reasonable default
+    // rather than an attempt to match any particular printed edition.
+    const PAGE_WIDTH = 2800;
+    const PAGE_HEIGHT = 2794;
+    const PAGE_MARGIN = 50;
 
     // Parse an MEI document's <measure n="..." xml:id="..."> elements into
     // a {measureNumber: xmlId} map.
@@ -751,6 +833,7 @@
       }
 
       document.getElementById("score-controls").style.display = "flex";
+      document.getElementById("score-toolbar").style.display = "flex";
       document.getElementById("visualized-title").textContent = titleLabel || "";
       document.getElementById("visualized-measures").textContent =
         measureStart != null ? `Measures ${measureStart}–${measureEnd}` : "";
@@ -771,11 +854,18 @@
 
         // Only reload into the WASM toolkit if switching works — cheap
         // page navigation within the same work reuses the loaded score.
+        // Pagination (pageWidth/pageHeight/margins) is fixed; scale is
+        // rendering-only and doesn't affect page breaks, so zoom changes
+        // never need to reload/relayout the score.
         if (loadedWorkId !== workId) {
           vrvToolkit.setOptions({
-            pageWidth: 1400,
-            pageHeight: 2100,
-            scale: 42,
+            pageWidth: PAGE_WIDTH,
+            pageHeight: PAGE_HEIGHT,
+            pageMarginTop: PAGE_MARGIN,
+            pageMarginBottom: PAGE_MARGIN,
+            pageMarginLeft: PAGE_MARGIN,
+            pageMarginRight: PAGE_MARGIN,
+            scale: currentScale,
             adjustPageHeight: false,
             breaks: "auto",
           });
@@ -822,6 +912,9 @@
       document.getElementById("page-indicator").textContent = `Page ${currentPage} / ${pageCount}`;
       document.getElementById("prev-page-btn").disabled = currentPage <= 1;
       document.getElementById("next-page-btn").disabled = currentPage >= pageCount;
+      const pageJumpInput = document.getElementById("page-jump-input");
+      pageJumpInput.max = pageCount;
+      pageJumpInput.value = currentPage;
 
       if (pendingHighlight) {
         highlightMeasures(pendingHighlight.start, pendingHighlight.end);
@@ -832,6 +925,52 @@
     function goToPage(page) {
       if (page < 1 || page > pageCount) return;
       renderPage(page);
+    }
+
+    // "Page" number input + Go button
+    function jumpToPageInput() {
+      const val = parseInt(document.getElementById("page-jump-input").value, 10);
+      if (!Number.isFinite(val)) return;
+      goToPage(val);
+    }
+
+    // "Measure" number input + Go button: find which page that measure is
+    // on (via the measure-number -> xml:id map) and jump there, highlighting
+    // just that measure.
+    function jumpToMeasureInput() {
+      if (!vrvToolkit || loadedWorkId == null) return;
+      const val = parseInt(document.getElementById("measure-jump-input").value, 10);
+      if (!Number.isFinite(val)) return;
+
+      const xmlId = (measureIdCache[loadedWorkId] || {})[val];
+      if (!xmlId) {
+        alert(`Measure ${val} not found in this work.`);
+        return;
+      }
+
+      let targetPage = currentPage;
+      try {
+        const found = vrvToolkit.getPageWithElement(xmlId);
+        if (found && found > 0) targetPage = found;
+      } catch (e) {
+        console.warn("getPageWithElement failed", e);
+      }
+
+      pendingHighlight = { start: val, end: val };
+      document.getElementById("visualized-measures").textContent = `Measure ${val}`;
+      renderPage(targetPage);
+    }
+
+    // Zoom slider: purely a rendering-size change, doesn't touch pagination
+    // (verified: Verovio's `scale` option only affects output SVG
+    // dimensions, not layout/line-breaking), so it's safe to re-render
+    // instantly on every slider move without recomputing pages.
+    function onZoomChange(value) {
+      currentScale = parseInt(value, 10);
+      document.getElementById("zoom-value").textContent = `${currentScale}%`;
+      if (!vrvToolkit || loadedWorkId == null) return;
+      vrvToolkit.setOptions({ scale: currentScale });
+      renderPage(currentPage);
     }
 
     // Highlight measures inside the SVG (only measures present on the

@@ -6,6 +6,7 @@ and text source chunks to Postgres via SQLAlchemy.
 
 from __future__ import annotations
 from pathlib import Path
+from sqlalchemy import text
 from db.models import Work, ScoreAsset, ScoreSegment, TextSource
 from db.session import session_scope
 from analysis.analyzer import MeasureChunk
@@ -97,13 +98,22 @@ def store_text_chunks(work_id: int, chunks: list[dict]) -> None:
 
 
 def list_works() -> list[dict]:
-    """List all ingested works (id, composer, title, opus, nickname) for the sidebar/work picker."""
+    """
+    List all ingested works (id, composer, title, opus, nickname) for the
+    sidebar/work picker, in natural sonata/movement order (No. 5-9 before
+    No. 10, No. 32 after No. 29) rather than lexicographic title order.
+    """
     with session_scope() as session:
-        works = session.query(Work).order_by(Work.composer, Work.title).all()
-        return [
-            {"id": w.id, "composer": w.composer, "title": w.title, "opus": w.opus, "nickname": w.nickname}
-            for w in works
-        ]
+        rows = session.execute(text(r"""
+            SELECT id, composer, title, opus, nickname
+            FROM works
+            ORDER BY
+                composer,
+                COALESCE((regexp_match(title, 'No\. (\d+)'))[1]::int, 0),
+                COALESCE((regexp_match(title, 'Mvt (\d+)'))[1]::int, 0),
+                title
+        """)).mappings().all()
+        return [dict(r) for r in rows]
 
 
 def get_work_mei(work_id: int) -> str | None:
