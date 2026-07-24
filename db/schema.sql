@@ -7,6 +7,7 @@ CREATE TABLE works (
     composer        TEXT NOT NULL,
     title           TEXT NOT NULL,
     opus            TEXT,
+    nickname        TEXT,         -- e.g. "Moonlight", "Appassionata"
     catalog_no      TEXT,         -- e.g. K.331, BWV 772
     key_signature   TEXT,         -- e.g. "A major"
     time_signature  TEXT,
@@ -46,7 +47,7 @@ CREATE TABLE score_segments (
     difficulty      INT CHECK (difficulty BETWEEN 1 AND 10),
     summary_text    TEXT,         -- human-readable chunk summary for embedding
     musicxml_slice  TEXT,         -- raw MusicXML fragment for this segment
-    embedding       vector(1536), -- OpenAI text-embedding-3-small
+    embedding       vector(768),  -- Gemini text-embedding-004
     created_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -57,7 +58,7 @@ CREATE TABLE text_sources (
     source_type TEXT NOT NULL CHECK (source_type IN ('wikipedia','imslp','program_note','annotation')),
     content     TEXT NOT NULL,
     chunk_index INT NOT NULL DEFAULT 0,  -- paragraph/chunk number within source
-    embedding   vector(1536),
+    embedding   vector(768),
     url         TEXT,
     created_at  TIMESTAMPTZ DEFAULT NOW()
 );
@@ -69,3 +70,16 @@ CREATE INDEX ON score_segments (work_id, measure_start, measure_end);
 CREATE INDEX ON score_segments (local_key);
 CREATE INDEX ON score_segments (formal_function);
 CREATE INDEX ON works (composer);
+
+-- Full-text metadata index (composer/title/opus/nickname) — lets retrieval
+-- match a query like "the Moonlight sonata" or "Op. 111" against work
+-- identity directly, independent of the segment embedding vectors, which
+-- only encode harmonic/texture analysis text.
+CREATE INDEX works_metadata_fts_idx ON works USING gin (
+    to_tsvector('english',
+        coalesce(composer, '') || ' ' ||
+        coalesce(title, '') || ' ' ||
+        coalesce(opus, '') || ' ' ||
+        coalesce(nickname, '')
+    )
+);

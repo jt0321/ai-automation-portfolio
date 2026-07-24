@@ -24,12 +24,51 @@ from db.store import (
 from analysis.analyzer import analyze_score
 from pipeline.mei_converter import score_to_mei
 
+# Sonata number -> (title, opus, key, nickname). Covers all 32 published
+# Beethoven piano sonatas as catalogued in craigsapp/beethoven-piano-sonatas.
+SONATA_CATALOG = {
+    1:  ("Piano Sonata No. 1 in F minor",        "Op. 2 No. 1",  "F minor",  None),
+    2:  ("Piano Sonata No. 2 in A major",         "Op. 2 No. 2",  "A major",  None),
+    3:  ("Piano Sonata No. 3 in C major",         "Op. 2 No. 3",  "C major",  None),
+    4:  ("Piano Sonata No. 4 in E-flat major",    "Op. 7",        "E-flat major", None),
+    5:  ("Piano Sonata No. 5 in C minor",         "Op. 10 No. 1", "C minor",  None),
+    6:  ("Piano Sonata No. 6 in F major",         "Op. 10 No. 2", "F major",  None),
+    7:  ("Piano Sonata No. 7 in D major",         "Op. 10 No. 3", "D major",  None),
+    8:  ("Piano Sonata No. 8 in C minor",         "Op. 13",       "C minor",  "Pathétique"),
+    9:  ("Piano Sonata No. 9 in E major",         "Op. 14 No. 1", "E major",  None),
+    10: ("Piano Sonata No. 10 in G major",        "Op. 14 No. 2", "G major",  None),
+    11: ("Piano Sonata No. 11 in B-flat major",   "Op. 22",       "B-flat major", None),
+    12: ("Piano Sonata No. 12 in A-flat major",   "Op. 26",       "A-flat major", None),
+    13: ("Piano Sonata No. 13 in E-flat major",   "Op. 27 No. 1", "E-flat major", "Quasi una fantasia"),
+    14: ("Piano Sonata No. 14 in C-sharp minor",  "Op. 27 No. 2", "C-sharp minor", "Moonlight"),
+    15: ("Piano Sonata No. 15 in D major",        "Op. 28",       "D major",  "Pastoral"),
+    16: ("Piano Sonata No. 16 in G major",        "Op. 31 No. 1", "G major",  None),
+    17: ("Piano Sonata No. 17 in D minor",        "Op. 31 No. 2", "D minor",  "Tempest"),
+    18: ("Piano Sonata No. 18 in E-flat major",   "Op. 31 No. 3", "E-flat major", "The Hunt"),
+    19: ("Piano Sonata No. 19 in G minor",        "Op. 49 No. 1", "G minor",  None),
+    20: ("Piano Sonata No. 20 in G major",        "Op. 49 No. 2", "G major",  None),
+    21: ("Piano Sonata No. 21 in C major",        "Op. 53",       "C major",  "Waldstein"),
+    22: ("Piano Sonata No. 22 in F major",        "Op. 54",       "F major",  None),
+    23: ("Piano Sonata No. 23 in F minor",        "Op. 57",       "F minor",  "Appassionata"),
+    24: ("Piano Sonata No. 24 in F-sharp major",  "Op. 78",       "F-sharp major", "à Thérèse"),
+    25: ("Piano Sonata No. 25 in G major",        "Op. 79",       "G major",  None),
+    26: ("Piano Sonata No. 26 in E-flat major",   "Op. 81a",      "E-flat major", "Les Adieux"),
+    27: ("Piano Sonata No. 27 in E minor",        "Op. 90",       "E minor",  None),
+    28: ("Piano Sonata No. 28 in A major",        "Op. 101",      "A major",  None),
+    29: ("Piano Sonata No. 29 in B-flat major",   "Op. 106",      "B-flat major", "Hammerklavier"),
+    30: ("Piano Sonata No. 30 in E major",        "Op. 109",      "E major",  None),
+    31: ("Piano Sonata No. 31 in A-flat major",   "Op. 110",      "A-flat major", None),
+    32: ("Piano Sonata No. 32 in C minor",        "Op. 111",      "C minor",  None),
+}
+
+
 def parse_krn_metadata(krn_path: Path) -> dict:
     """Parse standard Humdrum metadata headers for title, composer, opus, movement, etc."""
     meta = {
         "composer": "Ludwig van Beethoven",
         "title": "Piano Sonata",
         "opus": None,
+        "nickname": None,
         "movement": "",
         "key": None,
         "year": None,
@@ -88,19 +127,14 @@ def parse_krn_metadata(krn_path: Path) -> dict:
     except Exception as e:
         click.echo(f"   ⚠ Metadata parsing error for {krn_path.name}: {e}")
         
-    # Standardize titles for late Beethoven sonatas
-    if sonata_num == 32:
-        meta["title"] = f"Piano Sonata No. 32 in C minor"
-        meta["opus"] = "Op. 111"
-        meta["key"] = "C minor"
-    elif sonata_num == 21:
-        meta["title"] = f"Piano Sonata No. 21 in C major (Waldstein)"
-        meta["opus"] = "Op. 53"
-        meta["key"] = "C major"
-    elif sonata_num == 23:
-        meta["title"] = f"Piano Sonata No. 23 in F minor (Appassionata)"
-        meta["opus"] = "Op. 57"
-        meta["key"] = "F minor"
+    # Standardize title/opus/key from the known catalog when we recognize
+    # the sonata number, regardless of what the Humdrum headers say.
+    if sonata_num in SONATA_CATALOG:
+        title, opus, key, nickname = SONATA_CATALOG[sonata_num]
+        meta["title"] = f"{title} ({nickname})" if nickname else title
+        meta["opus"] = opus
+        meta["key"] = key
+        meta["nickname"] = nickname
 
     return meta
 
@@ -125,6 +159,7 @@ def main(window: int):
             composer     = meta["composer"],
             title        = f"{meta['title']}{mvt_suffix}",
             opus         = meta["opus"],
+            nickname     = meta["nickname"],
             key_signature= meta["key"],
             year_composed= meta["year"],
             imslp_url    = None,

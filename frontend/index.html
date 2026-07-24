@@ -408,6 +408,38 @@
       font-weight: 500;
       color: var(--accent);
     }
+
+    .nav-btn {
+      background: var(--bg-card);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      width: 26px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 0.9rem;
+      line-height: 1;
+    }
+
+    .nav-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    #page-indicator {
+      color: var(--text-muted);
+      min-width: 4.5rem;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -424,13 +456,8 @@
     <div class="sidebar-content">
       <div class="sidebar-section">
         <div class="sidebar-section-title">Works Ingested</div>
-        <ul class="score-list">
-          <li class="score-item active" onclick="loadBeethovenDemo()">
-            <strong>Beethoven</strong>
-            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.15rem;">
-              Piano Sonata No. 32 in C minor, Op. 111 (Mvt 1)
-            </div>
-          </li>
+        <ul class="score-list" id="works-list">
+          <li style="color: var(--text-muted); font-size: 0.8rem; padding: 0.6rem 0.8rem;">Loading…</li>
         </ul>
       </div>
 
@@ -488,6 +515,10 @@
           <span class="score-title" id="visualized-title">Beethoven Op. 111</span>
           <span style="color:var(--text-muted)">|</span>
           <span id="visualized-measures" style="color:var(--text-muted)">Measures 1-4</span>
+          <span style="flex:1"></span>
+          <button class="nav-btn" id="prev-page-btn" title="Previous page" onclick="goToPage(currentPage - 1)">&#8249;</button>
+          <span id="page-indicator">Page 1 / 1</span>
+          <button class="nav-btn" id="next-page-btn" title="Next page" onclick="goToPage(currentPage + 1)">&#8250;</button>
         </div>
       </div>
       
@@ -509,7 +540,37 @@
   
   <script>
     let vrvToolkit = null;
-    let currentlyRenderedXml = null;
+    let works = [];
+    let activeWorkId = null;
+
+    // Full-score MEI cache, keyed by work_id, so switching between already
+    // seen segments/works doesn't re-fetch or re-load into Verovio.
+    const meiCache = {};
+    // Verovio assigns measure xml:ids from the source encoding (e.g. Humdrum
+    // line-based "measure-L23"), not "measure-<n>", so map measure numbers
+    // -> xml:id per work from the MEI itself.
+    const measureIdCache = {};
+    let loadedWorkId = null;   // work_id currently loaded into vrvToolkit
+    let currentPage = 1;
+    let pageCount = 1;
+    let pendingHighlight = null; // {start, end} to apply after the next render
+
+    // Parse an MEI document's <measure n="..." xml:id="..."> elements into
+    // a {measureNumber: xmlId} map.
+    function buildMeasureIdMap(meiXml) {
+      const map = {};
+      try {
+        const doc = new DOMParser().parseFromString(meiXml, "application/xml");
+        doc.querySelectorAll("measure").forEach(el => {
+          const n = el.getAttribute("n");
+          const id = el.getAttribute("xml:id") || el.getAttribute("id");
+          if (n && id) map[parseInt(n, 10)] = id;
+        });
+      } catch (e) {
+        console.warn("Failed to parse MEI for measure id map", e);
+      }
+      return map;
+    }
 
     // Initialize Verovio when WASM module loads
     document.addEventListener("DOMContentLoaded", () => {
@@ -521,7 +582,44 @@
       } else {
         console.error("Verovio library not found. Verify network connection.");
       }
+      loadWorksList();
     });
+
+    // Fetch ingested works and populate the sidebar
+    async function loadWorksList() {
+      const listEl = document.getElementById("works-list");
+      try {
+        const res = await fetch("/api/works");
+        const data = await res.json();
+        works = data.works || [];
+
+        if (works.length === 0) {
+          listEl.innerHTML = `<li style="color: var(--text-muted); font-size: 0.8rem; padding: 0.6rem 0.8rem;">No works ingested yet.</li>`;
+          return;
+        }
+
+        listEl.innerHTML = works.map(w => `
+          <li class="score-item" id="work-item-${w.id}" onclick="selectWork(${w.id})">
+            <strong>${w.composer}</strong>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.15rem;">
+              ${w.title}${w.opus ? `, ${w.opus}` : ""}
+            </div>
+          </li>
+        `).join("");
+      } catch (err) {
+        listEl.innerHTML = `<li style="color:#ef4444; font-size: 0.8rem; padding: 0.6rem 0.8rem;">Failed to load works: ${err.message}</li>`;
+      }
+    }
+
+    // Clicking a sidebar work: load its full score into the viewer (page 1)
+    function selectWork(workId) {
+      document.querySelectorAll(".score-item").forEach(el => el.classList.remove("active"));
+      const item = document.getElementById(`work-item-${workId}`);
+      if (item) item.classList.add("active");
+
+      const work = works.find(w => w.id === workId);
+      loadWorkIntoViewer(workId, work ? `${work.composer} — ${work.title}` : "", null, null);
+    }
 
     // Handle Form Submit
     async function handleQuerySubmit(event) {
@@ -550,12 +648,12 @@
         // Append assistant response and segment cards
         appendMessage("assistant", data.answer, data.segments);
         
-        // Automatically load the first segment if returned
+        // Automatically load the first segment's work into the viewer,
+        // jumped to the page containing its measures
         if (data.segments && data.segments.length > 0) {
           const firstSeg = data.segments[0];
-          if (firstSeg.musicxml_slice) {
-            visualizeSlice(firstSeg);
-          }
+          const label = `${firstSeg.composer} — ${firstSeg.title}${firstSeg.opus ? `, ${firstSeg.opus}` : ""}`;
+          loadWorkIntoViewer(firstSeg.work_id, label, firstSeg.measure_start, firstSeg.measure_end);
         }
         
       } catch (err) {
@@ -575,16 +673,14 @@
       if (segments && segments.length > 0) {
         segmentsHtml = `<div class="segment-cards-container">`;
         segments.forEach((seg, idx) => {
-          // Check if slice is present
-          const hasSlice = !!seg.musicxml_slice;
-          const statusText = hasSlice ? "Click to view notation" : "No notation available";
+          const statusText = "Click to view in score";
           const serializedSeg = encodeURIComponent(JSON.stringify(seg));
-          
+
           segmentsHtml += `
             <div class="segment-card" onclick="handleCardClick('${serializedSeg}')">
               <div class="segment-card-header">
-                <span>mm. ${seg.measure_start}–${seg.measure_end} (Mvt 1)</span>
-                <span style="font-size: 0.7rem; color: ${hasSlice ? 'var(--accent)' : 'var(--text-muted)'}">${statusText}</span>
+                <span>${seg.title || ''}${seg.opus ? `, ${seg.opus}` : ''} — mm. ${seg.measure_start}–${seg.measure_end}</span>
+                <span style="font-size: 0.7rem; color: var(--accent)">${statusText}</span>
               </div>
               <div class="segment-card-body">
                 <strong>Key</strong>: ${seg.local_key} | 
@@ -636,100 +732,129 @@
     // Card Click Handler
     function handleCardClick(serializedSeg) {
       const seg = JSON.parse(decodeURIComponent(serializedSeg));
-      visualizeSlice(seg);
+      const label = `${seg.composer} — ${seg.title}${seg.opus ? `, ${seg.opus}` : ""}`;
+      loadWorkIntoViewer(seg.work_id, label, seg.measure_start, seg.measure_end);
     }
 
-    // Visualize MusicXML slice in the right pane
-    function visualizeSlice(seg) {
+    // Load a work's full score into Verovio (fetching + caching its MEI as
+    // needed), jump to the page containing [measureStart, measureEnd] if
+    // given, and highlight that range. Supports prev/next page navigation
+    // and scrolling within a page, rather than rendering an isolated
+    // single-page slice.
+    async function loadWorkIntoViewer(workId, titleLabel, measureStart, measureEnd) {
+      if (!workId) return;
       const container = document.getElementById("score-viewer-container");
-      
-      if (!seg.musicxml_slice) {
-        alert("This segment does not contain a notation slice.");
-        return;
-      }
 
       if (!vrvToolkit) {
         alert("Verovio engine is still initializing. Please wait a moment.");
         return;
       }
 
-      // Show Controls
       document.getElementById("score-controls").style.display = "flex";
-      document.getElementById("visualized-measures").textContent = `Measures ${seg.measure_start}–${seg.measure_end}`;
+      document.getElementById("visualized-title").textContent = titleLabel || "";
+      document.getElementById("visualized-measures").textContent =
+        measureStart != null ? `Measures ${measureStart}–${measureEnd}` : "";
 
-      // Reset score viewer pane content with a container and loading spinner
-      container.innerHTML = `
-        <div class="spinner" style="margin: auto;"></div>
-      `;
+      activeWorkId = workId;
+      pendingHighlight = (measureStart != null) ? { start: measureStart, end: measureEnd } : null;
 
-      // Use a timeout to allow the browser to paint the spinner before heavy WASM rendering
-      setTimeout(() => {
-        try {
+      container.innerHTML = `<div class="spinner" style="margin: auto;"></div>`;
+
+      try {
+        if (!(workId in meiCache)) {
+          const res = await fetch(`/api/score?work_id=${workId}`);
+          if (!res.ok) throw new Error(`Failed to fetch score (HTTP ${res.status})`);
+          meiCache[workId] = await res.text();
+          measureIdCache[workId] = buildMeasureIdMap(meiCache[workId]);
+        }
+        const meiXml = meiCache[workId];
+
+        // Only reload into the WASM toolkit if switching works — cheap
+        // page navigation within the same work reuses the loaded score.
+        if (loadedWorkId !== workId) {
           vrvToolkit.setOptions({
             pageWidth: 1400,
-            pageHeight: 2000,
-            scale: 45,
-            adjustPageHeight: true,
-            select: [`${seg.measure_start}-${seg.measure_end}`]
+            pageHeight: 2100,
+            scale: 42,
+            adjustPageHeight: false,
+            breaks: "auto",
           });
-          
-          const ok = vrvToolkit.loadData(seg.musicxml_slice);
+          const ok = vrvToolkit.loadData(meiXml);
           if (!ok) {
-            container.innerHTML = `
-              <div class="empty-state">
-                <p style="color: #ef4444;">Verovio failed to parse the MusicXML slice for this segment.</p>
-              </div>
-            `;
+            container.innerHTML = `<div class="empty-state"><p style="color:#ef4444;">Verovio failed to parse the MEI for this work.</p></div>`;
             return;
           }
-
-          const svg = vrvToolkit.renderToSVG(1);
-          
-          container.innerHTML = `
-            <div id="score-viewer-content">${svg}</div>
-          `;
-
-          // Add highlighting to measures
-          highlightMeasures(seg.measure_start, seg.measure_end);
-          
-        } catch (err) {
-          console.error(err);
-          container.innerHTML = `
-            <div class="empty-state">
-              <p style="color: #ef4444;">Error rendering score: ${err.message}</p>
-            </div>
-          `;
+          loadedWorkId = workId;
+          pageCount = vrvToolkit.getPageCount();
         }
-      }, 50);
+
+        let targetPage = 1;
+        if (measureStart != null) {
+          const xmlId = (measureIdCache[workId] || {})[measureStart];
+          if (xmlId) {
+            try {
+              const found = vrvToolkit.getPageWithElement(xmlId);
+              if (found && found > 0) targetPage = found;
+            } catch (e) {
+              console.warn("getPageWithElement failed, defaulting to page 1", e);
+            }
+          }
+        }
+
+        renderPage(targetPage);
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = `<div class="empty-state"><p style="color:#ef4444;">Error loading score: ${err.message}</p></div>`;
+      }
     }
 
-    // Highlight measures inside the SVG
+    // Render a specific page of the currently loaded work, update nav
+    // controls, and re-apply any pending measure highlight.
+    function renderPage(page) {
+      if (!vrvToolkit || loadedWorkId == null) return;
+      page = Math.max(1, Math.min(page, pageCount));
+      currentPage = page;
+
+      const container = document.getElementById("score-viewer-container");
+      const svg = vrvToolkit.renderToSVG(page);
+      container.innerHTML = `<div id="score-viewer-content">${svg}</div>`;
+
+      document.getElementById("page-indicator").textContent = `Page ${currentPage} / ${pageCount}`;
+      document.getElementById("prev-page-btn").disabled = currentPage <= 1;
+      document.getElementById("next-page-btn").disabled = currentPage >= pageCount;
+
+      if (pendingHighlight) {
+        highlightMeasures(pendingHighlight.start, pendingHighlight.end);
+      }
+    }
+
+    // Navigate to a different page of the currently loaded work
+    function goToPage(page) {
+      if (page < 1 || page > pageCount) return;
+      renderPage(page);
+    }
+
+    // Highlight measures inside the SVG (only measures present on the
+    // currently rendered page will be found)
     function highlightMeasures(start, end) {
+      const idMap = measureIdCache[loadedWorkId] || {};
       for (let m = start; m <= end; m++) {
-        // Verovio elements are structured by measure id e.g. id="measure-N"
-        const measureEl = document.querySelector(`#measure-${m}`);
+        const xmlId = idMap[m] || `measure-${m}`;
+        const measureEl = document.getElementById(xmlId);
         if (measureEl) {
           const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
           const bbox = measureEl.getBBox();
-          
+
           rect.setAttribute("x", bbox.x - 40);
           rect.setAttribute("y", bbox.y - 40);
           rect.setAttribute("width", bbox.width + 80);
           rect.setAttribute("height", bbox.height + 80);
           rect.setAttribute("class", "highlighted-measure");
           rect.setAttribute("rx", "12");
-          
-          // Insert the highlight rect behind the measure details
+
           measureEl.parentNode.insertBefore(rect, measureEl);
         }
       }
-    }
-
-    // Load Beethoven Demo query directly
-    function loadBeethovenDemo() {
-      const inputEl = document.getElementById("query-input");
-      inputEl.value = "Describe the opening Maestoso section of Op. 111";
-      document.getElementById("chat-form").dispatchEvent(new Event("submit"));
     }
 
     // Extremely basic markdown formatter helper

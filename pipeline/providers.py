@@ -3,19 +3,19 @@ pipeline/providers.py
 Selects LangChain chat/embedding model backends at runtime via env vars,
 so scorechat isn't locked to OpenAI:
 
-    CHAT_PROVIDER=openai|anthropic|ollama   (default: openai)
-    CHAT_MODEL=<model name>                 (provider-specific default if unset)
-    EMBEDDING_PROVIDER=openai|ollama        (default: openai)
-    EMBEDDING_MODEL=<model name>            (provider-specific default if unset)
+    CHAT_PROVIDER=openai|anthropic|ollama|gemini   (default: openai)
+    CHAT_MODEL=<model name>                        (provider-specific default if unset)
+    EMBEDDING_PROVIDER=openai|ollama|gemini        (default: openai)
+    EMBEDDING_MODEL=<model name>                   (provider-specific default if unset)
 
 Anthropic has no embeddings API, so EMBEDDING_PROVIDER=anthropic is rejected.
 
 Note on embeddings: score_segments.embedding / text_sources.embedding are
 declared `vector(1536)` in db/schema.sql. OpenAI's text-embedding-3-small
 produces 1536-dim vectors. Switching EMBEDDING_PROVIDER to a model with a
-different output dimension (e.g. Ollama's nomic-embed-text is 768-dim) will
-fail on insert/query against the existing columns and requires migrating
-the schema plus re-embedding all rows.
+different output dimension (e.g. Ollama's nomic-embed-text or Gemini's
+text-embedding-004, both 768-dim) will fail on insert/query against the
+existing columns and requires migrating the schema plus re-embedding all rows.
 """
 
 from __future__ import annotations
@@ -25,18 +25,22 @@ _CHAT_DEFAULT_MODELS = {
     "openai": "gpt-4o",
     "anthropic": "claude-sonnet-5",
     "ollama": "llama3.1",
+    "gemini": "gemini-2.5-flash",
 }
 _CHAT_KEY_ENV = {
     "openai": "OPENAI_API_KEY",
     "anthropic": "ANTHROPIC_API_KEY",
+    "gemini": "GEMINI_API_KEY",
 }
 
 _EMBEDDING_DEFAULT_MODELS = {
     "openai": "text-embedding-3-small",
     "ollama": "nomic-embed-text",
+    "gemini": "models/gemini-embedding-001",
 }
 _EMBEDDING_KEY_ENV = {
     "openai": "OPENAI_API_KEY",
+    "gemini": "GEMINI_API_KEY",
 }
 
 
@@ -99,7 +103,17 @@ def get_chat_model(model: str | None = None, temperature: float = 0.3):
             ) from e
         return ChatOllama(model=model, temperature=temperature, base_url=os.environ.get("OLLAMA_BASE_URL"))
 
-    raise ValueError(f"Unknown CHAT_PROVIDER '{provider}'. Supported: openai, anthropic, ollama.")
+    if provider == "gemini":
+        try:
+            from langchain_google_genai import ChatGoogleGenerativeAI
+        except ImportError as e:
+            raise ImportError(
+                "CHAT_PROVIDER=gemini requires langchain-google-genai. "
+                "Install with: uv pip install langchain-google-genai"
+            ) from e
+        return ChatGoogleGenerativeAI(model=model, temperature=temperature, google_api_key=os.environ["GEMINI_API_KEY"])
+
+    raise ValueError(f"Unknown CHAT_PROVIDER '{provider}'. Supported: openai, anthropic, ollama, gemini.")
 
 
 def get_embeddings_model(model: str | None = None):
@@ -121,7 +135,20 @@ def get_embeddings_model(model: str | None = None):
             ) from e
         return OllamaEmbeddings(model=model, base_url=os.environ.get("OLLAMA_BASE_URL"))
 
+    if provider == "gemini":
+        try:
+            from langchain_google_genai import GoogleGenerativeAIEmbeddings
+        except ImportError as e:
+            raise ImportError(
+                "EMBEDDING_PROVIDER=gemini requires langchain-google-genai. "
+                "Install with: uv pip install langchain-google-genai"
+            ) from e
+        dim = int(os.environ.get("EMBEDDING_DIM", "0")) or None
+        return GoogleGenerativeAIEmbeddings(
+            model=model, google_api_key=os.environ["GEMINI_API_KEY"], output_dimensionality=dim
+        )
+
     raise ValueError(
-        f"Unknown or unsupported EMBEDDING_PROVIDER '{provider}'. Supported: openai, ollama "
+        f"Unknown or unsupported EMBEDDING_PROVIDER '{provider}'. Supported: openai, ollama, gemini "
         "(Anthropic has no embeddings API)."
     )

@@ -16,6 +16,7 @@ class Work(Base):
     composer        = Column(Text, nullable=False)
     title           = Column(Text, nullable=False)
     opus            = Column(Text)
+    nickname        = Column(Text)
     catalog_no      = Column(Text)
     key_signature   = Column(Text)
     time_signature  = Column(Text)
@@ -69,7 +70,7 @@ class ScoreSegment(Base):
     difficulty      = Column(Integer)
     summary_text    = Column(Text)
     musicxml_slice  = Column(Text)
-    embedding       = Column(Vector(1536))
+    embedding       = Column(Vector(768))
     created_at      = Column(TIMESTAMP(timezone=True), server_default=func.now())
 
     work = relationship("Work", back_populates="segments")
@@ -86,7 +87,7 @@ class TextSource(Base):
     source_type = Column(Text, nullable=False)
     content     = Column(Text, nullable=False)
     chunk_index = Column(Integer, default=0)
-    embedding   = Column(Vector(1536))
+    embedding   = Column(Vector(768))
     url         = Column(Text)
     created_at  = Column(TIMESTAMP(timezone=True), server_default=func.now())
 

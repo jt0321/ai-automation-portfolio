@@ -1,5 +1,6 @@
 """db/session.py — SQLAlchemy session factory."""
 import os
+from contextlib import contextmanager
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -14,3 +15,15 @@ def get_session():
         _engine = create_engine(url, pool_pre_ping=True)
         _Session = sessionmaker(bind=_engine)
     return _Session()
+
+
+@contextmanager
+def session_scope():
+    """Yield a session and always close it, so short-lived requests
+    (each API call, each ingest step) don't leak idle-in-transaction
+    connections that can end up blocking DDL/migrations."""
+    session = get_session()
+    try:
+        yield session
+    finally:
+        session.close()

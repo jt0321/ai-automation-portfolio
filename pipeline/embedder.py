@@ -6,6 +6,7 @@ whichever LangChain embeddings backend EMBEDDING_PROVIDER selects
 """
 
 from __future__ import annotations
+import os
 from typing import Optional
 from pipeline.providers import get_embeddings_model, embedding_provider_ready
 
@@ -27,10 +28,11 @@ def embed_texts(texts: list[str], model: Optional[str] = None) -> list[list[floa
     """
     if not embedding_provider_ready():
         import random
+        dim = int(os.environ.get("EMBEDDING_DIM", "1536"))
         vectors = []
         for t in texts:
             random.seed(hash(t))
-            vec = [random.uniform(-1, 1) for _ in range(1536)]
+            vec = [random.uniform(-1, 1) for _ in range(dim)]
             mag = sum(x * x for x in vec) ** 0.5
             vectors.append([x / mag for x in vec])
         return vectors

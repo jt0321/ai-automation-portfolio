@@ -108,24 +108,24 @@ def render_score_slice_in_streamlit(musicxml_slice: str, start: int, end: int):
 
 load_dotenv()
 
-from db.session import get_session
+from db.session import session_scope
 from db.models import Work
 
 @st.cache_data(show_spinner=False)
 def load_ingested_works() -> dict[str, list[dict]]:
     """Load ingested works from database; return dict keyed by composer."""
     try:
-        session = get_session()
-        works = session.query(Work).order_by(Work.title).all()
-        res = defaultdict(list)
-        for w in works:
-            res[w.composer].append({
-                "work": w.title,
-                "opus": w.opus,
-                "catalog": w.catalog_no,
-                "imslp_url": w.imslp_url
-            })
-        return dict(res)
+        with session_scope() as session:
+            works = session.query(Work).order_by(Work.title).all()
+            res = defaultdict(list)
+            for w in works:
+                res[w.composer].append({
+                    "work": w.title,
+                    "opus": w.opus,
+                    "catalog": w.catalog_no,
+                    "imslp_url": w.imslp_url
+                })
+            return dict(res)
     except Exception as e:
         return {}
 

@@ -18,6 +18,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from pipeline.chat import chat
+from db.store import list_works, get_work_mei
 
 PORT = 8000
 FRONTEND_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "frontend")
@@ -28,8 +29,49 @@ class ScoreChatHandler(SimpleHTTPRequestHandler):
         # Serve static files from the frontend directory
         super().__init__(*args, directory=FRONTEND_DIR, **kwargs)
 
+    def _send_json(self, status: int, payload: dict) -> None:
+        body = json.dumps(payload).encode("utf-8")
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.end_headers()
+        self.wfile.write(body)
+
     def do_GET(self):
         parsed_url = urllib.parse.urlparse(self.path)
+
+        # List all ingested works (for the sidebar work picker)
+        if parsed_url.path == "/api/works":
+            try:
+                self._send_json(200, {"works": list_works()})
+            except Exception as e:
+                self._send_json(500, {"error": str(e)})
+            return
+
+        # Full MEI for a work, so the frontend can load the whole score
+        # into Verovio and support real pagination/navigation instead of
+        # rendering an isolated per-segment slice.
+        if parsed_url.path == "/api/score":
+            query_params = urllib.parse.parse_qs(parsed_url.query)
+            work_id_raw = query_params.get("work_id", [""])[0]
+            if not work_id_raw.isdigit():
+                self._send_json(400, {"error": "Missing or invalid work_id parameter"})
+                return
+
+            try:
+                mei = get_work_mei(int(work_id_raw))
+                if mei is None:
+                    self._send_json(404, {"error": "No MEI asset found for this work"})
+                    return
+                body = mei.encode("utf-8")
+                self.send_response(200)
+                self.send_header("Content-Type", "application/xml")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                self.wfile.write(body)
+            except Exception as e:
+                self._send_json(500, {"error": str(e)})
+            return
 
         # RAG Chat API Endpoint
         if parsed_url.path == "/api/chat":
