@@ -47,7 +47,7 @@
       </fileDesc>
       <encodingDesc>
          <appInfo>
-            <application isodate="2026-07-24T18:57:49" version="6.2.1-8d42439">
+            <application isodate="2026-07-28T03:32:14" version="6.2.1-8d42439">
                <name>Verovio</name>
                <p>Transcoded from Humdrum</p>
             </application>
@@ -269,43 +269,43 @@
    </meiHead>
    <music decls="#work0_encoded">
       <body>
-         <mdiv xml:id="b1cp5h4">
-            <score xml:id="c1mugaaa">
-               <scoreDef xml:id="dts2sg8" midi.bpm="152" tempo.dist="3vu">
-                  <pgHead xml:id="td21iec" func="first">
-                     <rend xml:id="ufmnkl0" halign="center" valign="middle">
-                        <rend xml:id="vj0e5dd" fontsize="large">Piano Sonata no. 6 in F major</rend>
-                        <lb xml:id="x1385bqv" /> 
-<lb xml:id="zb7yjim" /> </rend>
-                     <rend xml:id="bxfxj74" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
-                     <rend xml:id="duftddi" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
+         <mdiv xml:id="xcxtfqn">
+            <score xml:id="y1t1a0cx">
+               <scoreDef xml:id="zwa02pv" midi.bpm="152" tempo.dist="3vu">
+                  <pgHead xml:id="pb7vhuj" func="first">
+                     <rend xml:id="q1152fbt" halign="center" valign="middle">
+                        <rend xml:id="r1fqjfgc" fontsize="large">Piano Sonata no. 6 in F major</rend>
+                        <lb xml:id="t1n19hqz" /> 
+<lb xml:id="vo2g4j0" /> </rend>
+                     <rend xml:id="x1ssblfm" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
+                     <rend xml:id="zwxir06" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
                   </pgHead>
-                  <staffGrp xml:id="oj58qr3" bar.thru="true" symbol="brace">
-                     <label xml:id="o1giasv4">Piano</label>
+                  <staffGrp xml:id="kpeuye" bar.thru="true" symbol="brace">
+                     <label xml:id="k1sa5v26">Piano</label>
                      <staffDef xml:id="staffdef-L10F2" n="1" lines="5">
                         <clef xml:id="clef-L16F2" shape="G" line="2" />
                         <keySig xml:id="keysig-L17F2" mode="major" sig="1f" pname="f" />
                         <meterSig xml:id="metersig-L19F2" count="2" unit="4" />
-                        <instrDef xml:id="a1a2oybe" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="w5bced5" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                      <staffDef xml:id="staffdef-L10F1" n="2" lines="5">
                         <clef xml:id="clef-L16F1" shape="F" line="4" />
                         <keySig xml:id="keysig-L17F1" mode="major" sig="1f" pname="f" />
                         <meterSig xml:id="metersig-L19F1" count="2" unit="4" />
-                        <instrDef xml:id="n49nd2i" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="j250ocf" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                   </staffGrp>
                </scoreDef>
                <section xml:id="section-L10F1">
-                  <choice xml:id="fc8p01p">
-                     <orig xml:id="gqovsp2">
+                  <choice xml:id="bxffyua">
+                     <orig xml:id="c1q3sbwr">
                         <expansion plist="#label-A #label-A #label-B #label-B" xml:id="expansion-L13F1" />
                      </orig>
-                     <reg xml:id="iuktvsw" type="norep">
+                     <reg xml:id="e1669w06" type="norep">
                         <expansion plist="#label-A #label-B" xml:id="expansion-L14F1" type="norep" />
                      </reg>
                   </choice>
-                  <pb xml:id="kyyad82" />
+                  <pb xml:id="gmmce14" />
                   <section xml:id="label-A">
                      <measure xml:id="measure-L1">
                         <staff xml:id="staff-L10F2" n="1">
@@ -321,7 +321,7 @@
                            </layer>
                         </staff>
                         <tempo xml:id="tempo-L6F1" staff="1" tstamp="1">
-                           <rend xml:id="d1x2elsu">FINALE<lb xml:id="f1uxgz7u" />Presto</rend>
+                           <rend xml:id="z1deknpe">FINALE<lb xml:id="btqu7gp" />Presto</rend>
                         </tempo>
                         <dynam xml:id="dynam-L21F3" place="between" staff="1 2" tstamp="1">mf</dynam>
                      </measure>
@@ -2536,9 +2536,9 @@
                         <slur xml:id="slur-L418F3-L421F3" staff="1" startid="#note-L418F3" endid="#note-L421F3" />
                      </measure>
                      <sb xml:id="sb-L423F1" type="original" />
-                     <scoreDef xml:id="hf3vtex">
-                        <staffGrp xml:id="i7g4zfo">
-                           <staffDef xml:id="j1jqqb5" n="2">
+                     <scoreDef xml:id="d1k4ehqj">
+                        <staffGrp xml:id="e1ohvh34">
+                           <staffDef xml:id="fr048k" n="2">
                               <clef xml:id="clef-L424F1" shape="F" line="4" />
                            </staffDef>
                         </staffGrp>
@@ -3932,7 +3932,7 @@
                            </layer>
                         </staff>
                         <dynam xml:id="dynam-L627F3" place="below" staff="2" tstamp="2.5">
-                           <rend xml:id="u140nyqt" halign="right" fontsize="large" fontweight="bold">ff</rend>
+                           <rend xml:id="q12y4rak" halign="right" fontsize="large" fontweight="bold">ff</rend>
                         </dynam>
                         <slur xml:id="slur-L620F2-L629F2" staff="1" startid="#note-L620F2" endid="#note-L629F2" />
                         <slur xml:id="slur-L627F1-L630F1" staff="2" startid="#note-L627F1" endid="#note-L630F1" />
@@ -6600,8 +6600,8 @@
                               <rest xml:id="rest-L1114F1" dur="8" />
                            </layer>
                         </staff>
-                        <fermata xml:id="f11ik6fr" startid="#rest-L1113F2" place="above" />
-                        <fermata xml:id="gxxn8w8" startid="#rest-L1113F1" place="above" />
+                        <fermata xml:id="b9i158g" startid="#rest-L1113F2" place="above" />
+                        <fermata xml:id="c1pajis2" startid="#rest-L1113F1" place="above" />
                      </measure>
                   </section>
                </section>

@@ -47,7 +47,7 @@
       </fileDesc>
       <encodingDesc>
          <appInfo>
-            <application isodate="2026-07-24T19:02:00" version="6.2.1-8d42439">
+            <application isodate="2026-07-28T03:36:22" version="6.2.1-8d42439">
                <name>Verovio</name>
                <p>Transcoded from Humdrum</p>
             </application>
@@ -275,35 +275,35 @@
    </meiHead>
    <music decls="#work0_encoded">
       <body>
-         <mdiv xml:id="p4hxc3f">
-            <score xml:id="qaiglky">
-               <scoreDef xml:id="r18hnutb" midi.bpm="144" tempo.dist="3vu">
-                  <pgHead xml:id="c1obd8qc" func="first">
-                     <rend xml:id="d11c8y7k" halign="center" valign="middle">
-                        <rend xml:id="e1e1b8o1" fontsize="large">Piano Sonata no. 13 in E-flat major</rend>
-                        <lb xml:id="g1glfipp" /> 
-<lb xml:id="iop13ra" /> </rend>
-                     <rend xml:id="k3eudkc" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
-                     <rend xml:id="m1dd103c" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
+         <mdiv xml:id="l1rc73n6">
+            <score xml:id="m1tevemr">
+               <scoreDef xml:id="n1fc0sig" midi.bpm="144" tempo.dist="3vu">
+                  <pgHead xml:id="y19px2js" func="first">
+                     <rend xml:id="z15dqlsj" halign="center" valign="middle">
+                        <rend xml:id="a11xnoy0" fontsize="large">Piano Sonata no. 13 in E-flat major</rend>
+                        <lb xml:id="c16blan2" /> 
+<lb xml:id="e1huld6" /> </rend>
+                     <rend xml:id="gxxw977" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
+                     <rend xml:id="i1pr0ro0" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
                   </pgHead>
-                  <staffGrp xml:id="x1uf835v" bar.thru="true" symbol="brace">
-                     <label xml:id="smyp5bu">Piano</label>
+                  <staffGrp xml:id="t1rqblcm" bar.thru="true" symbol="brace">
+                     <label xml:id="o1lj8glo">Piano</label>
                      <staffDef xml:id="staffdef-L10F2" n="1" lines="5">
                         <clef xml:id="clef-L13F2" shape="G" line="2" />
                         <keySig xml:id="keysig-L14F2" accid="f" mode="major" sig="3f" pname="e" />
                         <meterSig xml:id="metersig-L16F2" count="2" unit="4" />
-                        <instrDef xml:id="j2pcht5" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="fu63k68" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                      <staffDef xml:id="staffdef-L10F1" n="2" lines="5">
                         <clef xml:id="clef-L13F1" shape="F" line="4" />
                         <keySig xml:id="keysig-L14F1" accid="f" mode="major" sig="3f" pname="e" />
                         <meterSig xml:id="metersig-L16F1" count="2" unit="4" />
-                        <instrDef xml:id="wdlwudb" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="sq7zwi2" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                   </staffGrp>
                </scoreDef>
                <section xml:id="section-L10F1">
-                  <pb xml:id="t173i4jr" />
+                  <pb xml:id="p3kud43" />
                   <measure xml:id="measure-L1">
                      <staff xml:id="staff-L10F2" n="1">
                         <layer xml:id="layer-L1F2N1" n="1">
@@ -9335,9 +9335,9 @@
                      </staff>
                   </measure>
                   <sb xml:id="sb-L1835F1" type="original" />
-                  <scoreDef xml:id="vosug7d">
-                     <staffGrp xml:id="wh7qq0n">
-                        <staffDef xml:id="x161e3ye" n="2">
+                  <scoreDef xml:id="r1x8dqje">
+                     <staffGrp xml:id="s1s3wmn2">
+                        <staffDef xml:id="t4vdmc0" n="2">
                            <clef xml:id="clef-L1836F1" shape="F" line="4" />
                         </staffDef>
                      </staffGrp>
@@ -10886,13 +10886,13 @@
                      <fermata xml:id="fermata-L2144F1" staff="2" startid="#chord-L2144F1" place="above" />
                   </measure>
                   <sb xml:id="sb-L2146F1" type="original" />
-                  <scoreDef xml:id="nr2ktlz">
-                     <staffGrp xml:id="orxkm4r">
-                        <staffDef xml:id="p4vihve" n="1">
-                           <meterSig xml:id="d1v06qdh" count="3" unit="4" />
+                  <scoreDef xml:id="jowq8d5">
+                     <staffGrp xml:id="k5x8itm">
+                        <staffDef xml:id="l1s7js9g" n="1">
+                           <meterSig xml:id="z1xtk4rq" count="3" unit="4" />
                         </staffDef>
-                        <staffDef xml:id="wm3pewi" n="2">
-                           <meterSig xml:id="etpqiae" count="3" unit="4" />
+                        <staffDef xml:id="s1h11gsa" n="2">
+                           <meterSig xml:id="a1wpbx5d" count="3" unit="4" />
                         </staffDef>
                      </staffGrp>
                   </scoreDef>

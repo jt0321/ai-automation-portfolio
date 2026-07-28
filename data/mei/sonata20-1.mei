@@ -47,7 +47,7 @@
       </fileDesc>
       <encodingDesc>
          <appInfo>
-            <application isodate="2026-07-24T19:06:31" version="6.2.1-8d42439">
+            <application isodate="2026-07-28T03:40:49" version="6.2.1-8d42439">
                <name>Verovio</name>
                <p>Transcoded from Humdrum</p>
             </application>
@@ -274,43 +274,43 @@
    </meiHead>
    <music decls="#work0_encoded">
       <body>
-         <mdiv xml:id="p12u6y4a">
-            <score xml:id="ql0x9nc">
-               <scoreDef xml:id="r1k50s0b" midi.bpm="120" tempo.dist="3vu">
-                  <pgHead xml:id="h13hrgvv" func="first">
-                     <rend xml:id="iigugl6" halign="center" valign="middle">
-                        <rend xml:id="jtsphs7" fontsize="large">Piano Sonata No. 20 in G major</rend>
-                        <lb xml:id="l1qdgyjk" /> 
-<lb xml:id="ngaisue" /> </rend>
-                     <rend xml:id="p1sefb66" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
-                     <rend xml:id="rvs3den" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
+         <mdiv xml:id="l1eqbm9j">
+            <score xml:id="m15nqtp">
+               <scoreDef xml:id="nq0dnt5" midi.bpm="120" tempo.dist="3vu">
+                  <pgHead xml:id="d6f01zp" func="first">
+                     <rend xml:id="e1xu3i30" halign="center" valign="middle">
+                        <rend xml:id="fiy7vrs" fontsize="large">Piano Sonata No. 20 in G major</rend>
+                        <lb xml:id="hxoxq9p" /> 
+<lb xml:id="jwks8rp" /> </rend>
+                     <rend xml:id="l815ja4" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
+                     <rend xml:id="n1ky1av1" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
                   </pgHead>
-                  <staffGrp xml:id="c1ysmikx" bar.thru="true" symbol="brace">
-                     <label xml:id="j2ndwgb">Piano</label>
+                  <staffGrp xml:id="yv92ta" bar.thru="true" symbol="brace">
+                     <label xml:id="fca02jk">Piano</label>
                      <staffDef xml:id="staffdef-L11F2" n="1" lines="5">
                         <clef xml:id="clef-L17F2" shape="G" line="2" />
                         <keySig xml:id="keysig-L18F2" mode="major" sig="1s" pname="g" />
                         <meterSig xml:id="metersig-L20F2" count="2" unit="2" />
-                        <instrDef xml:id="o1xchq0g" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="k1myfb" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                      <staffDef xml:id="staffdef-L11F1" n="2" lines="5">
                         <clef xml:id="clef-L17F1" shape="F" line="4" />
                         <keySig xml:id="keysig-L18F1" mode="major" sig="1s" pname="g" />
                         <meterSig xml:id="metersig-L20F1" count="2" unit="2" />
-                        <instrDef xml:id="b1ar3seb" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="x11man1p" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                   </staffGrp>
                </scoreDef>
                <section xml:id="section-L11F1">
-                  <choice xml:id="t1n6z5mv">
-                     <orig xml:id="ugpmb0s">
+                  <choice xml:id="poql2p6">
+                     <orig xml:id="qa7edh9">
                         <expansion plist="#label-A #label-A #label-B #label-B" xml:id="expansion-L14F1" />
                      </orig>
-                     <reg xml:id="w1l1vypb" type="norep">
+                     <reg xml:id="s1s5drco" type="norep">
                         <expansion plist="#label-A #label-B" xml:id="expansion-L15F1" type="norep" />
                      </reg>
                   </choice>
-                  <pb xml:id="y1a7l4ur" />
+                  <pb xml:id="uwhgns9" />
                   <section xml:id="label-A">
                      <measure xml:id="measure-L1" n="1">
                         <staff xml:id="staff-L11F2" n="1">
@@ -655,7 +655,7 @@
                               <rest xml:id="rest-L122F1" dur="2" />
                            </layer>
                         </staff>
-                        <turn xml:id="r1u1ywjs" staff="1" startid="#note-L119F2" place="below" delayed="true" form="upper" />
+                        <turn xml:id="n1syunh9" staff="1" startid="#note-L119F2" place="below" delayed="true" form="upper" />
                         <slur xml:id="slur-L119F2-L121F2" staff="1" startid="#note-L119F2" endid="#note-L121F2" />
                         <slur xml:id="slur-L122F2-L125F2" staff="1" startid="#note-L122F2" endid="#note-L125F2" />
                      </measure>
@@ -5021,8 +5021,8 @@
                               <rest xml:id="rest-L1329F1" dur="2" />
                            </layer>
                         </staff>
-                        <fermata xml:id="a18ph5eb" startid="#rest-L1329F2" place="above" />
-                        <fermata xml:id="bcark89" startid="#rest-L1329F1" place="above" />
+                        <fermata xml:id="w1fgwrr5" startid="#rest-L1329F2" place="above" />
+                        <fermata xml:id="x1jznl0q" startid="#rest-L1329F1" place="above" />
                      </measure>
                   </section>
                </section>

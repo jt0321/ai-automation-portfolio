@@ -99,18 +99,20 @@ def store_text_chunks(work_id: int, chunks: list[dict]) -> None:
 
 def list_works() -> list[dict]:
     """
-    List all ingested works (id, composer, title, opus, nickname) for the
-    sidebar/work picker, in natural sonata/movement order (No. 5-9 before
-    No. 10, No. 32 after No. 29) rather than lexicographic title order.
+    List all ingested works (id, composer, title, opus, nickname, work_number,
+    movement_number, tempo_indication) for the sidebar/work picker, in natural
+    sonata/movement order (No. 5-9 before No. 10, No. 32 after No. 29) rather
+    than lexicographic title order.
     """
     with session_scope() as session:
         rows = session.execute(text(r"""
-            SELECT id, composer, title, opus, nickname
+            SELECT id, composer, title, opus, nickname,
+                   work_number, movement_number, tempo_indication
             FROM works
             ORDER BY
                 composer,
-                COALESCE((regexp_match(title, 'No\. (\d+)'))[1]::int, 0),
-                COALESCE((regexp_match(title, 'Mvt (\d+)'))[1]::int, 0),
+                COALESCE(work_number, 0),
+                COALESCE(movement_number, 0),
                 title
         """)).mappings().all()
         return [dict(r) for r in rows]

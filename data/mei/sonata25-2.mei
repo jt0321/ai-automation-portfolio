@@ -47,7 +47,7 @@
       </fileDesc>
       <encodingDesc>
          <appInfo>
-            <application isodate="2026-07-24T19:10:33" version="6.2.1-8d42439">
+            <application isodate="2026-07-28T03:44:36" version="6.2.1-8d42439">
                <name>Verovio</name>
                <p>Transcoded from Humdrum</p>
             </application>
@@ -258,35 +258,35 @@
    </meiHead>
    <music decls="#work0_encoded">
       <body>
-         <mdiv xml:id="u1hc43i5">
-            <score xml:id="v1d7y79t">
-               <scoreDef xml:id="w18zcemg" midi.bpm="72" tempo.dist="3vu">
-                  <pgHead xml:id="h1cszbmx" func="first">
-                     <rend xml:id="ipvkhmg" halign="center" valign="middle">
-                        <rend xml:id="jvsmqmm" fontsize="large">Piano Sonata no. 25 in G major</rend>
-                        <lb xml:id="l1hrgns5" /> 
-<lb xml:id="n1hr7jih" /> </rend>
-                     <rend xml:id="p1oih3s2" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
-                     <rend xml:id="r1aze49q" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
+         <mdiv xml:id="q69uakr">
+            <score xml:id="r76vzgy">
+               <scoreDef xml:id="sn3uvq" midi.bpm="72" tempo.dist="3vu">
+                  <pgHead xml:id="ds21xia" func="first">
+                     <rend xml:id="e1yqs7zl" halign="center" valign="middle">
+                        <rend xml:id="f1vn5mms" fontsize="large">Piano Sonata no. 25 in G major</rend>
+                        <lb xml:id="h1vfrqpi" /> 
+<lb xml:id="jcbq2vs" /> </rend>
+                     <rend xml:id="l1eek1zw" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
+                     <rend xml:id="n1lcgjfq" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
                   </pgHead>
-                  <staffGrp xml:id="ccvcjnt" bar.thru="true" symbol="brace">
-                     <label xml:id="g1p8jwvc">Piano</label>
+                  <staffGrp xml:id="y18cexev" bar.thru="true" symbol="brace">
+                     <label xml:id="c7ra6io">Piano</label>
                      <staffDef xml:id="staffdef-L9F2" n="1" lines="5">
                         <clef xml:id="clef-L12F2" shape="G" line="2" />
                         <keySig xml:id="keysig-L13F2" mode="minor" sig="2f" pname="g" />
                         <meterSig xml:id="metersig-L15F2" count="9" unit="8" />
-                        <instrDef xml:id="ozmoace" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="k4jz80o" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                      <staffDef xml:id="staffdef-L9F1" n="2" lines="5">
                         <clef xml:id="clef-L12F1" shape="F" line="4" />
                         <keySig xml:id="keysig-L13F1" mode="minor" sig="2f" pname="g" />
                         <meterSig xml:id="metersig-L15F1" count="9" unit="8" />
-                        <instrDef xml:id="b1sfnr2f" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="x1n2mh5m" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                   </staffGrp>
                </scoreDef>
                <section xml:id="section-L9F1">
-                  <pb xml:id="y6vdfbu" />
+                  <pb xml:id="ulwzap1" />
                   <measure xml:id="measure-L1" n="1">
                      <staff xml:id="staff-L9F2" n="1">
                         <layer xml:id="layer-L1F2N1" n="1">
@@ -333,11 +333,11 @@
                      </staff>
                      <tempo xml:id="tempo-L8F1" staff="1" tstamp="1">Andante</tempo>
                      <dynam xml:id="dynam-L19F3" place="between" staff="1 2" tstamp="1">
-                        <rend xml:id="yd41ndi" halign="right" fontsize="large" fontweight="bold">p</rend>
+                        <rend xml:id="u1vtymrg" halign="right" fontsize="large" fontweight="bold">p</rend>
                      </dynam>
                      <hairpin xml:id="hairpin-L19F3" staff="1 2" tstamp="1" tstamp2="0m+9" form="cres" place="between" />
                      <dir xml:id="dir-L18F2" place="above" staff="1" tstamp="1">
-                        <rend xml:id="c1ssox5u" fontstyle="italic">espressivo</rend>
+                        <rend xml:id="y1t2ilwx" fontstyle="italic">espressivo</rend>
                      </dir>
                      <slur xml:id="slur-L22F2-L24F2" staff="1" startid="#chord-L22F2" endid="#chord-L24F2" />
                   </measure>
@@ -742,7 +742,7 @@
                      </staff>
                   </measure>
                   <sb xml:id="sb-L105F1" type="original" />
-                  <scoreDef xml:id="j16sxnl1">
+                  <scoreDef xml:id="fzrj5qo">
                      <keySig xml:id="keysig-L106F2" sig="3f" />
                   </scoreDef>
                   <measure xml:id="measure-L105" n="10">
@@ -1009,7 +1009,7 @@
                         </layer>
                      </staff>
                      <dir xml:id="dir-L187F2" place="above" staff="1" tstamp="1">
-                        <rend xml:id="y1szz6ri" fontstyle="italic">legato</rend>
+                        <rend xml:id="ua0j6my" fontstyle="italic">legato</rend>
                      </dir>
                      <hairpin xml:id="hairpin-L194F3" staff="1 2" tstamp="4" tstamp2="0m+7" form="cres" place="between" />
                      <hairpin xml:id="hairpin-L200F3" staff="1 2" tstamp="7" tstamp2="0m+9.5" form="dim" place="between" vgrp="100" />
@@ -1376,7 +1376,7 @@
                      <dir xml:id="dir-L326F4" place="between" staff="1 2" tstamp="4">dimin.</dir>
                   </measure>
                   <sb xml:id="sb-L340F1" type="original" />
-                  <scoreDef xml:id="t1vmsy1y">
+                  <scoreDef xml:id="p1lpgxzg">
                      <keySig xml:id="keysig-L341F2" sig="2f" />
                   </scoreDef>
                   <measure xml:id="measure-L340" n="21">

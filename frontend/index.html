@@ -333,11 +333,13 @@
     /* Score Visualizer Panels */
     #score-viewer-container {
       flex: 1;
-      overflow: auto;
+      overflow-y: auto;
+      overflow-x: hidden;
       padding: 2rem;
       display: flex;
-      justify-content: center;
-      align-items: flex-start;
+      flex-direction: column;
+      align-items: center;
+      scroll-behavior: smooth;
     }
 
     #score-viewer-content {
@@ -350,6 +352,35 @@
       width: 100%;
       height: auto;
       transition: var(--transition);
+    }
+
+    /* Continuous-scroll page stack, PDF-viewer style */
+    .score-page {
+      position: relative;
+      background-color: #ffffff;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      min-width: 600px;
+      max-width: 1000px;
+      width: 100%;
+      margin-bottom: 2rem;
+    }
+
+    .score-page:last-child {
+      margin-bottom: 0;
+    }
+
+    .score-page-badge {
+      position: absolute;
+      top: 0.6rem;
+      right: 0.8rem;
+      background: rgba(0, 0, 0, 0.55);
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-sm);
+      pointer-events: none;
+      z-index: 1;
     }
 
     /* Empty states / loaders */
@@ -627,6 +658,10 @@
     let pendingHighlight = null; // {start, end} to apply after the next render
     let currentScale = 42; // percent; purely a rendering zoom — verified this does NOT
                             // affect Verovio's pagination/layout, only the output SVG size
+    let pageObserver = null;   // IntersectionObserver tracking which page is in view while scrolling
+    let zoomDebounceTimer = null;
+    let suppressPageObserver = false; // true briefly during a programmatic scroll (goToPage/measure jump)
+                                       // so it doesn't fight the target page for the "current page" indicator
 
     // Letter-ish page, thin margins, in Verovio's native 1/10mm units.
     // Verovio's automatic engraving can't reproduce a specific publisher's
@@ -891,40 +926,76 @@
           }
         }
 
-        renderPage(targetPage);
+        renderAllPages();
+        goToPage(targetPage, /*smooth=*/ false);
       } catch (err) {
         console.error(err);
         container.innerHTML = `<div class="empty-state"><p style="color:#ef4444;">Error loading score: ${err.message}</p></div>`;
       }
     }
 
-    // Render a specific page of the currently loaded work, update nav
-    // controls, and re-apply any pending measure highlight.
-    function renderPage(page) {
+    // Render every page of the currently loaded work, stacked vertically
+    // (PDF-viewer style) inside the scrollable viewer container, and wire up
+    // an IntersectionObserver so the page indicator/input track whichever
+    // page is currently in view as the user scrolls.
+    function renderAllPages() {
       if (!vrvToolkit || loadedWorkId == null) return;
-      page = Math.max(1, Math.min(page, pageCount));
-      currentPage = page;
 
       const container = document.getElementById("score-viewer-container");
-      const svg = vrvToolkit.renderToSVG(page);
-      container.innerHTML = `<div id="score-viewer-content">${svg}</div>`;
+      let html = "";
+      for (let p = 1; p <= pageCount; p++) {
+        const svg = vrvToolkit.renderToSVG(p);
+        html += `<div class="score-page" id="score-page-${p}" data-page="${p}"><span class="score-page-badge">Page ${p} / ${pageCount}</span>${svg}</div>`;
+      }
+      container.innerHTML = html;
 
-      document.getElementById("page-indicator").textContent = `Page ${currentPage} / ${pageCount}`;
-      document.getElementById("prev-page-btn").disabled = currentPage <= 1;
-      document.getElementById("next-page-btn").disabled = currentPage >= pageCount;
-      const pageJumpInput = document.getElementById("page-jump-input");
-      pageJumpInput.max = pageCount;
-      pageJumpInput.value = currentPage;
+      document.getElementById("page-jump-input").max = pageCount;
+
+      if (pageObserver) pageObserver.disconnect();
+      pageObserver = new IntersectionObserver((entries) => {
+        if (suppressPageObserver) return;
+        // Pick the visible page with the greatest intersection ratio —
+        // stable against fast scrolling past multiple pages at once.
+        let best = null;
+        for (const entry of entries) {
+          if (entry.isIntersecting && (!best || entry.intersectionRatio > best.intersectionRatio)) {
+            best = entry;
+          }
+        }
+        if (best) {
+          setCurrentPage(parseInt(best.target.dataset.page, 10));
+        }
+      }, { root: container, threshold: [0.1, 0.25, 0.5, 0.75, 1] });
+
+      container.querySelectorAll(".score-page").forEach(el => pageObserver.observe(el));
 
       if (pendingHighlight) {
         highlightMeasures(pendingHighlight.start, pendingHighlight.end);
       }
     }
 
-    // Navigate to a different page of the currently loaded work
-    function goToPage(page) {
+    // Update the page indicator/input and prev/next button state without
+    // scrolling (used both by manual navigation and the scroll observer).
+    function setCurrentPage(page) {
+      currentPage = Math.max(1, Math.min(page, pageCount));
+      document.getElementById("page-indicator").textContent = `Page ${currentPage} / ${pageCount}`;
+      document.getElementById("prev-page-btn").disabled = currentPage <= 1;
+      document.getElementById("next-page-btn").disabled = currentPage >= pageCount;
+      document.getElementById("page-jump-input").value = currentPage;
+    }
+
+    // Smooth-scroll the viewer to a given page (or jump instantly when
+    // smooth=false, e.g. on first load of a work).
+    function goToPage(page, smooth = true) {
       if (page < 1 || page > pageCount) return;
-      renderPage(page);
+      const target = document.getElementById(`score-page-${page}`);
+      if (!target) return;
+
+      suppressPageObserver = true;
+      setCurrentPage(page);
+      target.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
+      // Release the observer once the (possibly animated) scroll settles.
+      setTimeout(() => { suppressPageObserver = false; }, smooth ? 500 : 50);
     }
 
     // "Page" number input + Go button
@@ -935,7 +1006,7 @@
     }
 
     // "Measure" number input + Go button: find which page that measure is
-    // on (via the measure-number -> xml:id map) and jump there, highlighting
+    // on (via the measure-number -> xml:id map) and scroll there, highlighting
     // just that measure.
     function jumpToMeasureInput() {
       if (!vrvToolkit || loadedWorkId == null) return;
@@ -958,24 +1029,39 @@
 
       pendingHighlight = { start: val, end: val };
       document.getElementById("visualized-measures").textContent = `Measure ${val}`;
-      renderPage(targetPage);
+      goToPage(targetPage);
+      highlightMeasures(val, val);
     }
 
     // Zoom slider: purely a rendering-size change, doesn't touch pagination
     // (verified: Verovio's `scale` option only affects output SVG
-    // dimensions, not layout/line-breaking), so it's safe to re-render
-    // instantly on every slider move without recomputing pages.
+    // dimensions, not layout/line-breaking). Re-rendering now redraws every
+    // stacked page, so debounce while the slider is actively dragged.
     function onZoomChange(value) {
       currentScale = parseInt(value, 10);
       document.getElementById("zoom-value").textContent = `${currentScale}%`;
       if (!vrvToolkit || loadedWorkId == null) return;
-      vrvToolkit.setOptions({ scale: currentScale });
-      renderPage(currentPage);
+
+      clearTimeout(zoomDebounceTimer);
+      zoomDebounceTimer = setTimeout(() => {
+        vrvToolkit.setOptions({ scale: currentScale });
+        const pageToRestore = currentPage;
+        renderAllPages();
+        goToPage(pageToRestore, /*smooth=*/ false);
+      }, 150);
     }
 
-    // Highlight measures inside the SVG (only measures present on the
-    // currently rendered page will be found)
+    // Remove any highlight overlays left over from a previous jump — needed
+    // now that all pages stay mounted in the DOM across navigations instead
+    // of being wiped by a full re-render.
+    function clearHighlights() {
+      document.querySelectorAll("#score-viewer-container .highlighted-measure")
+        .forEach(el => el.remove());
+    }
+
+    // Highlight measures inside the SVG (searches across all rendered pages)
     function highlightMeasures(start, end) {
+      clearHighlights();
       const idMap = measureIdCache[loadedWorkId] || {};
       for (let m = start; m <= end; m++) {
         const xmlId = idMap[m] || `measure-${m}`;

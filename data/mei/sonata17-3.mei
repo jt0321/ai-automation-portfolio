@@ -45,7 +45,7 @@
       </fileDesc>
       <encodingDesc>
          <appInfo>
-            <application isodate="2026-07-24T19:05:09" version="6.2.1-8d42439">
+            <application isodate="2026-07-28T03:39:28" version="6.2.1-8d42439">
                <name>Verovio</name>
                <p>Transcoded from Humdrum</p>
             </application>
@@ -238,43 +238,43 @@
    </meiHead>
    <music decls="#work0_encoded">
       <body>
-         <mdiv xml:id="z1k2d6ew">
-            <score xml:id="a1uf2enb">
-               <scoreDef xml:id="bri689s" midi.bpm="116" tempo.dist="3vu">
-                  <pgHead xml:id="rtinzr5" func="first">
-                     <rend xml:id="sw913s7" halign="center" valign="middle">
-                        <rend xml:id="t1896qd7" fontsize="large">Piano Sonata no. 17 in D minor</rend>
-                        <lb xml:id="v1ehcxcl" /> 
-<lb xml:id="x14jml0d" /> </rend>
-                     <rend xml:id="z1ws7t5w" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
-                     <rend xml:id="brmw9k9" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
+         <mdiv xml:id="v14ytptb">
+            <score xml:id="w17gwhqr">
+               <scoreDef xml:id="x1143s8v" midi.bpm="116" tempo.dist="3vu">
+                  <pgHead xml:id="n1f2x8va" func="first">
+                     <rend xml:id="opvx1v0" halign="center" valign="middle">
+                        <rend xml:id="pzbnokl" fontsize="large">Piano Sonata no. 17 in D minor</rend>
+                        <lb xml:id="r1fcd1ns" /> 
+<lb xml:id="t12557i6" /> </rend>
+                     <rend xml:id="vou3u5k" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
+                     <rend xml:id="x1c7ctfy" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
                   </pgHead>
-                  <staffGrp xml:id="m332586" bar.thru="true" symbol="brace">
-                     <label xml:id="zfj8eg3">Piano</label>
+                  <staffGrp xml:id="i19fwc1y" bar.thru="true" symbol="brace">
+                     <label xml:id="vqsi9r6">Piano</label>
                      <staffDef xml:id="staffdef-L11F2" n="1" lines="5">
                         <clef xml:id="clef-L17F2" shape="G" line="2" />
                         <keySig xml:id="keysig-L18F2" mode="minor" sig="1f" pname="d" />
                         <meterSig xml:id="metersig-L20F2" count="3" unit="8" />
-                        <instrDef xml:id="yl2nxdb" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="u171hl23" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                      <staffDef xml:id="staffdef-L11F1" n="2" lines="5">
                         <clef xml:id="clef-L17F1" shape="F" line="4" />
                         <keySig xml:id="keysig-L18F1" mode="minor" sig="1f" pname="d" />
                         <meterSig xml:id="metersig-L20F1" count="3" unit="8" />
-                        <instrDef xml:id="lhef3qp" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="hen2f17" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                   </staffGrp>
                </scoreDef>
                <section xml:id="section-L11F1">
-                  <choice xml:id="d188i4lk">
-                     <orig xml:id="ead7wnw">
+                  <choice xml:id="z1m5gi89">
+                     <orig xml:id="adq08lb">
                         <expansion plist="#label-I #label-A #label-A #label-B" xml:id="expansion-L14F1" />
                      </orig>
-                     <reg xml:id="gq0kzrg" type="norep">
+                     <reg xml:id="c1ero0e8" type="norep">
                         <expansion plist="#label-I #label-A #label-B" xml:id="expansion-L15F1" type="norep" />
                      </reg>
                   </choice>
-                  <pb xml:id="iw754aj" />
+                  <pb xml:id="e1099dqa" />
                   <section xml:id="label-I">
                      <measure xml:id="measure-L1">
                         <staff xml:id="staff-L11F2" n="1">

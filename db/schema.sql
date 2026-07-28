@@ -9,6 +9,9 @@ CREATE TABLE works (
     opus            TEXT,
     nickname        TEXT,         -- e.g. "Moonlight", "Appassionata"
     catalog_no      TEXT,         -- e.g. K.331, BWV 772
+    work_number     INT,          -- e.g. 14 (Piano Sonata No. 14)
+    movement_number INT,          -- e.g. 3 (third movement)
+    tempo_indication TEXT,        -- e.g. "Presto agitato" — identifies the movement
     key_signature   TEXT,         -- e.g. "A major"
     time_signature  TEXT,
     year_composed   INT,
@@ -71,15 +74,16 @@ CREATE INDEX ON score_segments (local_key);
 CREATE INDEX ON score_segments (formal_function);
 CREATE INDEX ON works (composer);
 
--- Full-text metadata index (composer/title/opus/nickname) — lets retrieval
--- match a query like "the Moonlight sonata" or "Op. 111" against work
--- identity directly, independent of the segment embedding vectors, which
--- only encode harmonic/texture analysis text.
+-- Full-text metadata index (composer/title/opus/nickname/tempo) — lets
+-- retrieval match a query like "the Moonlight sonata", "Op. 111", or
+-- "Presto agitato" against work identity directly, independent of the
+-- segment embedding vectors, which only encode harmonic/texture analysis text.
 CREATE INDEX works_metadata_fts_idx ON works USING gin (
     to_tsvector('english',
         coalesce(composer, '') || ' ' ||
         coalesce(title, '') || ' ' ||
         coalesce(opus, '') || ' ' ||
-        coalesce(nickname, '')
+        coalesce(nickname, '') || ' ' ||
+        coalesce(tempo_indication, '')
     )
 );

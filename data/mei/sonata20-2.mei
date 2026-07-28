@@ -47,7 +47,7 @@
       </fileDesc>
       <encodingDesc>
          <appInfo>
-            <application isodate="2026-07-24T19:06:38" version="6.2.1-8d42439">
+            <application isodate="2026-07-28T03:40:57" version="6.2.1-8d42439">
                <name>Verovio</name>
                <p>Transcoded from Humdrum</p>
             </application>
@@ -261,35 +261,35 @@
    </meiHead>
    <music decls="#work0_encoded">
       <body>
-         <mdiv xml:id="jg0q0yb">
-            <score xml:id="ks6h9r7">
-               <scoreDef xml:id="l1r5cdcl" midi.bpm="132" tempo.dist="3vu">
-                  <pgHead xml:id="wnubi5m" func="first">
-                     <rend xml:id="x1bamjs4" halign="center" valign="middle">
-                        <rend xml:id="y15rev1p" fontsize="large">Piano Sonata No. 20 in G major</rend>
-                        <lb xml:id="a1co00qs" /> 
-<lb xml:id="cxh405u" /> </rend>
-                     <rend xml:id="e1caqdxz" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
-                     <rend xml:id="g17y1tsw" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
+         <mdiv xml:id="fp1294z">
+            <score xml:id="g1wao4uk">
+               <scoreDef xml:id="h1ho8uy0" midi.bpm="132" tempo.dist="3vu">
+                  <pgHead xml:id="s10ropl2" func="first">
+                     <rend xml:id="t1670lfh" halign="center" valign="middle">
+                        <rend xml:id="u1abejue" fontsize="large">Piano Sonata No. 20 in G major</rend>
+                        <lb xml:id="w957p3u" /> 
+<lb xml:id="yitggia" /> </rend>
+                     <rend xml:id="a18zaow5" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
+                     <rend xml:id="c1f4izik" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
                   </pgHead>
-                  <staffGrp xml:id="resu0jl" bar.thru="true" symbol="brace">
-                     <label xml:id="f19xdn3r">Piano</label>
+                  <staffGrp xml:id="n119nkwv" bar.thru="true" symbol="brace">
+                     <label xml:id="b16vqyvb">Piano</label>
                      <staffDef xml:id="staffdef-L10F2" n="1" lines="5">
                         <clef xml:id="clef-L13F2" shape="G" line="2" />
                         <keySig xml:id="keysig-L14F2" mode="major" sig="1s" pname="g" />
                         <meterSig xml:id="metersig-L16F2" count="3" unit="4" />
-                        <instrDef xml:id="d1nakad2" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="z5kk2lj" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                      <staffDef xml:id="staffdef-L10F1" n="2" lines="5">
                         <clef xml:id="clef-L13F1" shape="F" line="4" />
                         <keySig xml:id="keysig-L14F1" mode="major" sig="1s" pname="g" />
                         <meterSig xml:id="metersig-L16F1" count="3" unit="4" />
-                        <instrDef xml:id="q1qsvqha" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="morze9b" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                   </staffGrp>
                </scoreDef>
                <section xml:id="section-L10F1">
-                  <pb xml:id="n1eou2h3" />
+                  <pb xml:id="jm65z33" />
                   <measure xml:id="measure-L1">
                      <staff xml:id="staff-L10F2" n="1">
                         <layer xml:id="layer-L1F2N1" n="1">
@@ -2431,7 +2431,7 @@
                      </staff>
                      <dynam xml:id="dynam-L586F3" place="between" staff="1 2" tstamp="3">f</dynam>
                   </measure>
-                  <scoreDef xml:id="l1vivpta">
+                  <scoreDef xml:id="h892puc">
                      <keySig xml:id="keysig-L589F2" sig="0" cancelaccid="before" />
                   </scoreDef>
                   <measure xml:id="measure-L588" n="68">
@@ -2956,7 +2956,7 @@
                      </staff>
                   </measure>
                   <sb xml:id="sb-L721F1" type="original" />
-                  <scoreDef xml:id="ubej4km">
+                  <scoreDef xml:id="q4l3zb0">
                      <keySig xml:id="keysig-L722F2" sig="1s" />
                   </scoreDef>
                   <measure xml:id="measure-L721" n="86">

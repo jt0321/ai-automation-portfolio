@@ -47,7 +47,7 @@
       </fileDesc>
       <encodingDesc>
          <appInfo>
-            <application isodate="2026-07-24T18:54:06" version="6.2.1-8d42439">
+            <application isodate="2026-07-28T03:28:57" version="6.2.1-8d42439">
                <name>Verovio</name>
                <p>Transcoded from Humdrum</p>
             </application>
@@ -283,43 +283,43 @@
    </meiHead>
    <music decls="#work0_encoded">
       <body>
-         <mdiv xml:id="ia92hwa">
-            <score xml:id="j10rx16y">
-               <scoreDef xml:id="k1tduqt5" midi.bpm="120" tempo.dist="3vu">
-                  <pgHead xml:id="a1iv5cet" func="first">
-                     <rend xml:id="bjhzlst" halign="center" valign="middle">
-                        <rend xml:id="c1obf1g" fontsize="large">Piano Sonata no. 2 in A major</rend>
-                        <lb xml:id="ektzag5" /> 
-<lb xml:id="g1tn42gf" /> </rend>
-                     <rend xml:id="ivqmhza" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
-                     <rend xml:id="kshp7a9" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
+         <mdiv xml:id="epot6uv">
+            <score xml:id="f1qy7zcr">
+               <scoreDef xml:id="g5l1s1z" midi.bpm="120" tempo.dist="3vu">
+                  <pgHead xml:id="wbeg3cu" func="first">
+                     <rend xml:id="xdligy1" halign="center" valign="middle">
+                        <rend xml:id="y1qmq52c" fontsize="large">Piano Sonata no. 2 in A major</rend>
+                        <lb xml:id="ayfrcot" /> 
+<lb xml:id="c1aeqcfa" /> </rend>
+                     <rend xml:id="e1v71s3b" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
+                     <rend xml:id="g9banoa" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
                   </pgHead>
-                  <staffGrp xml:id="v1n9863n" bar.thru="true" symbol="brace">
-                     <label xml:id="d1jsggch">Piano</label>
+                  <staffGrp xml:id="r1552x79" bar.thru="true" symbol="brace">
+                     <label xml:id="z183k5w0">Piano</label>
                      <staffDef xml:id="staffdef-L12F2" n="1" lines="5">
                         <clef xml:id="clef-L18F2" shape="G" line="2" />
                         <keySig xml:id="keysig-L19F2" mode="major" sig="3s" pname="a" />
                         <meterSig xml:id="metersig-L21F2" count="2" unit="4" />
-                        <instrDef xml:id="h9oiw2a" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="dp9lwz8" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                      <staffDef xml:id="staffdef-L12F1" n="2" lines="5">
                         <clef xml:id="clef-L18F1" shape="F" line="4" />
                         <keySig xml:id="keysig-L19F1" mode="major" sig="3s" pname="a" />
                         <meterSig xml:id="metersig-L21F1" count="2" unit="4" />
-                        <instrDef xml:id="uwj6vsh" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="q6di0wz" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                   </staffGrp>
                </scoreDef>
                <section xml:id="section-L12F1">
-                  <choice xml:id="mxiangz">
-                     <orig xml:id="n1dwclv3">
+                  <choice xml:id="ia4km7q">
+                     <orig xml:id="j14yoo9n">
                         <expansion plist="#label-A #label-A1 #label-A #label-A2 #label-B #label-B" xml:id="expansion-L15F1" />
                      </orig>
-                     <reg xml:id="pkkmp4g" type="norep">
+                     <reg xml:id="lm2l7xj" type="norep">
                         <expansion plist="#label-A #label-A2 #label-B" xml:id="expansion-L16F1" type="norep" />
                      </reg>
                   </choice>
-                  <pb xml:id="rd1yio3" />
+                  <pb xml:id="nbfky86" />
                   <section xml:id="label-A">
                      <measure xml:id="measure-L1">
                         <staff xml:id="staff-L12F2" n="1">
@@ -808,7 +808,7 @@
                            </layer>
                         </staff>
                         <dynam xml:id="dynam-L108F5" place="between" staff="1 2" tstamp="1">
-                           <rend xml:id="x7rypcb" halign="right" fontsize="large" fontweight="bold">pp</rend>
+                           <rend xml:id="t1w1oljg" halign="right" fontsize="large" fontweight="bold">pp</rend>
                         </dynam>
                         <slur xml:id="slur-L108F3-L117F3" staff="1" startid="#note-L108F3" endid="#note-L117F3" />
                         <slur xml:id="slur-L108F1-L117F1" staff="2" startid="#note-L108F1" endid="#note-L117F1" />
@@ -1032,7 +1032,7 @@
                         </staff>
                         <dynam xml:id="dynam-L152F3" place="below" staff="2" tstamp="1">sfp</dynam>
                         <dynam xml:id="dynam-L154F3" place="between" staff="1 2" tstamp="1.5">
-                           <rend xml:id="t1x7x67h" halign="right" fontsize="large" fontweight="bold">p</rend>
+                           <rend xml:id="p5csq1p" halign="right" fontsize="large" fontweight="bold">p</rend>
                         </dynam>
                         <slur xml:id="slur-L154F2-L172F2" type="placed" staff="1" startid="#chord-L154F2" endid="#chord-L172F2" curvedir="above" />
                         <slur xml:id="slur-L152F1-L175F1" staff="2" startid="#note-L152F1" endid="#note-L175F1" />
@@ -1748,7 +1748,7 @@
                            </layer>
                         </staff>
                         <dir xml:id="dir-L320F2" place="above" staff="1" tstamp="2.5">
-                           <rend xml:id="autwmgn" fontstyle="normal" fontweight="bold">Rallentando</rend>
+                           <rend xml:id="w107vdr3" fontstyle="normal" fontweight="bold">Rallentando</rend>
                         </dir>
                         <slur xml:id="slur-L321F2-L326F2" staff="1" startid="#note-L321F2" endid="#note-L326F2" />
                      </measure>
@@ -1992,7 +1992,7 @@
                            </layer>
                         </staff>
                         <dir xml:id="dir-L381F2" place="below" staff="1" tstamp="2.5">
-                           <rend xml:id="fqdfej5" fontstyle="italic">espressivo</rend>
+                           <rend xml:id="b97rh5a" fontstyle="italic">espressivo</rend>
                         </dir>
                         <slur xml:id="slur-L382F2-L391F2" staff="1" startid="#note-L382F2" endid="#note-L391F2" />
                      </measure>
@@ -2476,7 +2476,7 @@
                               </beam>
                            </layer>
                         </staff>
-                        <turn xml:id="v1at8u5q" staff="1" startid="#note-L491F2" accidlower="s" delayed="true" form="upper" />
+                        <turn xml:id="rcsins4" staff="1" startid="#note-L491F2" accidlower="s" delayed="true" form="upper" />
                         <slur xml:id="slur-L491F2-L495F2" staff="1" startid="#note-L491F2" endid="#chord-L495F2" />
                         <dynam xml:id="dynam-L495F2" place="between" staff="1" startid="chord-L495F2">sf</dynam>
                         <tie xml:id="tie-L495F2S1-L500F2S1" startid="#note-L495F2S1" endid="#note-L500F2S1" />
@@ -2565,7 +2565,7 @@
                               </beam>
                            </layer>
                         </staff>
-                        <turn xml:id="d1f6gsf5" staff="1" startid="#note-L511F2" accidupper="s" accidlower="s" delayed="true" form="upper" />
+                        <turn xml:id="z10dx2zt" staff="1" startid="#note-L511F2" accidupper="s" accidlower="s" delayed="true" form="upper" />
                         <slur xml:id="slur-L511F2-L515F2" staff="1" startid="#note-L511F2" endid="#chord-L515F2" />
                         <dynam xml:id="dynam-L515F2" place="between" staff="1" startid="chord-L515F2">sf</dynam>
                         <tie xml:id="tie-L515F2S1-L520F2S1" startid="#note-L515F2S1" endid="#note-L520F2S1" />
@@ -2653,7 +2653,7 @@
                               </beam>
                            </layer>
                         </staff>
-                        <turn xml:id="kxhqz4b" staff="1" startid="#note-L529F2" accidupper="s" accidlower="s" delayed="true" form="upper" />
+                        <turn xml:id="gq8fg6d" staff="1" startid="#note-L529F2" accidupper="s" accidlower="s" delayed="true" form="upper" />
                         <slur xml:id="slur-L529F2-L533F2" staff="1" startid="#note-L529F2" endid="#chord-L533F2" />
                         <dynam xml:id="dynam-L533F2" place="between" staff="1" startid="chord-L533F2">sf</dynam>
                         <tie xml:id="tie-L533F2S1-L538F2S1" startid="#note-L533F2S1" endid="#note-L538F2S1" />
@@ -2736,7 +2736,7 @@
                            </layer>
                         </staff>
                         <dynam xml:id="dynam-L551F3" place="between" staff="1 2" tstamp="2.5">
-                           <rend xml:id="zbadxy1" halign="right" fontsize="large" fontweight="bold">ff</rend>
+                           <rend xml:id="v15y7ahh" halign="right" fontsize="large" fontweight="bold">ff</rend>
                         </dynam>
                         <slur xml:id="slur-L551F2-L557F2" staff="1" startid="#note-L551F2" endid="#note-L557F2" />
                         <slur xml:id="slur-L551F1-L557F1" staff="2" startid="#note-L551F1" endid="#note-L557F1" />
@@ -2792,7 +2792,7 @@
                            </layer>
                         </staff>
                         <dynam xml:id="dynam-L564F3" place="between" staff="1 2" tstamp="2.5">
-                           <rend xml:id="z1e379pp" halign="right" fontsize="large" fontweight="bold">ff</rend>
+                           <rend xml:id="vt9vb38" halign="right" fontsize="large" fontweight="bold">ff</rend>
                         </dynam>
                         <slur xml:id="slur-L564F2-L569F2" staff="1" startid="#note-L564F2" endid="#note-L569F2" />
                         <slur xml:id="slur-L564F1-L569F1" staff="2" startid="#note-L564F1" endid="#note-L569F1" />
@@ -3277,7 +3277,7 @@
                            </layer>
                         </staff>
                         <dir xml:id="dir-L690F2" place="above" staff="1" tstamp="2">
-                           <rend xml:id="n2c9bnq" fontstyle="italic">m.d.</rend>
+                           <rend xml:id="j7onm7m" fontstyle="italic">m.d.</rend>
                         </dir>
                         <dynam xml:id="dynam-L688F3" place="below" staff="1" startid="note-L688F3">sf</dynam>
                      </measure>
@@ -3566,7 +3566,7 @@
                            </layer>
                         </staff>
                         <dynam xml:id="dynam-L748F1" staff="2" startid="note-L748F1">
-                           <rend xml:id="jvez5on" halign="right" fontsize="large" fontweight="bold">sf </rend>
+                           <rend xml:id="f116mzb6" halign="right" fontsize="large" fontweight="bold">sf </rend>
                         </dynam>
                      </measure>
                      <sb xml:id="sb-L753F1" type="original" />
@@ -4049,7 +4049,7 @@
                      </measure>
                      <sb xml:id="sb-L853F1" type="original" />
                   </ending>
-                  <scoreDef xml:id="k86ttmv">
+                  <scoreDef xml:id="g16x0ebq">
                      <keySig xml:id="keysig-L855F2" sig="0" cancelaccid="before" />
                   </scoreDef>
                   <section xml:id="label-B">
@@ -4287,7 +4287,7 @@
                            </layer>
                         </staff>
                         <dynam xml:id="dynam-L890F3" place="between" staff="1 2" tstamp="1">
-                           <rend xml:id="f59uxx8" halign="right" fontsize="large" fontweight="bold">ff</rend>
+                           <rend xml:id="b13684wx" halign="right" fontsize="large" fontweight="bold">ff</rend>
                         </dynam>
                      </measure>
                      <sb xml:id="sb-L893F1" type="original" />
@@ -4427,7 +4427,7 @@
                            </layer>
                         </staff>
                         <dir xml:id="dir-L921F3" place="above" staff="1" tstamp="2.5">
-                           <rend xml:id="w1ep8lxy" halign="right" fontstyle="italic">m.g.</rend>
+                           <rend xml:id="s1kut0j5" halign="right" fontstyle="italic">m.g.</rend>
                         </dir>
                      </measure>
                      <measure xml:id="measure-L925" n="137">
@@ -4599,7 +4599,7 @@
                            </layer>
                         </staff>
                         <dynam xml:id="dynam-L962F4" place="below" staff="2" tstamp="2.5">
-                           <rend xml:id="t86n2we" halign="right" fontsize="large" fontweight="bold">ff</rend>
+                           <rend xml:id="pp0qilm" halign="right" fontsize="large" fontweight="bold">ff</rend>
                         </dynam>
                      </measure>
                      <measure xml:id="measure-L964" n="141">
@@ -4701,7 +4701,7 @@
                            </layer>
                         </staff>
                         <dir xml:id="dir-L982F3" place="above" staff="1" tstamp="2.5">
-                           <rend xml:id="q1hj4eg2" halign="right" fontstyle="italic">m.g.</rend>
+                           <rend xml:id="mohnqym" halign="right" fontstyle="italic">m.g.</rend>
                         </dir>
                      </measure>
                      <measure xml:id="measure-L986" n="143">
@@ -4972,7 +4972,7 @@
                            </layer>
                         </staff>
                         <dir xml:id="dir-L1042F3" place="above" staff="1" tstamp="2.5">
-                           <rend xml:id="r1hewms7" fontstyle="italic">m.g.</rend>
+                           <rend xml:id="n1qm7gbg" fontstyle="italic">m.g.</rend>
                         </dir>
                      </measure>
                      <sb xml:id="sb-L1047F1" type="original" />
@@ -5502,7 +5502,7 @@
                            </layer>
                         </staff>
                         <dynam xml:id="dynam-L1161F4" place="below" staff="2" tstamp="2">
-                           <rend xml:id="ytbsrac" halign="right" fontsize="large" fontweight="bold">ff</rend>
+                           <rend xml:id="u1ims1gf" halign="right" fontsize="large" fontweight="bold">ff</rend>
                         </dynam>
                      </measure>
                      <measure xml:id="measure-L1165" n="161">
@@ -5726,7 +5726,7 @@
                            </layer>
                            <layer xml:id="layer-L1203F3N2" n="2">
                               <note xml:id="note-L1204F3" dur="8" oct="4" pname="c" accid.ges="n" />
-                              <space xml:id="z1njrf7g" type="filler" dots="1" dur="4" />
+                              <space xml:id="vkzg1bw" type="filler" dots="1" dur="4" />
                            </layer>
                         </staff>
                         <staff xml:id="staff-L1203F1N1" n="2">
@@ -6517,7 +6517,7 @@
                         <slur xml:id="slur-L1361F2-L1363F2" staff="1" startid="#note-L1361F2" endid="#note-L1363F2" />
                         <slur xml:id="slur-L1367F2-L1369F2" type="placed" staff="1" startid="#note-L1367F2" endid="#note-L1369F2" curvedir="below" />
                         <dynam xml:id="dynam-L1367F4" place="between" staff="1 2" tstamp="2.5">
-                           <rend xml:id="e15sdzg6" halign="right" fontsize="large" fontweight="bold">f</rend>
+                           <rend xml:id="amuga0s" halign="right" fontsize="large" fontweight="bold">f</rend>
                         </dynam>
                      </measure>
                      <measure xml:id="measure-L1371" n="191">
@@ -6717,7 +6717,7 @@
                         </staff>
                         <slur xml:id="slur-L1406F2-L1408F2" type="placed" staff="1" startid="#note-L1406F2" endid="#note-L1408F2" curvedir="below" />
                         <dynam xml:id="dynam-L1406F4" place="between" staff="1 2" tstamp="2.5">
-                           <rend xml:id="t1pja92p" halign="right" fontsize="large" fontweight="bold">f</rend>
+                           <rend xml:id="priq0qu" halign="right" fontsize="large" fontweight="bold">f</rend>
                         </dynam>
                      </measure>
                      <sb xml:id="sb-L1412F1" type="original" />
@@ -7142,7 +7142,7 @@
                         </staff>
                         <dynam xml:id="dynam-L1493F3" place="below" staff="2" tstamp="2">ffp</dynam>
                         <dynam xml:id="dynam-L1495F3" place="between" staff="1 2" tstamp="2.5">
-                           <rend xml:id="gd97ygc" halign="right" fontsize="large" fontweight="bold">sf</rend>
+                           <rend xml:id="com4gje" halign="right" fontsize="large" fontweight="bold">sf</rend>
                         </dynam>
                         <slur xml:id="slur-L1489F1-L1491F1" staff="2" startid="#note-L1489F1" endid="#note-L1491F1" />
                         <tie xml:id="tie-L1493F1-L1497F1" startid="#note-L1493F1" endid="#note-L1497F1" />
@@ -7212,7 +7212,7 @@
                         </staff>
                         <dynam xml:id="dynam-L1507F3" place="below" staff="2" tstamp="2">ffp</dynam>
                         <dynam xml:id="dynam-L1509F3" place="between" staff="1 2" tstamp="2.5">
-                           <rend xml:id="sy01mab" halign="right" fontsize="large" fontweight="bold">sf</rend>
+                           <rend xml:id="o1gszbgr" halign="right" fontsize="large" fontweight="bold">sf</rend>
                         </dynam>
                         <slur xml:id="slur-L1503F1-L1507F1" type="placed" staff="2" startid="#note-L1503F1" endid="#note-L1507F1" curvedir="below" />
                         <tie xml:id="tie-L1507F1-L1511F1" startid="#note-L1507F1" endid="#note-L1511F1" />
@@ -7285,7 +7285,7 @@
                         </staff>
                         <dynam xml:id="dynam-L1521F3" place="below" staff="2" tstamp="2">ffp</dynam>
                         <dynam xml:id="dynam-L1523F3" place="between" staff="1 2" tstamp="2.5">
-                           <rend xml:id="jfgssuc" halign="right" fontsize="large" fontweight="bold">sf</rend>
+                           <rend xml:id="f1bx92hp" halign="right" fontsize="large" fontweight="bold">sf</rend>
                         </dynam>
                         <slur xml:id="slur-L1517F1-L1519F1" staff="2" startid="#note-L1517F1" endid="#note-L1519F1" />
                         <tie xml:id="tie-L1521F1-L1526F1" startid="#note-L1521F1" endid="#note-L1526F1" />
@@ -7429,7 +7429,7 @@
                         </staff>
                         <dynam xml:id="dynam-L1544F3" place="between" staff="1 2" tstamp="1">ff</dynam>
                         <dynam xml:id="dynam-L1546F1" staff="2" startid="note-L1546F1">
-                           <rend xml:id="puaagc1" halign="right" fontsize="large" fontweight="bold">sf </rend>
+                           <rend xml:id="lj6j3cr" halign="right" fontsize="large" fontweight="bold">sf </rend>
                         </dynam>
                         <tie xml:id="tie-L1544F2S1-L1550F2S1" startid="#note-L1544F2S1" endid="#note-L1550F2S1" />
                         <tie xml:id="tie-L1544F2S2-L1550F2S2" startid="#note-L1544F2S2" endid="#note-L1550F2S2" />
@@ -7495,7 +7495,7 @@
                         </staff>
                         <dynam xml:id="dynam-L1555F3" place="between" staff="1 2" tstamp="1">ff</dynam>
                         <dynam xml:id="dynam-L1557F1" staff="2" startid="note-L1557F1">
-                           <rend xml:id="l1ab0z4f" halign="right" fontsize="large" fontweight="bold">sf </rend>
+                           <rend xml:id="h3h3ueu" halign="right" fontsize="large" fontweight="bold">sf </rend>
                         </dynam>
                         <tie xml:id="tie-L1555F2S1-L1561F2S1" startid="#note-L1555F2S1" endid="#note-L1561F2S1" />
                         <tie xml:id="tie-L1555F2S2-L1561F2S2" startid="#note-L1555F2S2" endid="#note-L1561F2S2" />
@@ -7563,7 +7563,7 @@
                         </staff>
                         <dynam xml:id="dynam-L1566F3" place="between" staff="1 2" tstamp="1">ff</dynam>
                         <dynam xml:id="dynam-L1568F3" place="below" staff="2" tstamp="1.5">
-                           <rend xml:id="h1ll8z24" halign="right" fontsize="large" fontweight="bold">sf</rend>
+                           <rend xml:id="d1dtiw7c" halign="right" fontsize="large" fontweight="bold">sf</rend>
                         </dynam>
                         <tie xml:id="tie-L1566F2S1-L1573F2S1" startid="#note-L1566F2S1" endid="#note-L1573F2S1" />
                         <tie xml:id="tie-L1566F2S2-L1573F2S2" startid="#note-L1566F2S2" endid="#note-L1573F2S2" />
@@ -7887,10 +7887,10 @@
                               <rest xml:id="rest-L1619F1" dur="8" />
                            </layer>
                         </staff>
-                        <fermata xml:id="w138c2qx" startid="#rest-L1618F2" place="above" />
-                        <fermata xml:id="ykdbwiq" startid="#rest-L1618F1" place="above" />
+                        <fermata xml:id="s4uvbx6" startid="#rest-L1618F2" place="above" />
+                        <fermata xml:id="u4jfj9s" startid="#rest-L1618F1" place="above" />
                      </measure>
-                     <scoreDef xml:id="k1nt1qhy">
+                     <scoreDef xml:id="g1m3pw3k">
                         <keySig xml:id="keysig-L1621F2" sig="3s" />
                      </scoreDef>
                      <measure xml:id="measure-L1620">
@@ -8024,7 +8024,7 @@
                            </layer>
                         </staff>
                         <dynam xml:id="dynam-L1645F3" place="between" staff="1 2" tstamp="2.5">
-                           <rend xml:id="q19ecob1" halign="right" fontsize="large" fontweight="bold">f</rend>
+                           <rend xml:id="muwjsh4" halign="right" fontsize="large" fontweight="bold">f</rend>
                         </dynam>
                      </measure>
                      <measure xml:id="measure-L1646" n="233">
@@ -8430,7 +8430,7 @@
                                  <note xml:id="note-L1719F3S1" oct="3" pname="b" accid.ges="n" />
                                  <note xml:id="note-L1719F3S2" oct="4" pname="e" accid.ges="n" />
                               </chord>
-                              <space xml:id="s1gkbtne" type="filler" dur="4" />
+                              <space xml:id="oso02k9" type="filler" dur="4" />
                            </layer>
                         </staff>
                         <staff xml:id="staff-L1718F1N1" n="2">
@@ -8454,7 +8454,7 @@
                               </beam>
                            </layer>
                            <layer xml:id="layer-L1722F4N2" n="2">
-                              <space xml:id="yv0p1lz" type="straddle" dur="4" />
+                              <space xml:id="u1j48i81" type="straddle" dur="4" />
                               <chord xml:id="chord-L1726F4" dur="4">
                                  <note xml:id="note-L1726F4S1" oct="3" pname="g" accid="n" />
                                  <note xml:id="note-L1726F4S2" oct="4" pname="c" accid.ges="s" />
@@ -8470,7 +8470,7 @@
                               </beam>
                            </layer>
                            <layer xml:id="layer-L1722F2N2" n="2">
-                              <space xml:id="mjobpj2" type="straddle" dur="4" />
+                              <space xml:id="igzqcvr" type="straddle" dur="4" />
                               <note xml:id="note-L1726F2" dur="4" oct="2" pname="e" accid.ges="n" />
                            </layer>
                         </staff>
@@ -8553,7 +8553,7 @@
                                  <note xml:id="note-L1740F3S1" oct="3" pname="a" accid.ges="n" />
                                  <note xml:id="note-L1740F3S2" oct="4" pname="d" accid.ges="n" />
                               </chord>
-                              <space xml:id="rxtuxux" type="filler" dur="4" />
+                              <space xml:id="ngsmxcl" type="filler" dur="4" />
                            </layer>
                         </staff>
                         <staff xml:id="staff-L1739F1N1" n="2">
@@ -8577,7 +8577,7 @@
                               </beam>
                            </layer>
                            <layer xml:id="layer-L1743F4N2" n="2">
-                              <space xml:id="xzdm31c" type="straddle" dur="4" />
+                              <space xml:id="t8lyd4m" type="straddle" dur="4" />
                               <chord xml:id="chord-L1747F4" dur="4">
                                  <note xml:id="note-L1747F4S1" oct="4" pname="d" accid.ges="n" />
                                  <note xml:id="note-L1747F4S2" oct="4" pname="g">
@@ -8595,7 +8595,7 @@
                               </beam>
                            </layer>
                            <layer xml:id="layer-L1743F2N2" n="2">
-                              <space xml:id="l8t4125" type="straddle" dur="4" />
+                              <space xml:id="hd7nh47" type="straddle" dur="4" />
                               <note xml:id="note-L1747F2" dur="4" oct="2" pname="b" accid.ges="n" />
                            </layer>
                         </staff>
@@ -9225,7 +9225,7 @@
                            </layer>
                         </staff>
                         <dir xml:id="dir-L1888F2" place="above" staff="1" tstamp="2.5">
-                           <rend xml:id="k12wdyn3" fontstyle="normal" fontweight="bold">Ritardando</rend>
+                           <rend xml:id="gek56ty" fontstyle="normal" fontweight="bold">Ritardando</rend>
                         </dir>
                         <slur xml:id="slur-L1889F2-L1894F2" staff="1" startid="#note-L1889F2" endid="#note-L1894F2" />
                      </measure>
@@ -9404,7 +9404,7 @@
                            </layer>
                         </staff>
                         <dynam xml:id="dynam-L1931F4" place="between" staff="1 2" tstamp="1">
-                           <rend xml:id="q1ys13wl" halign="right" fontsize="large" fontweight="bold">fp</rend>
+                           <rend xml:id="m17bsxfz" halign="right" fontsize="large" fontweight="bold">fp</rend>
                         </dynam>
                         <tie xml:id="tie-L1931F1S1-L1931F1S1" startid="#note-L1931F1S1" endid="#note-L1931F1S1" />
                         <slur xml:id="slur-L1931F1-L1938F1" staff="2" startid="#chord-L1931F1" endid="#note-L1938F1" />
@@ -9515,7 +9515,7 @@
                            </layer>
                         </staff>
                         <dir xml:id="dir-L1953F2" place="below" staff="1" tstamp="1">
-                           <rend xml:id="m7jxya7" fontstyle="italic">espressivo</rend>
+                           <rend xml:id="i1ppq0r1" fontstyle="italic">espressivo</rend>
                         </dir>
                      </measure>
                      <measure xml:id="measure-L1962" n="283">
@@ -9964,7 +9964,7 @@
                               </beam>
                            </layer>
                         </staff>
-                        <turn xml:id="p1b2nx0i" staff="1" startid="#note-L2060F2" accidlower="s" delayed="true" form="upper" />
+                        <turn xml:id="l1uxynfm" staff="1" startid="#note-L2060F2" accidlower="s" delayed="true" form="upper" />
                         <slur xml:id="slur-L2060F2-L2064F2" staff="1" startid="#note-L2060F2" endid="#chord-L2064F2" />
                         <dynam xml:id="dynam-L2064F3" place="between" staff="1 2" tstamp="2">sf</dynam>
                         <tie xml:id="tie-L2064F2S1-L2069F2S1" startid="#note-L2064F2S1" endid="#note-L2069F2S1" />
@@ -10059,7 +10059,7 @@
                               </beam>
                            </layer>
                         </staff>
-                        <turn xml:id="v6kvn4d" staff="1" startid="#note-L2078F2" accidlower="s" delayed="true" form="upper" />
+                        <turn xml:id="r2d4s88" staff="1" startid="#note-L2078F2" accidlower="s" delayed="true" form="upper" />
                         <slur xml:id="slur-L2078F2-L2082F2" staff="1" startid="#note-L2078F2" endid="#chord-L2082F2" />
                         <dynam xml:id="dynam-L2082F3" place="between" staff="1 2" tstamp="2">sf</dynam>
                         <tie xml:id="tie-L2082F2S1-L2087F2S1" startid="#note-L2082F2S1" endid="#note-L2087F2S1" />
@@ -10155,7 +10155,7 @@
                               </beam>
                            </layer>
                         </staff>
-                        <turn xml:id="cr5ve3m" staff="1" startid="#note-L2097F2" accidlower="s" delayed="true" form="upper" />
+                        <turn xml:id="y1l1c0t8" staff="1" startid="#note-L2097F2" accidlower="s" delayed="true" form="upper" />
                         <slur xml:id="slur-L2097F2-L2101F2" staff="1" startid="#note-L2097F2" endid="#chord-L2101F2" />
                         <tie xml:id="tie-L2101F2S1-L2106F2S1" startid="#note-L2101F2S1" endid="#note-L2106F2S1" />
                         <tie xml:id="tie-L2101F2S2-L2106F2S2" startid="#note-L2101F2S2" endid="#note-L2106F2S2" />
@@ -10505,7 +10505,7 @@
                            </layer>
                         </staff>
                         <dynam xml:id="dynam-L2181F3" place="between" staff="1 2" tstamp="1">
-                           <rend xml:id="i19aa19l" halign="right" fontsize="large" fontweight="bold">sf</rend>
+                           <rend xml:id="evc8d2q" halign="right" fontsize="large" fontweight="bold">sf</rend>
                         </dynam>
                      </measure>
                      <sb xml:id="sb-L2183F1" type="original" />
@@ -10792,7 +10792,7 @@
                         </staff>
                         <dynam xml:id="dynam-L2251F3" place="between" staff="1 2" tstamp="1">sf</dynam>
                         <dir xml:id="dir-L2253F1" place="above" staff="2" tstamp="2">
-                           <rend xml:id="h1qn0y4v" fontstyle="italic">(m.d.)</rend>
+                           <rend xml:id="di5j7op" fontstyle="italic">(m.d.)</rend>
                         </dir>
                      </measure>
                      <measure xml:id="measure-L2256" n="319">
@@ -11385,8 +11385,8 @@
                               <rest xml:id="rest-L2384F1" dur="8" />
                            </layer>
                         </staff>
-                        <fermata xml:id="x7t6qvt" startid="#rest-L2383F2" place="above" />
-                        <fermata xml:id="z1nop50z" startid="#rest-L2383F1" place="above" />
+                        <fermata xml:id="t17p3gg7" startid="#rest-L2383F2" place="above" />
+                        <fermata xml:id="v1jfbjaw" startid="#rest-L2383F1" place="above" />
                      </measure>
                   </section>
                </section>

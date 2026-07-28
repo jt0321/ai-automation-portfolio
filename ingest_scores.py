@@ -62,6 +62,9 @@ SONATA_CATALOG = {
 }
 
 
+ROMAN_NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"]
+
+
 def parse_krn_metadata(krn_path: Path) -> dict:
     """Parse standard Humdrum metadata headers for title, composer, opus, movement, etc."""
     meta = {
@@ -69,28 +72,34 @@ def parse_krn_metadata(krn_path: Path) -> dict:
         "title": "Piano Sonata",
         "opus": None,
         "nickname": None,
-        "movement": "",
+        "work_number": None,
+        "movement_number": None,
+        "tempo_indication": None,
         "key": None,
         "year": None,
     }
-    
+
     # Try parsing filename first to guess sonata number and movement
     # e.g., sonata32-1.krn
     match = re.search(r"sonata(\d+)-(\d+)", krn_path.name)
     sonata_num = None
-    mvt_num = None
     if match:
         sonata_num = int(match.group(1))
-        mvt_num = int(match.group(2))
-        meta["movement"] = f"Mvt {mvt_num}"
+        meta["work_number"] = sonata_num
+        meta["movement_number"] = int(match.group(2))
         meta["title"] = f"Piano Sonata No. {sonata_num}"
-        
+
     try:
         content = krn_path.read_text(encoding="utf-8")
         for line in content.splitlines():
+            # Header metadata ends once the data spine (**kern) starts; later
+            # !!!OMD lines are mid-movement tempo changes, not the movement's
+            # identifying tempo indication.
+            if line.startswith("**"):
+                break
             if not line.startswith("!!!"):
                 continue
-            
+
             # Composer
             if line.startswith("!!!COM:"):
                 val = line.split(":", 1)[1].strip()
@@ -100,14 +109,14 @@ def parse_krn_metadata(krn_path: Path) -> dict:
                     meta["composer"] = f"{parts[1]} {parts[0]}"
                 else:
                     meta["composer"] = val
-            
+
             # Original Title (fallback if filename parsing didn't work)
             elif line.startswith("!!!OTL:"):
                 val = line.split(":", 1)[1].strip()
                 # Clean up title formatting if it has sonata info
                 if not sonata_num:
                     meta["title"] = val
-            
+
             # Opus
             elif line.startswith("!!!OPS:"):
                 val = line.split(":", 1)[1].strip()
@@ -117,7 +126,22 @@ def parse_krn_metadata(krn_path: Path) -> dict:
                     meta["opus"] = f"Op. {val}"
                 else:
                     meta["opus"] = val
-                    
+
+            # Movement number (overrides filename guess when present)
+            elif line.startswith("!!!OMV:"):
+                val = line.split(":", 1)[1].strip()
+                if val.isdigit():
+                    meta["movement_number"] = int(val)
+
+            # Movement tempo indication, e.g. "Presto agitato". Humdrum uses
+            # a literal "\n" (not an actual newline) for manual line breaks
+            # within the field, e.g. "ARIETTA\nAdagio molto..." — normalize
+            # to a space for display.
+            elif line.startswith("!!!OMD:") and not meta["tempo_indication"]:
+                val = line.split(":", 1)[1].strip().replace("\\n", " ")
+                if val:
+                    meta["tempo_indication"] = val
+
             # Composition Date / Year
             elif line.startswith("!!!ODT:"):
                 val = line.split(":", 1)[1].strip()
@@ -126,7 +150,7 @@ def parse_krn_metadata(krn_path: Path) -> dict:
                     meta["year"] = int(year_match.group(1))
     except Exception as e:
         click.echo(f"   ⚠ Metadata parsing error for {krn_path.name}: {e}")
-        
+
     # Standardize title/opus/key from the known catalog when we recognize
     # the sonata number, regardless of what the Humdrum headers say.
     if sonata_num in SONATA_CATALOG:
@@ -152,17 +176,28 @@ def main(window: int):
 
     for krn in krns:
         meta = parse_krn_metadata(krn)
-        mvt_suffix = f" ({meta['movement']})" if meta["movement"] else ""
+
+        mvt_num = meta["movement_number"]
+        mvt_roman = ROMAN_NUMERALS[mvt_num - 1] if mvt_num and mvt_num <= len(ROMAN_NUMERALS) else None
+        mvt_suffix = ""
+        if mvt_roman and meta["tempo_indication"]:
+            mvt_suffix = f". {mvt_roman}. {meta['tempo_indication']}"
+        elif mvt_roman:
+            mvt_suffix = f". {mvt_roman}"
+
         click.echo(f"▶  {meta['composer']} — {meta['title']}{mvt_suffix}")
 
         work_meta = dict(
-            composer     = meta["composer"],
-            title        = f"{meta['title']}{mvt_suffix}",
-            opus         = meta["opus"],
-            nickname     = meta["nickname"],
-            key_signature= meta["key"],
-            year_composed= meta["year"],
-            imslp_url    = None,
+            composer        = meta["composer"],
+            title           = f"{meta['title']}{mvt_suffix}",
+            opus            = meta["opus"],
+            nickname        = meta["nickname"],
+            work_number     = meta["work_number"],
+            movement_number = meta["movement_number"],
+            tempo_indication= meta["tempo_indication"],
+            key_signature   = meta["key"],
+            year_composed   = meta["year"],
+            imslp_url       = None,
         )
         work_id = upsert_work(work_meta)
         click.echo(f"   Work ID: {work_id}")

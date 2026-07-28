@@ -47,7 +47,7 @@
       </fileDesc>
       <encodingDesc>
          <appInfo>
-            <application isodate="2026-07-24T19:00:06" version="6.2.1-8d42439">
+            <application isodate="2026-07-28T03:34:31" version="6.2.1-8d42439">
                <name>Verovio</name>
                <p>Transcoded from Humdrum</p>
             </application>
@@ -250,35 +250,35 @@
    </meiHead>
    <music decls="#work0_encoded">
       <body>
-         <mdiv xml:id="rcaewgq">
-            <score xml:id="s1heccr9">
-               <scoreDef xml:id="te0qrmw" midi.bpm="120" tempo.dist="3vu">
-                  <pgHead xml:id="ez99tn8" func="first">
-                     <rend xml:id="f2l4dpv" halign="center" valign="middle">
-                        <rend xml:id="g1d5b8l" fontsize="large">Piano Sonata no. 10 in G major</rend>
-                        <lb xml:id="iyyrmtw" /> 
-<lb xml:id="k5lb21z" /> </rend>
-                     <rend xml:id="m19qv8hc" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
-                     <rend xml:id="olud8li" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
+         <mdiv xml:id="n1ptihj2">
+            <score xml:id="o1vp2xqk">
+               <scoreDef xml:id="pt95fwl" midi.bpm="120" tempo.dist="3vu">
+                  <pgHead xml:id="a1dp476x" func="first">
+                     <rend xml:id="b1n8o2ss" halign="center" valign="middle">
+                        <rend xml:id="c885gcz" fontsize="large">Piano Sonata no. 10 in G major</rend>
+                        <lb xml:id="eq2v548" /> 
+<lb xml:id="g1hvyqkk" /> </rend>
+                     <rend xml:id="ixegu0s" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
+                     <rend xml:id="k138xh6" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
                   </pgHead>
-                  <staffGrp xml:id="z1f1kdl9" bar.thru="true" symbol="brace">
-                     <label xml:id="umpobng">Piano</label>
+                  <staffGrp xml:id="vdqiti6" bar.thru="true" symbol="brace">
+                     <label xml:id="qp2dncc">Piano</label>
                      <staffDef xml:id="staffdef-L9F2" n="1" lines="5">
                         <clef xml:id="clef-L12F2" shape="G" line="2" />
                         <keySig xml:id="keysig-L13F2" mode="major" sig="1s" pname="g" />
                         <meterSig xml:id="metersig-L15F2" count="3" unit="8" />
-                        <instrDef xml:id="l14o499q" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="h1bfg2jy" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                      <staffDef xml:id="staffdef-L9F1" n="2" lines="5">
                         <clef xml:id="clef-L12F1" shape="F" line="4" />
                         <keySig xml:id="keysig-L13F1" mode="major" sig="1s" pname="g" />
                         <meterSig xml:id="metersig-L15F1" count="3" unit="8" />
-                        <instrDef xml:id="y1l6gna1" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="uayjm0z" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                   </staffGrp>
                </scoreDef>
                <section xml:id="section-L9F1">
-                  <pb xml:id="vsozdm0" />
+                  <pb xml:id="r4oyjem" />
                   <measure xml:id="measure-L1">
                      <staff xml:id="staff-L9F2" n="1">
                         <layer xml:id="layer-L1F2N1" n="1">
@@ -294,7 +294,7 @@
                         </layer>
                      </staff>
                      <tempo xml:id="tempo-L8F1" staff="1" tstamp="1">
-                        <rend xml:id="niznghp">SCHERZO<lb xml:id="p172neok" />Allegro assai</rend>
+                        <rend xml:id="j17pzc5q">SCHERZO<lb xml:id="labggy" />Allegro assai</rend>
                      </tempo>
                      <dynam xml:id="dynam-L17F3" place="between" staff="1 2" tstamp="1">p</dynam>
                      <slur xml:id="slur-L17F2-L20F2" staff="1" startid="#note-L17F2" endid="#note-L20F2" />
@@ -3678,7 +3678,7 @@
                      </staff>
                      <slur xml:id="slur-L875F2-L877F2" type="placed" staff="1" startid="#note-L875F2" endid="#note-L877F2" curvedir="below" />
                      <dynam xml:id="dynam-L877F3" place="between" staff="1 2" tstamp="1">
-                        <rend xml:id="p1qj0dlo" halign="right" fontsize="large" fontweight="bold">sf</rend>
+                        <rend xml:id="lf5hqpn" halign="right" fontsize="large" fontweight="bold">sf</rend>
                      </dynam>
                      <slur xml:id="slur-L877F1-L882F1" staff="2" startid="#note-L877F1" endid="#note-L882F1" />
                      <slur xml:id="slur-L877F2-L884F2" staff="1" startid="#note-L877F2" endid="#note-L884F2" />
@@ -4095,7 +4095,7 @@
                      <dynam xml:id="dynam-L972F3" place="between" staff="1 2" tstamp="3">p</dynam>
                      <fermata xml:id="fermata-L971F1" staff="2" startid="#note-L971F1" place="above" />
                      <slur xml:id="slur-L972F2-L976F2" staff="1" startid="#note-L972F2" endid="#note-L976F2" />
-                     <fermata xml:id="g1kw8jcl" startid="#rest-L971F2" place="above" />
+                     <fermata xml:id="c1nda4ga" startid="#rest-L971F2" place="above" />
                   </measure>
                   <sb xml:id="sb-L975F1" type="original" />
                   <measure xml:id="measure-L975" n="139">
@@ -4557,7 +4557,7 @@
                         </layer>
                      </staff>
                      <dynam xml:id="dynam-L1084F3" place="between" staff="1 2" tstamp="1">
-                        <rend xml:id="kbpl7s4" halign="right" fontsize="large" fontweight="bold">rfz</rend>
+                        <rend xml:id="gz7uz7g" halign="right" fontsize="large" fontweight="bold">rfz</rend>
                      </dynam>
                      <fermata xml:id="fermata-L1084F2" staff="1" startid="#chord-L1084F2" place="above" />
                      <dynam xml:id="dynam-L1085F3" place="between" staff="1 2" tstamp="3">p</dynam>
@@ -4791,7 +4791,7 @@
                      </staff>
                      <dir xml:id="dir-L1136F3" place="between" staff="1 2" tstamp="3">cresc.</dir>
                      <dynam xml:id="dynam-L1134F1" place="above" staff="2" startid="note-L1134F1">
-                        <rend xml:id="g10mknik" halign="right" fontsize="large" fontweight="bold">sf </rend>
+                        <rend xml:id="c13gi048" halign="right" fontsize="large" fontweight="bold">sf </rend>
                      </dynam>
                      <slur xml:id="slur-L1136F1-L1142F1" staff="2" startid="#note-L1136F1" endid="#note-L1142F1" />
                   </measure>
@@ -4857,7 +4857,7 @@
                         </layer>
                      </staff>
                      <dynam xml:id="dynam-L1149F1" place="above" staff="2" startid="note-L1149F1">
-                        <rend xml:id="f1dufkrr" halign="right" fontsize="large" fontweight="bold">sf </rend>
+                        <rend xml:id="b1g6pwa8" halign="right" fontsize="large" fontweight="bold">sf </rend>
                      </dynam>
                      <slur xml:id="slur-L1151F1-L1157F1" staff="2" startid="#note-L1151F1" endid="#note-L1157F1" />
                   </measure>

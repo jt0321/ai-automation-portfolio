@@ -47,7 +47,7 @@
       </fileDesc>
       <encodingDesc>
          <appInfo>
-            <application isodate="2026-07-24T19:01:56" version="6.2.1-8d42439">
+            <application isodate="2026-07-28T03:36:18" version="6.2.1-8d42439">
                <name>Verovio</name>
                <p>Transcoded from Humdrum</p>
             </application>
@@ -267,35 +267,35 @@
    </meiHead>
    <music decls="#work0_encoded">
       <body>
-         <mdiv xml:id="t13zmvb">
-            <score xml:id="unauy6r">
-               <scoreDef xml:id="v1gvxiyj" midi.bpm="60" tempo.dist="3vu">
-                  <pgHead xml:id="g1fnu6et" func="first">
-                     <rend xml:id="hi3tv19" halign="center" valign="middle">
-                        <rend xml:id="i1dinh5g" fontsize="large">Piano Sonata no. 13 in E-flat major</rend>
-                        <lb xml:id="k1r3tv92" /> 
-<lb xml:id="m6kaa9n" /> </rend>
-                     <rend xml:id="o1d71j3y" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
-                     <rend xml:id="q1u2hqak" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
+         <mdiv xml:id="pr7dqk1">
+            <score xml:id="q65sjup">
+               <scoreDef xml:id="rmthbk" midi.bpm="60" tempo.dist="3vu">
+                  <pgHead xml:id="cu92cqi" func="first">
+                     <rend xml:id="ducdjqh" halign="center" valign="middle">
+                        <rend xml:id="e9pjbnw" fontsize="large">Piano Sonata no. 13 in E-flat major</rend>
+                        <lb xml:id="g1cd1to2" /> 
+<lb xml:id="it9l8b6" /> </rend>
+                     <rend xml:id="k178qr37" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
+                     <rend xml:id="mm9fv9v" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
                   </pgHead>
-                  <staffGrp xml:id="b1ls42ef" bar.thru="true" symbol="brace">
-                     <label xml:id="r3vvwy0">Piano</label>
+                  <staffGrp xml:id="xoav57l" bar.thru="true" symbol="brace">
+                     <label xml:id="naybu61">Piano</label>
                      <staffDef xml:id="staffdef-L10F2" n="1" lines="5">
                         <clef xml:id="clef-L13F2" shape="G" line="2" />
                         <keySig xml:id="keysig-L14F2" accid="f" mode="major" sig="4f" pname="a" />
                         <meterSig xml:id="metersig-L16F2" count="3" unit="4" />
-                        <instrDef xml:id="n13jf37n" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="j1nnk2ee" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                      <staffDef xml:id="staffdef-L10F1" n="2" lines="5">
                         <clef xml:id="clef-L13F1" shape="F" line="4" />
                         <keySig xml:id="keysig-L14F1" accid="f" mode="major" sig="4f" pname="a" />
                         <meterSig xml:id="metersig-L16F1" count="3" unit="4" />
-                        <instrDef xml:id="a1lt6lh6" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="w1s38gop" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                   </staffGrp>
                </scoreDef>
                <section xml:id="section-L10F1">
-                  <pb xml:id="x12td2mx" />
+                  <pb xml:id="tpl8zf1" />
                   <measure xml:id="measure-L1" n="1">
                      <staff xml:id="staff-L10F2" n="1">
                         <layer xml:id="layer-L1F2N1" n="1">
@@ -353,7 +353,7 @@
                      <tempo xml:id="tempo-L9F1" staff="1" tstamp="1">Adagio</tempo>
                      <dynam xml:id="dynam-L21F4" place="between" staff="1 2" tstamp="1">p</dynam>
                      <dir xml:id="dir-L20F3" place="above" staff="1" tstamp="1">
-                        <rend xml:id="b1mk5m51" fontstyle="italic">con expressione</rend>
+                        <rend xml:id="x1vs0u8f" fontstyle="italic">con expressione</rend>
                      </dir>
                      <slur xml:id="slur-L25F3-L29F3" staff="1" startid="#note-L25F3" endid="#note-L29F3" />
                   </measure>

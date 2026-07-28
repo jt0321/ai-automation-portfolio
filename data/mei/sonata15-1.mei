@@ -47,7 +47,7 @@
       </fileDesc>
       <encodingDesc>
          <appInfo>
-            <application isodate="2026-07-24T19:02:52" version="6.2.1-8d42439">
+            <application isodate="2026-07-28T03:37:13" version="6.2.1-8d42439">
                <name>Verovio</name>
                <p>Transcoded from Humdrum</p>
             </application>
@@ -266,43 +266,43 @@
    </meiHead>
    <music decls="#work0_encoded">
       <body>
-         <mdiv xml:id="rio1gzp">
-            <score xml:id="s1tu18dc">
-               <scoreDef xml:id="t1289hze" midi.bpm="240" tempo.dist="3vu">
-                  <pgHead xml:id="j1cebpxo" func="first">
-                     <rend xml:id="ki999ai" halign="center" valign="middle">
-                        <rend xml:id="l1b4cqn1" fontsize="large">Piano Sonata no. 15 in D major</rend>
-                        <lb xml:id="n1ndt2fj" /> 
-<lb xml:id="p1wpo5xd" /> </rend>
-                     <rend xml:id="r1r7da0v" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
-                     <rend xml:id="t1y6ge2j" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
+         <mdiv xml:id="ny39p15">
+            <score xml:id="oyftrz8">
+               <scoreDef xml:id="p1jupj6f" midi.bpm="240" tempo.dist="3vu">
+                  <pgHead xml:id="f1ujfkwp" func="first">
+                     <rend xml:id="g75rkm8" halign="center" valign="middle">
+                        <rend xml:id="hx1klv4" fontsize="large">Piano Sonata no. 15 in D major</rend>
+                        <lb xml:id="jl0hmse" /> 
+<lb xml:id="l1f68bmn" /> </rend>
+                     <rend xml:id="n1fbqkir" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
+                     <rend xml:id="pr9ofxs" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
                   </pgHead>
-                  <staffGrp xml:id="e5i73yn" bar.thru="true" symbol="brace">
-                     <label xml:id="ohpsvlw">Piano</label>
+                  <staffGrp xml:id="a1gtygd6" bar.thru="true" symbol="brace">
+                     <label xml:id="kge2gjp">Piano</label>
                      <staffDef xml:id="staffdef-L9F2" n="1" lines="5">
                         <clef xml:id="clef-L15F2" shape="G" line="2" />
                         <keySig xml:id="keysig-L16F2" mode="major" sig="2s" pname="d" />
                         <meterSig xml:id="metersig-L18F2" count="3" unit="4" />
-                        <instrDef xml:id="qxdtt2z" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="me4s2pp" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                      <staffDef xml:id="staffdef-L9F1" n="2" lines="5">
                         <clef xml:id="clef-L15F1" shape="F" line="4" />
                         <keySig xml:id="keysig-L16F1" mode="major" sig="2s" pname="d" />
                         <meterSig xml:id="metersig-L18F1" count="3" unit="4" />
-                        <instrDef xml:id="dceb2w1" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="z1gm772m" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                   </staffGrp>
                </scoreDef>
                <section xml:id="section-L9F1">
-                  <choice xml:id="vxoz3eg">
-                     <orig xml:id="weczvwx">
+                  <choice xml:id="r1aygdgp">
+                     <orig xml:id="s1r0jtap">
                         <expansion plist="#label-I #label-A #label-A1 #label-A #label-A2 #label-B" xml:id="expansion-L12F1" />
                      </orig>
-                     <reg xml:id="y1jjeqx5" type="norep">
+                     <reg xml:id="u18y3g18" type="norep">
                         <expansion plist="#label-I #label-A #label-A2 #label-B" xml:id="expansion-L13F1" type="norep" />
                      </reg>
                   </choice>
-                  <pb xml:id="a1pb4jpo" />
+                  <pb xml:id="wpbb1a3" />
                   <section xml:id="label-I">
                      <measure xml:id="measure-L1" n="1">
                         <staff xml:id="staff-L9F2" n="1">
@@ -793,7 +793,7 @@
                         </staff>
                         <dir xml:id="dir-L118F4" place="between" staff="1 2" tstamp="1">cresc.</dir>
                         <dir xml:id="dir-L117F3" place="above" staff="1" tstamp="1">
-                           <rend xml:id="qtvri9e" fontstyle="italic">cresc.</rend>
+                           <rend xml:id="mdqhjpo" fontstyle="italic">cresc.</rend>
                         </dir>
                         <tie xml:id="tie-L118F3S1-L122F3S1" startid="#note-L118F3S1" endid="#note-L122F3S1" />
                         <tie xml:id="tie-L118F3S2-L122F3S2" startid="#note-L118F3S2" endid="#note-L122F3S2" />
@@ -1017,7 +1017,7 @@
                            </layer>
                         </staff>
                         <dir xml:id="dir-L163F3" place="above" staff="1" tstamp="1">
-                           <rend xml:id="f13jyjg0" fontstyle="italic">cresc.</rend>
+                           <rend xml:id="b16t5zsf" fontstyle="italic">cresc.</rend>
                         </dir>
                         <tie xml:id="tie-L164F3S1-L168F3S1" startid="#note-L164F3S1" endid="#note-L168F3S1" />
                         <tie xml:id="tie-L164F3S2-L168F3S2" startid="#note-L164F3S2" endid="#note-L168F3S2" />
@@ -1239,7 +1239,7 @@
                         </staff>
                         <dir xml:id="dir-L197F4" place="between" staff="1 2" tstamp="1">cresc.</dir>
                         <dir xml:id="dir-L196F3" place="above" staff="1" tstamp="1">
-                           <rend xml:id="bbxo2qz" fontstyle="italic">cresc.</rend>
+                           <rend xml:id="x3rxbq8" fontstyle="italic">cresc.</rend>
                         </dir>
                         <tie xml:id="tie-L199F3S1-L201F3S1" startid="#note-L199F3S1" endid="#note-L201F3S1" />
                         <tie xml:id="tie-L199F3S2-L201F3S2" startid="#note-L199F3S2" endid="#note-L201F3S2" />
@@ -1874,7 +1874,7 @@
                         </staff>
                         <dir xml:id="dir-L338F3" place="between" staff="1 2" tstamp="1">decresc.</dir>
                         <dir xml:id="dir-L337F2" place="above" staff="1" tstamp="1">
-                           <rend xml:id="b1czur7b" fontstyle="italic">decresc.</rend>
+                           <rend xml:id="x1gpxnh5" fontstyle="italic">decresc.</rend>
                         </dir>
                      </measure>
                      <measure xml:id="measure-L344" n="61">
@@ -2130,7 +2130,7 @@
                         </staff>
                         <dir xml:id="dir-L391F4" place="between" staff="1 2" tstamp="1">cresc.</dir>
                         <dir xml:id="dir-L390F3" place="above" staff="1" tstamp="1">
-                           <rend xml:id="mazroce" fontstyle="italic">cresc.</rend>
+                           <rend xml:id="i170z7vc" fontstyle="italic">cresc.</rend>
                         </dir>
                         <slur xml:id="slur-L391F3-L411F3" type="placed" staff="1" startid="#note-L391F3" endid="#chord-L411F3" curvedir="above" />
                         <slur xml:id="slur-L391F1-L411F1" staff="2" startid="#note-L391F1" endid="#chord-L411F1" />
@@ -2278,7 +2278,7 @@
                         </staff>
                         <dynam xml:id="dynam-L417F5" place="between" staff="1 2" tstamp="1">p</dynam>
                         <dir xml:id="dir-L418F4" place="above" staff="1" tstamp="1.5">
-                           <rend xml:id="gjb4abn" fontstyle="italic">sempre legato</rend>
+                           <rend xml:id="c5gc40f" fontstyle="italic">sempre legato</rend>
                         </dir>
                         <tie xml:id="tie-L417F3-L425F3" startid="#note-L417F3" endid="#note-L425F3" />
                         <tie xml:id="tie-L417F2-L425F2" startid="#note-L417F2" endid="#note-L425F2" />
@@ -2631,7 +2631,7 @@
                         </staff>
                         <dir xml:id="dir-L490F5" place="between" staff="1 2" tstamp="1">cresc.</dir>
                         <dir xml:id="dir-L489F4" place="above" staff="1" tstamp="1">
-                           <rend xml:id="c1qcg8vz" fontstyle="italic">cresc.</rend>
+                           <rend xml:id="y1d24eua" fontstyle="italic">cresc.</rend>
                         </dir>
                         <slur xml:id="slur-L490F3-L501F3" staff="1" startid="#note-L490F3" endid="#note-L501F3" />
                         <slur xml:id="slur-L490F2-L501F2" staff="2" startid="#note-L490F2" endid="#note-L501F2" />
@@ -3024,7 +3024,7 @@
                         </staff>
                         <dir xml:id="dir-L570F5" place="between" staff="1 2" tstamp="1">cresc.</dir>
                         <dir xml:id="dir-L569F4" place="above" staff="1" tstamp="1">
-                           <rend xml:id="d3kc0lz" fontstyle="italic">cresc.</rend>
+                           <rend xml:id="zt4cwfk" fontstyle="italic">cresc.</rend>
                         </dir>
                         <slur xml:id="slur-L574F3-L603F3" staff="1" startid="#note-L574F3" endid="#note-L603F3" />
                         <slur xml:id="slur-L574F2-L603F2" staff="2" startid="#note-L574F2" endid="#note-L603F2" />
@@ -3697,7 +3697,7 @@
                         </staff>
                         <dir xml:id="dir-L720F5" place="between" staff="1 2" tstamp="1">cresc.</dir>
                         <dir xml:id="dir-L719F4" place="above" staff="1" tstamp="1">
-                           <rend xml:id="e835fg1" fontstyle="italic">cresc.</rend>
+                           <rend xml:id="a2qhv80" fontstyle="italic">cresc.</rend>
                         </dir>
                         <tie xml:id="tie-L720F3-L728F3" startid="#note-L720F3" endid="#note-L728F3" />
                         <tie xml:id="tie-L720F2-L728F2" startid="#note-L720F2" endid="#note-L728F2" />
@@ -4235,7 +4235,7 @@
                         </staff>
                         <dir xml:id="dir-L844F3" place="between" staff="1 2" tstamp="1">decresc.</dir>
                         <dir xml:id="dir-L843F1" place="above" staff="2" tstamp="1">
-                           <rend xml:id="n1h2t8i" fontstyle="italic">descrec.</rend>
+                           <rend xml:id="j1a2a8nh" fontstyle="italic">descrec.</rend>
                         </dir>
                         <slur xml:id="slur-L847F1-L850F1" staff="2" startid="#note-L847F1" endid="#note-L850F1" />
                         <tie xml:id="tie-L844F2S1-L853F2S1" startid="#note-L844F2S1" endid="#note-L853F2S1" />
@@ -4825,7 +4825,7 @@
                         </staff>
                         <dir xml:id="dir-L937F3" place="between" staff="1 2" tstamp="3">cresc.</dir>
                         <dir xml:id="dir-L936F2" place="above" staff="1" tstamp="3">
-                           <rend xml:id="q1bp63fj" fontstyle="italic">cresc.</rend>
+                           <rend xml:id="mnonnrg" fontstyle="italic">cresc.</rend>
                         </dir>
                         <tie xml:id="tie-L937F2S1-L939F2S1" startid="#note-L937F2S1" endid="#note-L939F2S1" />
                         <tie xml:id="tie-L937F2S2-L939F2S2" startid="#note-L937F2S2" endid="#note-L939F2S2" />
@@ -5049,7 +5049,7 @@
                         </staff>
                         <dir xml:id="dir-L964F3" place="between" staff="1 2" tstamp="1">decresc.</dir>
                         <dir xml:id="dir-L963F2" place="above" staff="1" tstamp="1">
-                           <rend xml:id="guf90b6" fontstyle="italic">decresc.</rend>
+                           <rend xml:id="c1v0i0l0" fontstyle="italic">decresc.</rend>
                         </dir>
                      </measure>
                      <sb xml:id="sb-L968F1" type="original" />
@@ -5536,7 +5536,7 @@
                            </layer>
                         </staff>
                         <dir xml:id="dir-L1057F3" place="above" staff="1" tstamp="1">
-                           <rend xml:id="o12eef6s" fontstyle="italic">cresc.</rend>
+                           <rend xml:id="kov7zj7" fontstyle="italic">cresc.</rend>
                         </dir>
                         <dir xml:id="dir-L1059F4" place="between" staff="1 2" tstamp="1.5">cresc.</dir>
                         <slur xml:id="slur-L1059F3-L1063F3" staff="1" startid="#note-L1059F3" endid="#note-L1063F3" />
@@ -5693,7 +5693,7 @@
                         </staff>
                         <dir xml:id="dir-L1091F4" place="between" staff="1 2" tstamp="1">cresc.</dir>
                         <dir xml:id="dir-L1093F2" place="above" staff="2" tstamp="2">
-                           <rend xml:id="f1qki038" fontstyle="italic">cresc.</rend>
+                           <rend xml:id="b2tlvbg" fontstyle="italic">cresc.</rend>
                         </dir>
                      </measure>
                      <sb xml:id="sb-L1100F1" type="original" />
@@ -6382,7 +6382,7 @@
                         </staff>
                         <dir xml:id="dir-L1269F3" place="between" staff="1 2" tstamp="1">cresc.</dir>
                         <dir xml:id="dir-L1270F2" place="above" staff="1" tstamp="1.5">
-                           <rend xml:id="r1ohhve4" fontstyle="italic">cresc.</rend>
+                           <rend xml:id="n1nr1e92" fontstyle="italic">cresc.</rend>
                         </dir>
                         <slur xml:id="slur-L1269F2-L1275F2" staff="1" startid="#chord-L1269F2" endid="#chord-L1275F2" />
                      </measure>
@@ -7072,7 +7072,7 @@
                         </staff>
                         <dir xml:id="dir-L1418F4" place="between" staff="1 2" tstamp="2">decresc.</dir>
                         <dir xml:id="dir-L1417F3" place="above" staff="1" tstamp="2">
-                           <rend xml:id="etz4w8p" fontstyle="italic">diminuendo</rend>
+                           <rend xml:id="a1baqisc" fontstyle="italic">diminuendo</rend>
                         </dir>
                         <slur xml:id="slur-L1418F3-L1420F3" staff="1" startid="#note-L1418F3" endid="#note-L1420F3" />
                         <slur xml:id="slur-L1416F2-L1420F2" staff="2" startid="#note-L1416F2" endid="#note-L1420F2" />
@@ -7509,7 +7509,7 @@
                         </staff>
                         <dir xml:id="dir-L1494F3" place="between" staff="1 2" tstamp="1">cresc.</dir>
                         <dir xml:id="dir-L1496F2" place="above" staff="1" tstamp="2">
-                           <rend xml:id="g1k1tarn" fontstyle="italic">cresc.</rend>
+                           <rend xml:id="c1tk7453" fontstyle="italic">cresc.</rend>
                         </dir>
                         <tie xml:id="tie-L1497F2S1-L1500F2S1" startid="#note-L1497F2S1" endid="#note-L1500F2S1" />
                         <tie xml:id="tie-L1497F2S2-L1500F2S2" startid="#note-L1497F2S2" endid="#note-L1500F2S2" />
@@ -7680,7 +7680,7 @@
                         </staff>
                         <dir xml:id="dir-L1520F3" place="between" staff="1 2" tstamp="1">decresc.</dir>
                         <dir xml:id="dir-L1519F2" place="above" staff="1" tstamp="1">
-                           <rend xml:id="h6q9owm" fontstyle="italic">decresc.</rend>
+                           <rend xml:id="d1aulajw" fontstyle="italic">decresc.</rend>
                         </dir>
                         <tie xml:id="tie-L1521F2S1-L1524F2S1" startid="#note-L1521F2S1" endid="#note-L1524F2S1" />
                         <tie xml:id="tie-L1521F2S2-L1524F2S2" startid="#note-L1521F2S2" endid="#note-L1524F2S2" />
@@ -7707,7 +7707,7 @@
                         </staff>
                         <hairpin xml:id="hairpin-L1524F3" staff="1 2" tstamp="1" tstamp2="1m+1" form="cres" place="between" />
                         <dir xml:id="dir-L1523F2" place="above" staff="1" tstamp="1">
-                           <rend xml:id="v10bhpk4" fontstyle="normal">senza sord.</rend>
+                           <rend xml:id="rj4rvi6" fontstyle="normal">senza sord.</rend>
                         </dir>
                         <tie xml:id="tie-L1524F2S1-L1526F2S1" startid="#note-L1524F2S1" endid="#note-L1526F2S1" />
                         <tie xml:id="tie-L1524F2S2-L1526F2S2" startid="#note-L1524F2S2" endid="#note-L1526F2S2" />
@@ -7796,7 +7796,7 @@
                         <fermata xml:id="fermata-L1531F2" staff="1" startid="#chord-L1531F2" place="above" />
                         <dynam xml:id="dynam-L1534F3" place="between" staff="1 2" tstamp="3">p</dynam>
                         <dir xml:id="dir-L1533F2" place="above" staff="1" tstamp="3">
-                           <rend xml:id="a19i3ne5" fontstyle="normal">con sord.</rend>
+                           <rend xml:id="w1qff82c" fontstyle="normal">con sord.</rend>
                         </dir>
                         <fermata xml:id="fermata-L1531F1" staff="2" startid="#chord-L1531F1" place="above" />
                         <tie xml:id="tie-L1534F2-L1536F2" startid="#note-L1534F2" endid="#note-L1536F2" />
@@ -7918,8 +7918,8 @@
                         </staff>
                         <dynam xml:id="dynam-L1556F3" place="between" staff="1 2" tstamp="3">p</dynam>
                         <tie xml:id="tie-L1556F2-L1559F2" startid="#note-L1556F2" endid="#note-L1559F2" />
-                        <fermata xml:id="iwfqya9" startid="#rest-L1555F2" place="above" />
-                        <fermata xml:id="l1xhw9as" startid="#mrest-L1554F1" place="above" />
+                        <fermata xml:id="eef57r3" startid="#rest-L1555F2" place="above" />
+                        <fermata xml:id="h1u9yaoe" startid="#mrest-L1554F1" place="above" />
                      </measure>
                      <measure xml:id="measure-L1557" n="263">
                         <staff xml:id="staff-L1557F2N1" n="1">
@@ -7948,7 +7948,7 @@
                            </layer>
                         </staff>
                         <dir xml:id="dir-L1558F2" place="above" staff="1" tstamp="1">
-                           <rend xml:id="cxjoypz" fontstyle="italic">decresc.</rend>
+                           <rend xml:id="y1r7bbw0" fontstyle="italic">decresc.</rend>
                         </dir>
                         <tie xml:id="tie-L1561F2-L1563F2" startid="#note-L1561F2" endid="#note-L1563F2" />
                      </measure>
@@ -8043,7 +8043,7 @@
                         </staff>
                         <dynam xml:id="dynam-L1579F3" place="between" staff="1 2" tstamp="3">pp</dynam>
                         <tie xml:id="tie-L1579F2-L1582F2" startid="#note-L1579F2" endid="#note-L1582F2" />
-                        <fermata xml:id="jb2l78z" startid="#rest-L1577F2" place="above" />
+                        <fermata xml:id="f1s2vqts" startid="#rest-L1577F2" place="above" />
                      </measure>
                      <measure xml:id="measure-L1581" n="268">
                         <staff xml:id="staff-L1581F2N1" n="1">
@@ -8354,7 +8354,7 @@
                         </staff>
                         <dir xml:id="dir-L1642F4" place="between" staff="1 2" tstamp="1.5">cresc.</dir>
                         <dir xml:id="dir-L1641F3" place="above" staff="1" tstamp="1.5">
-                           <rend xml:id="o14a13to" fontstyle="italic">cresc.</rend>
+                           <rend xml:id="kjabrfk" fontstyle="italic">cresc.</rend>
                         </dir>
                         <slur xml:id="slur-L1642F3-L1646F3" staff="1" startid="#note-L1642F3" endid="#note-L1646F3" />
                         <slur xml:id="slur-L1640F1-L1688F1" staff="2" startid="#note-L1640F1" endid="#note-L1688F1" />
@@ -8601,7 +8601,7 @@
                         </staff>
                         <dir xml:id="dir-L1693F4" place="between" staff="1 2" tstamp="1">cresc.</dir>
                         <dir xml:id="dir-L1692F3" place="above" staff="1" tstamp="1">
-                           <rend xml:id="i3xo12r" fontstyle="italic">cresc.</rend>
+                           <rend xml:id="e341fs5" fontstyle="italic">cresc.</rend>
                         </dir>
                         <tie xml:id="tie-L1693F3S1-L1697F3S1" startid="#note-L1693F3S1" endid="#note-L1697F3S1" />
                         <tie xml:id="tie-L1693F3S2-L1697F3S2" startid="#note-L1693F3S2" endid="#note-L1697F3S2" />
@@ -8771,7 +8771,7 @@
                         </staff>
                         <dir xml:id="dir-L1721F4" place="between" staff="1 2" tstamp="1">cresc.</dir>
                         <dir xml:id="dir-L1720F3" place="above" staff="1" tstamp="1">
-                           <rend xml:id="w1mxfevu" fontstyle="italic">cresc.</rend>
+                           <rend xml:id="s15jhswa" fontstyle="italic">cresc.</rend>
                         </dir>
                         <slur xml:id="slur-L1721F3-L1736F2" type="placed" staff="1" startid="#note-L1721F3" endid="#note-L1736F2" curvedir="below" />
                      </measure>
@@ -9019,7 +9019,7 @@
                         </staff>
                         <dir xml:id="dir-L1765F4" place="between" staff="1 2" tstamp="1">cresc.</dir>
                         <dir xml:id="dir-L1766F3" place="above" staff="1" tstamp="1.5">
-                           <rend xml:id="mx5sch" fontstyle="italic">cresc.</rend>
+                           <rend xml:id="i13lmmgc" fontstyle="italic">cresc.</rend>
                         </dir>
                         <slur xml:id="slur-L1767F3-L1771F3" staff="1" startid="#note-L1767F3" endid="#note-L1771F3" />
                      </measure>
@@ -9853,7 +9853,7 @@
                         </staff>
                         <dir xml:id="dir-L1954F3" place="between" staff="1 2" tstamp="2">decresc.</dir>
                         <dir xml:id="dir-L1955F2" place="above" staff="1" tstamp="2.5">
-                           <rend xml:id="j13jabmi" fontstyle="italic">decresc.</rend>
+                           <rend xml:id="f1lfcf3w" fontstyle="italic">decresc.</rend>
                         </dir>
                      </measure>
                      <measure xml:id="measure-L1959" n="335">
@@ -10270,7 +10270,7 @@
                            </layer>
                         </staff>
                         <dir xml:id="dir-L2036F3" place="above" staff="1" tstamp="1">
-                           <rend xml:id="g9y2vji" fontstyle="italic">sempre legato</rend>
+                           <rend xml:id="cf8env9" fontstyle="italic">sempre legato</rend>
                         </dir>
                         <tie xml:id="tie-L2037F3-L2044F3" startid="#note-L2037F3" endid="#note-L2044F3" />
                         <tie xml:id="tie-L2037F2-L2044F2" startid="#note-L2037F2" endid="#note-L2044F2" />
@@ -10624,7 +10624,7 @@
                            </layer>
                         </staff>
                         <dir xml:id="dir-L2108F3" place="above" staff="1" tstamp="1">
-                           <rend xml:id="b9u652w" fontstyle="italic">cresc.</rend>
+                           <rend xml:id="x1uh0ugj" fontstyle="italic">cresc.</rend>
                         </dir>
                         <dir xml:id="dir-L2109F5" place="between" staff="1 2" tstamp="1">cresc.</dir>
                         <slur xml:id="slur-L2109F3-L2124F3" staff="1" startid="#note-L2109F3" endid="#note-L2124F3" />
@@ -10975,7 +10975,7 @@
                            </layer>
                         </staff>
                         <dir xml:id="dir-L2181F3" place="above" staff="1" tstamp="1">
-                           <rend xml:id="h18d1ddl" fontstyle="italic">cresc.</rend>
+                           <rend xml:id="d14c3imz" fontstyle="italic">cresc.</rend>
                         </dir>
                         <dir xml:id="dir-L2182F5" place="between" staff="1 2" tstamp="1">cresc.</dir>
                         <tie xml:id="tie-L2182F3-L2189F3" startid="#note-L2182F3" endid="#note-L2189F3" />
@@ -11725,7 +11725,7 @@
                         </staff>
                         <dir xml:id="dir-L2347F5" place="between" staff="1 2" tstamp="1">cresc.</dir>
                         <dir xml:id="dir-L2346F4" place="above" staff="1" tstamp="1">
-                           <rend xml:id="m83hvk" fontstyle="italic">cresc.</rend>
+                           <rend xml:id="is7wvap" fontstyle="italic">cresc.</rend>
                         </dir>
                         <slur xml:id="slur-L2351F3-L2394F3" staff="1" startid="#note-L2351F3" endid="#note-L2394F3" />
                         <slur xml:id="slur-L2351F2-L2394F2" staff="2" startid="#note-L2351F2" endid="#note-L2394F2" />
@@ -12280,7 +12280,7 @@
                         <dir xml:id="dir-L2480F3" place="between" staff="1 2" tstamp="1">decresc.</dir>
                         <slur xml:id="slur-L2480F1-L2482F1" staff="2" startid="#note-L2480F1" endid="#note-L2482F1" />
                         <dir xml:id="dir-L2483F1" place="above" staff="2" tstamp="2">
-                           <rend xml:id="cpu22xj" fontstyle="italic">decresc.</rend>
+                           <rend xml:id="yr4saqc" fontstyle="italic">decresc.</rend>
                         </dir>
                         <slur xml:id="slur-L2484F1-L2487F1" staff="2" startid="#note-L2484F1" endid="#note-L2487F1" />
                         <tie xml:id="tie-L2480F2S1-L2489F2S1" startid="#note-L2480F2S1" endid="#note-L2489F2S1" />
@@ -12871,7 +12871,7 @@
                         </staff>
                         <dir xml:id="dir-L2572F3" place="between" staff="1 2" tstamp="1">cresc.</dir>
                         <dir xml:id="dir-L2571F2" place="above" staff="1" tstamp="1">
-                           <rend xml:id="ud69zyv" fontstyle="italic">cresc.</rend>
+                           <rend xml:id="q8zzkzy" fontstyle="italic">cresc.</rend>
                         </dir>
                         <tie xml:id="tie-L2574F2S1-L2577F2S1" startid="#note-L2574F2S1" endid="#note-L2577F2S1" />
                         <tie xml:id="tie-L2574F2S2-L2577F2S2" startid="#note-L2574F2S2" endid="#note-L2577F2S2" />
@@ -13087,7 +13087,7 @@
                         </staff>
                         <dir xml:id="dir-L2602F3" place="between" staff="1 2" tstamp="1">decresc.</dir>
                         <dir xml:id="dir-L2601F2" place="above" staff="1" tstamp="1">
-                           <rend xml:id="l1qua57q" fontstyle="italic">decresc.</rend>
+                           <rend xml:id="hqah0hk" fontstyle="italic">decresc.</rend>
                         </dir>
                         <slur xml:id="slur-L2602F2-L2604F2" staff="1" startid="#note-L2602F2" endid="#note-L2604F2" />
                      </measure>
@@ -13228,7 +13228,7 @@
                            </layer>
                         </staff>
                         <dir xml:id="dir-L2631F4" place="above" staff="1" tstamp="1">
-                           <rend xml:id="v1sku6x5" fontstyle="italic">m.d.</rend>
+                           <rend xml:id="r11fy4qw" fontstyle="italic">m.d.</rend>
                         </dir>
                         <slur xml:id="slur-L2632F4-L2635F4" type="placed" staff="1" startid="#note-L2632F4" endid="#note-L2635F4" curvedir="above" />
                         <slur xml:id="slur-L2632F1-L2661F1" staff="2" startid="#note-L2632F1" endid="#note-L2661F1" />
@@ -13352,7 +13352,7 @@
                         </staff>
                         <dir xml:id="dir-L2658F4" place="between" staff="1 2" tstamp="3">cresc.</dir>
                         <dir xml:id="dir-L2657F3" place="above" staff="1" tstamp="3">
-                           <rend xml:id="b7sonbi" fontstyle="italic">cresc.</rend>
+                           <rend xml:id="x1pr97n6" fontstyle="italic">cresc.</rend>
                         </dir>
                      </measure>
                      <measure xml:id="measure-L2660" n="448">
@@ -13413,7 +13413,7 @@
                         </staff>
                         <dir xml:id="dir-L2668F4" place="between" staff="1 2" tstamp="3">cresc.</dir>
                         <dir xml:id="dir-L2667F3" place="above" staff="1" tstamp="3">
-                           <rend xml:id="c7xtzbz" fontstyle="italic">cresc.</rend>
+                           <rend xml:id="y19tp4f6" fontstyle="italic">cresc.</rend>
                         </dir>
                         <slur xml:id="slur-L2665F3-L2669F3" staff="1" startid="#chord-L2665F3" endid="#chord-L2669F3" />
                         <slur xml:id="slur-L2665F1-L2671F1" staff="2" startid="#note-L2665F1" endid="#note-L2671F1" />
@@ -13655,7 +13655,7 @@
                         </staff>
                         <dir xml:id="dir-L2706F4" place="between" staff="1 2" tstamp="3">decresc.</dir>
                         <dir xml:id="dir-L2705F3" place="above" staff="1" tstamp="3">
-                           <rend xml:id="zvccbyo" fontstyle="italic">decresc.</rend>
+                           <rend xml:id="v1blqwed" fontstyle="italic">decresc.</rend>
                         </dir>
                      </measure>
                      <measure xml:id="measure-L2707" n="458">
@@ -13762,8 +13762,8 @@
                               <mRest xml:id="mrest-L2725F1" />
                            </layer>
                         </staff>
-                        <fermata xml:id="k1e5kmec" startid="#mrest-L2725F2" place="above" />
-                        <fermata xml:id="m137839v" startid="#mrest-L2725F1" place="above" />
+                        <fermata xml:id="g2yn0p4" startid="#mrest-L2725F2" place="above" />
+                        <fermata xml:id="i1us9nx2" startid="#mrest-L2725F1" place="above" />
                      </measure>
                   </section>
                </section>

@@ -21,7 +21,8 @@ from pipeline.embedder import embed_single
 # have no way to "know" a nickname like "Moonlight" or an opus number.
 _WORKS_METADATA_TSVECTOR = (
     "to_tsvector('english', coalesce(composer,'') || ' ' || coalesce(title,'') "
-    "|| ' ' || coalesce(opus,'') || ' ' || coalesce(nickname,''))"
+    "|| ' ' || coalesce(opus,'') || ' ' || coalesce(nickname,'') "
+    "|| ' ' || coalesce(tempo_indication,''))"
 )
 
 # Words that appear in nearly every work's metadata in this corpus (every
@@ -115,6 +116,9 @@ class HybridScoreRetriever(BaseRetriever):
                     w.composer,
                     w.title,
                     w.opus,
+                    w.work_number,
+                    w.movement_number,
+                    w.tempo_indication,
                     ss.measure_start,
                     ss.measure_end,
                     ss.local_key,
