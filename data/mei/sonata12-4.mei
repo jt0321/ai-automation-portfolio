@@ -53,7 +53,7 @@
       </fileDesc>
       <encodingDesc>
          <appInfo>
-            <application isodate="2026-07-28T03:35:57" version="6.2.1-8d42439">
+            <application isodate="2026-08-06T03:10:29" version="6.2.1-8d42439">
                <name>Verovio</name>
                <p>Transcoded from Humdrum</p>
             </application>
@@ -280,43 +280,43 @@
    </meiHead>
    <music decls="#work0_encoded">
       <body>
-         <mdiv xml:id="dbmsaeh">
-            <score xml:id="eby5xzq">
-               <scoreDef xml:id="fw9hy3p" midi.bpm="120" tempo.dist="3vu">
-                  <pgHead xml:id="v1cjntr6" func="first">
-                     <rend xml:id="w1v3h5tl" halign="center" valign="middle">
-                        <rend xml:id="xjmiwdq" fontsize="large">Piano Sonata no. 12 in A-flat major</rend>
-                        <lb xml:id="zwjmq3l" /> 
-<lb xml:id="bonhupp" /> </rend>
-                     <rend xml:id="d1aqd5kk" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
-                     <rend xml:id="f1h2yio9" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
+         <mdiv xml:id="s2qbk07">
+            <score xml:id="t50zpys">
+               <scoreDef xml:id="u1xfq7os" midi.bpm="120" tempo.dist="3vu">
+                  <pgHead xml:id="knbasyl" func="first">
+                     <rend xml:id="lclev2q" halign="center" valign="middle">
+                        <rend xml:id="m18gx5sx" fontsize="large">Piano Sonata no. 12 in A-flat major</rend>
+                        <lb xml:id="obh823r" /> 
+<lb xml:id="q1yxkjbi" /> </rend>
+                     <rend xml:id="s5505a1" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
+                     <rend xml:id="u5y250z" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
                   </pgHead>
-                  <staffGrp xml:id="q1hr64cy" bar.thru="true" symbol="brace">
-                     <label xml:id="mv0xw54">Piano</label>
+                  <staffGrp xml:id="f1w9wigc" bar.thru="true" symbol="brace">
+                     <label xml:id="buydwlk">Piano</label>
                      <staffDef xml:id="staffdef-L10F2" n="1" lines="5">
                         <clef xml:id="clef-L16F2" shape="G" line="2" />
                         <keySig xml:id="keysig-L17F2" accid="f" mode="major" sig="4f" pname="a" />
                         <meterSig xml:id="metersig-L19F2" count="2" unit="4" />
-                        <instrDef xml:id="ck5otz5" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="rc6wocq" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                      <staffDef xml:id="staffdef-L10F1" n="2" lines="5">
                         <clef xml:id="clef-L16F1" shape="F" line="4" />
                         <keySig xml:id="keysig-L17F1" accid="f" mode="major" sig="4f" pname="a" />
                         <meterSig xml:id="metersig-L19F1" count="2" unit="4" />
-                        <instrDef xml:id="p19aubqd" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="e1414uam" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                   </staffGrp>
                </scoreDef>
                <section xml:id="section-L10F1">
-                  <choice xml:id="h1naoas2">
-                     <orig xml:id="i1600j3">
+                  <choice xml:id="wzt0rzi">
+                     <orig xml:id="xokq63h">
                         <expansion plist="#label-A #label-B #label-B1 #label-B #label-B2 #label-C" xml:id="expansion-L13F1" />
                      </orig>
-                     <reg xml:id="k17jmtsu" type="norep">
+                     <reg xml:id="z1dnr0oc" type="norep">
                         <expansion plist="#label-A #label-B #label-B2 #label-C" xml:id="expansion-L14F1" type="norep" />
                      </reg>
                   </choice>
-                  <pb xml:id="m1ywys7g" />
+                  <pb xml:id="b122l0gf" />
                   <section xml:id="label-A">
                      <measure xml:id="measure-L1">
                         <staff xml:id="staff-L10F2" n="1">
@@ -3896,7 +3896,7 @@
                            </layer>
                         </staff>
                         <dir xml:id="dir-L910F2" place="above" staff="1" tstamp="1">
-                           <rend xml:id="o1as7tj1" fontstyle="italic">legato</rend>
+                           <rend xml:id="dscmgdf" fontstyle="italic">legato</rend>
                         </dir>
                      </measure>
                      <measure xml:id="measure-L919" n="99">

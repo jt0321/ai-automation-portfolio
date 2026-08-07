@@ -45,7 +45,7 @@
       </fileDesc>
       <encodingDesc>
          <appInfo>
-            <application isodate="2026-07-28T03:44:39" version="6.2.1-8d42439">
+            <application isodate="2026-08-06T03:26:30" version="6.2.1-8d42439">
                <name>Verovio</name>
                <p>Transcoded from Humdrum</p>
             </application>
@@ -216,39 +216,39 @@
    </meiHead>
    <music decls="#work0_encoded">
       <body>
-         <mdiv xml:id="f1kimc3f">
-            <score xml:id="g137fg71">
-               <scoreDef xml:id="hgf5l5n" midi.bpm="144" tempo.dist="3vu">
-                  <pgHead xml:id="w15zfq2i" func="first">
-                     <rend xml:id="xbgq0uu" halign="center" valign="middle">
-                        <rend xml:id="y1htgwqf" fontsize="large">Piano Sonata no. 25 in G major</rend>
-                        <lb xml:id="a18r3ekz" /> 
-<lb xml:id="c12ftjow" /> </rend>
-                     <rend xml:id="eupf9wc" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
-                     <rend xml:id="g18pn6iq" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
+         <mdiv xml:id="uf5dgtj">
+            <score xml:id="v1g25ufq">
+               <scoreDef xml:id="w180837d" midi.bpm="144" tempo.dist="3vu">
+                  <pgHead xml:id="l185uuuz" func="first">
+                     <rend xml:id="mibegfp" halign="center" valign="middle">
+                        <rend xml:id="n1ponjj6" fontsize="large">Piano Sonata no. 25 in G major</rend>
+                        <lb xml:id="pukgq4o" /> 
+<lb xml:id="rlvdewy" /> </rend>
+                     <rend xml:id="t1rtw7a2" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
+                     <rend xml:id="vrvjeis" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
                   </pgHead>
-                  <staffGrp xml:id="r9hgki0" bar.thru="true" symbol="brace">
-                     <label xml:id="t1ypahnq">Piano</label>
+                  <staffGrp xml:id="g1tg87jm" bar.thru="true" symbol="brace">
+                     <label xml:id="i1rfl21e">Piano</label>
                      <staffDef xml:id="staffdef-L9F2" n="1" lines="5">
                         <clef xml:id="clef-L15F2" shape="G" line="2" />
                         <keySig xml:id="keysig-L16F2" mode="major" sig="1s" pname="g" />
                         <meterSig xml:id="metersig-L18F2" count="2" unit="4" />
-                        <instrDef xml:id="dx377hd" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="szo60il" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                      <staffDef xml:id="staffdef-L9F1" n="2" lines="5">
                         <clef xml:id="clef-L15F1" shape="F" line="4" />
                         <keySig xml:id="keysig-L16F1" mode="major" sig="1s" pname="g" />
                         <meterSig xml:id="metersig-L18F1" count="2" unit="4" />
-                        <instrDef xml:id="q18otmh2" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="fywq43y" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                   </staffGrp>
                </scoreDef>
                <section xml:id="section-L9F1">
-                  <choice xml:id="j1cosipe">
-                     <orig xml:id="k17pb6it">
+                  <choice xml:id="yg183rr">
+                     <orig xml:id="z1i223z6">
                         <expansion plist="#label-A #label-A #label-B #label-B1 #label-B #label-B2 #label-C" xml:id="expansion-L12F1" />
                      </orig>
-                     <reg xml:id="mogav9d" type="norep">
+                     <reg xml:id="bu4njph" type="norep">
                         <expansion plist="#label-A #label-B #label-B2 #label-C" xml:id="expansion-L13F1" type="norep" />
                      </reg>
                   </choice>
@@ -1881,7 +1881,7 @@
                         <tie xml:id="tie-L391F1S2-L392F1S2" startid="#note-L391F1S2" endid="#note-L392F1S2" />
                         <tie xml:id="tie-L391F1S3-L392F1S3" startid="#note-L391F1S3" endid="#note-L392F1S3" />
                      </measure>
-                     <scoreDef xml:id="zr75sqy">
+                     <scoreDef xml:id="o1teet5m">
                         <keySig xml:id="keysig-L397F2" sig="0" cancelaccid="before" />
                      </scoreDef>
                      <measure xml:id="measure-L396" n="56">
@@ -2537,7 +2537,7 @@
                            </layer>
                         </staff>
                      </measure>
-                     <scoreDef xml:id="b1ut67zu">
+                     <scoreDef xml:id="qdutzl4">
                         <keySig xml:id="keysig-L537F2" sig="1s" />
                      </scoreDef>
                      <measure xml:id="measure-L536" n="72">
@@ -3529,9 +3529,9 @@
                         <slur xml:id="slur-L822F2-L823F2" staff="1" startid="#note-L822F2" endid="#note-L823F2" />
                         <slur xml:id="slur-L822F1-L823F1" staff="2" startid="#note-L822F1" endid="#note-L823F1" />
                      </measure>
-                     <scoreDef xml:id="tbd1eyy">
-                        <staffGrp xml:id="ueoaict">
-                           <staffDef xml:id="vtt2ao9" n="2">
+                     <scoreDef xml:id="i1b7dutj">
+                        <staffGrp xml:id="j4rlzdc">
+                           <staffDef xml:id="kysujhl" n="2">
                               <clef xml:id="clef-L825F1" shape="G" line="2" />
                            </staffDef>
                         </staffGrp>
@@ -3593,9 +3593,9 @@
                            </layer>
                         </staff>
                      </measure>
-                     <scoreDef xml:id="xtcqm8h">
-                        <staffGrp xml:id="yejsbd">
-                           <staffDef xml:id="z1xwni9z" n="2">
+                     <scoreDef xml:id="m17009fb">
+                        <staffGrp xml:id="nftruos">
+                           <staffDef xml:id="o281awi" n="2">
                               <clef xml:id="clef-L840F1" shape="F" line="4" />
                            </staffDef>
                         </staffGrp>

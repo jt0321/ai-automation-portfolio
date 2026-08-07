@@ -19,9 +19,10 @@ load_dotenv()
 from download_beethoven_piano_sonatas import DATA_DIR
 from db.store import (
     upsert_work, store_asset, store_segments,
-    clear_work_segments_and_assets
+    clear_work_segments_and_assets, clear_work_symbolic_layers,
+    store_symbolic_layers, store_symbolic_source,
 )
-from analysis.analyzer import analyze_score
+from analysis.analyzer import analyze_score, build_symbolic_layers
 from pipeline.mei_converter import score_to_mei
 
 # Sonata number -> (title, opus, key, nickname). Covers all 32 published
@@ -77,6 +78,7 @@ def parse_krn_metadata(krn_path: Path) -> dict:
         "tempo_indication": None,
         "key": None,
         "year": None,
+        "source_url": None,
     }
 
     # Try parsing filename first to guess sonata number and movement
@@ -91,6 +93,11 @@ def parse_krn_metadata(krn_path: Path) -> dict:
 
     try:
         content = krn_path.read_text(encoding="utf-8")
+        # This provenance record is commonly emitted at the end of a Humdrum
+        # file, after the data spine, whereas work metadata is at the start.
+        source_url_match = re.search(r"^!!!URL-github:\s*(.+)$", content, re.MULTILINE)
+        if source_url_match:
+            meta["source_url"] = source_url_match.group(1).strip() or None
         for line in content.splitlines():
             # Header metadata ends once the data spine (**kern) starts; later
             # !!!OMD lines are mid-movement tempo changes, not the movement's
@@ -166,7 +173,9 @@ def parse_krn_metadata(krn_path: Path) -> dict:
 @click.command()
 @click.option("--window", default=4, type=int, show_default=True,
               help="Measures per analysis chunk")
-def main(window: int):
+@click.option("--symbolic-only", is_flag=True,
+              help="Rebuild raw source, canonical measures, and measure analyses only")
+def main(window: int, symbolic_only: bool):
     krns = sorted(DATA_DIR.glob("*.krn"))
     if not krns:
         click.echo(f"No Humdrum (.krn) files found in ./{DATA_DIR}/ — run download_beethoven_piano_sonatas.py first.")
@@ -202,23 +211,41 @@ def main(window: int):
         work_id = upsert_work(work_meta)
         click.echo(f"   Work ID: {work_id}")
 
-        # Clear existing assets/segments to avoid duplicates
-        clear_work_segments_and_assets(work_id)
-
-        # Save Humdrum (.krn) asset directly in DB
-        store_asset(work_id, "krn", str(krn))
-
-        # Generate MEI file dynamically using Verovio (needed for SVG rendering)
-        mei_path = score_to_mei(str(krn))
-        if mei_path:
-            store_asset(work_id, "mei", str(mei_path))
-            click.echo(f"   ✓ MEI file generated → {mei_path.name}")
+        # Symbolic-only rebuilding preserves already-rendered MEI assets and
+        # retrieval vectors; they are independent of this new source layer.
+        if symbolic_only:
+            clear_work_symbolic_layers(work_id)
         else:
-            click.echo("   ✗ MEI generation failed.")
+            clear_work_segments_and_assets(work_id)
 
-        # Run music21 analysis directly on .krn and segment score
-        click.echo("   Analyzing musical features...")
+        # Save Humdrum (.krn) as an asset during a full ingest.  The immutable
+        # source row below is stored in both modes.
+        if not symbolic_only:
+            store_asset(work_id, "krn", str(krn))
+        store_symbolic_source(work_id, str(krn), source_url=meta["source_url"])
+
+        if not symbolic_only:
+            # Generate MEI file dynamically using Verovio (needed for SVG rendering)
+            mei_path = score_to_mei(str(krn))
+            if mei_path:
+                store_asset(work_id, "mei", str(mei_path))
+                click.echo(f"   ✓ MEI file generated → {mei_path.name}")
+            else:
+                click.echo("   ✗ MEI generation failed.")
+
+        # Build reproducible symbolic source derivatives before optional RAG
+        # chunks.  These records support future exact symbolic search and form
+        # analysis without relying on embeddings.
+        click.echo("   Encoding score and analysing measures...")
         try:
+            measures, measure_analyses, _ = build_symbolic_layers(str(krn))
+            store_symbolic_layers(work_id, measures, measure_analyses)
+            click.echo(f"   ✓ {len(measures)} canonical measures and analyses stored")
+
+            if symbolic_only:
+                continue
+
+            click.echo("   Building retrieval chunks...")
             chunks, global_key = analyze_score(str(krn), window=window)
             click.echo(f"   ✓ {len(chunks)} chunks extracted (global key: {global_key})")
             store_segments(work_id, chunks)

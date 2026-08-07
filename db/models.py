@@ -1,6 +1,8 @@
 from sqlalchemy import (
-    Column, Integer, Text, ARRAY, TIMESTAMP, ForeignKey, CheckConstraint, func
+    Column, Integer, Text, ARRAY, TIMESTAMP, ForeignKey, CheckConstraint,
+    UniqueConstraint, func
 )
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, relationship
 from pgvector.sqlalchemy import Vector
 
@@ -33,6 +35,8 @@ class Work(Base):
     segments        = relationship("ScoreSegment", back_populates="work", cascade="all, delete")
     assets          = relationship("ScoreAsset",   back_populates="work", cascade="all, delete")
     text_sources    = relationship("TextSource",   back_populates="work", cascade="all, delete")
+    sources         = relationship("ScoreSource",  back_populates="work", cascade="all, delete")
+    measures        = relationship("ScoreMeasure", back_populates="work", cascade="all, delete")
 
 
 class ScoreAsset(Base):
@@ -51,6 +55,55 @@ class ScoreAsset(Base):
     created_at  = Column(TIMESTAMP(timezone=True), server_default=func.now())
 
     work = relationship("Work", back_populates="assets")
+
+
+class ScoreSource(Base):
+    """Immutable copy and provenance of the symbolic source used for analysis."""
+    __tablename__ = "score_sources"
+    __table_args__ = (UniqueConstraint("work_id", "sha256", name="score_sources_work_sha256_key"),)
+
+    id          = Column(Integer, primary_key=True)
+    work_id     = Column(Integer, ForeignKey("works.id", ondelete="CASCADE"), nullable=False)
+    format      = Column(Text, nullable=False, default="humdrum-kern")
+    file_path   = Column(Text, nullable=False)
+    source_url  = Column(Text)
+    sha256      = Column(Text, nullable=False)
+    raw_content = Column(Text, nullable=False)
+    created_at  = Column(TIMESTAMP(timezone=True), server_default=func.now())
+
+    work = relationship("Work", back_populates="sources")
+
+
+class ScoreMeasure(Base):
+    """Canonical, JSON-safe notation facts for one measure across all parts."""
+    __tablename__ = "score_measures"
+    __table_args__ = (UniqueConstraint("work_id", "measure_index", name="score_measures_work_index_key"),)
+
+    id              = Column(Integer, primary_key=True)
+    work_id         = Column(Integer, ForeignKey("works.id", ondelete="CASCADE"), nullable=False)
+    measure_index   = Column(Integer, nullable=False)
+    measure_number  = Column(Integer, nullable=False)
+    symbolic_data   = Column(JSONB, nullable=False)
+    created_at      = Column(TIMESTAMP(timezone=True), server_default=func.now())
+
+    work = relationship("Work", back_populates="measures")
+    analyses = relationship("MeasureAnalysis", back_populates="measure", cascade="all, delete")
+
+
+class MeasureAnalysis(Base):
+    """Versioned, reproducible per-measure analysis derived from score_measures."""
+    __tablename__ = "measure_analyses"
+    __table_args__ = (
+        UniqueConstraint("measure_id", "analysis_version", name="measure_analyses_measure_version_key"),
+    )
+
+    id               = Column(Integer, primary_key=True)
+    measure_id       = Column(Integer, ForeignKey("score_measures.id", ondelete="CASCADE"), nullable=False)
+    analysis_version = Column(Text, nullable=False)
+    analysis_data    = Column(JSONB, nullable=False)
+    created_at       = Column(TIMESTAMP(timezone=True), server_default=func.now())
+
+    measure = relationship("ScoreMeasure", back_populates="analyses")
 
 
 class ScoreSegment(Base):

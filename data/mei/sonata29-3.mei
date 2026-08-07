@@ -46,7 +46,7 @@
       </fileDesc>
       <encodingDesc>
          <appInfo>
-            <application isodate="2026-07-28T03:47:09" version="6.2.1-8d42439">
+            <application isodate="2026-08-06T03:31:25" version="6.2.1-8d42439">
                <name>Verovio</name>
                <p>Transcoded from Humdrum</p>
             </application>
@@ -225,35 +225,35 @@
    </meiHead>
    <music decls="#work0_encoded">
       <body>
-         <mdiv xml:id="i11lp4i5">
-            <score xml:id="j13731y1">
-               <scoreDef xml:id="k1h9jt7m" midi.bpm="46" tempo.dist="3vu">
-                  <pgHead xml:id="v11cmbs3" func="first">
-                     <rend xml:id="wf0b52r" halign="center" valign="middle">
-                        <rend xml:id="x1aprrvg" fontsize="large">Piano Sonata no. 29 in B-flat major</rend>
-                        <lb xml:id="zbbc6qs" /> 
-<lb xml:id="b1uppjzr" /> </rend>
-                     <rend xml:id="d1sp4fgp" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
-                     <rend xml:id="fs8khy9" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
+         <mdiv xml:id="x7jjc4m">
+            <score xml:id="y6knge">
+               <scoreDef xml:id="z1gzv0pq" midi.bpm="46" tempo.dist="3vu">
+                  <pgHead xml:id="k4wqi4p" func="first">
+                     <rend xml:id="l1c7h7ls" halign="center" valign="middle">
+                        <rend xml:id="m14okus6" fontsize="large">Piano Sonata no. 29 in B-flat major</rend>
+                        <lb xml:id="o1pqa31q" /> 
+<lb xml:id="q1eavis0" /> </rend>
+                     <rend xml:id="sjsuc1k" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
+                     <rend xml:id="u1932yxb" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
                   </pgHead>
-                  <staffGrp xml:id="q1h8k0a9" bar.thru="true" symbol="brace">
-                     <label xml:id="mvs87p1">Piano</label>
+                  <staffGrp xml:id="fvbsl94" bar.thru="true" symbol="brace">
+                     <label xml:id="b1q87fvq">Piano</label>
                      <staffDef xml:id="staffdef-L9F2" n="1" lines="5">
                         <clef xml:id="clef-L12F2" shape="G" line="2" />
                         <keySig xml:id="keysig-L13F2" accid="s" mode="minor" sig="3s" pname="f" />
                         <meterSig xml:id="metersig-L15F2" count="6" unit="8" />
-                        <instrDef xml:id="c1xoq89z" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="ryaoem9" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                      <staffDef xml:id="staffdef-L9F1" n="2" lines="5">
                         <clef xml:id="clef-L12F1" shape="F" line="4" />
                         <keySig xml:id="keysig-L13F1" accid="s" mode="minor" sig="3s" pname="f" />
                         <meterSig xml:id="metersig-L15F1" count="6" unit="8" />
-                        <instrDef xml:id="p1l4rqbk" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="e5ih1yl" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                   </staffGrp>
                </scoreDef>
                <section xml:id="section-L9F1">
-                  <pb xml:id="mn9zdqf" />
+                  <pb xml:id="b77krvb" />
                   <measure xml:id="measure-L1" n="1">
                      <staff xml:id="staff-L9F2" n="1">
                         <layer xml:id="layer-L1F2N1" n="1">
@@ -2865,7 +2865,7 @@
                      <slur xml:id="slur-L433F4-L442F3" staff="1" startid="#note-L433F4" endid="#note-L442F3" />
                      <slur xml:id="slur-L436F1-L469F2" staff="2" startid="#note-L436F1" endid="#note-L469F2" />
                   </measure>
-                  <scoreDef xml:id="o18dmm86">
+                  <scoreDef xml:id="dfujeep">
                      <keySig xml:id="keysig-L440F2" sig="2s" />
                   </scoreDef>
                   <measure xml:id="measure-L439" n="41">
@@ -4814,7 +4814,7 @@
                         </layer>
                      </staff>
                      <dir xml:id="dir-L817F3" place="between" staff="1 2" tstamp="3">cresc.</dir>
-                     <octave xml:id="nn3r7uo" staff="1" startid="#chord-L822F2" endid="#chord-L829F2" dis="8" dis.place="above" />
+                     <octave xml:id="cot2f1n" staff="1" startid="#chord-L822F2" endid="#chord-L829F2" dis="8" dis.place="above" />
                   </measure>
                   <measure xml:id="measure-L828" n="69">
                      <staff xml:id="staff-L828F2N1" n="1">
@@ -5168,10 +5168,10 @@
                      <slur xml:id="slur-L881F1-L883F1" staff="2" startid="#chord-L881F1" endid="#chord-L883F1" />
                   </measure>
                   <sb xml:id="sb-L886F1" type="original" />
-                  <scoreDef xml:id="wzfr62e">
+                  <scoreDef xml:id="l1ftjnlf">
                      <keySig xml:id="keysig-L888F2" sig="3f" />
-                     <staffGrp xml:id="yw3197x">
-                        <staffDef xml:id="z1rgkf9s" n="2">
+                     <staffGrp xml:id="n1q3aq5t">
+                        <staffDef xml:id="oel7bit" n="2">
                            <clef xml:id="clef-L887F1" shape="G" line="2" />
                         </staffDef>
                      </staffGrp>
@@ -5491,7 +5491,7 @@
                      <slur xml:id="slur-L976F2-L981F2" staff="1" startid="#chord-L976F2" endid="#chord-L981F2" />
                   </measure>
                   <sb xml:id="sb-L979F1" type="original" />
-                  <scoreDef xml:id="bkqykml">
+                  <scoreDef xml:id="q1dmgnyo">
                      <keySig xml:id="keysig-L980F2" sig="0" cancelaccid="before" />
                   </scoreDef>
                   <measure xml:id="measure-L979" n="82">
@@ -5647,7 +5647,7 @@
                      <slur xml:id="slur-L1019F3-L1025F2" staff="1" startid="#chord-L1019F3" endid="#chord-L1025F2" />
                   </measure>
                   <sb xml:id="sb-L1023F1" type="original" />
-                  <scoreDef xml:id="l6abxai">
+                  <scoreDef xml:id="ahbyy5o">
                      <keySig xml:id="keysig-L1024F2" sig="3s" />
                   </scoreDef>
                   <measure xml:id="measure-L1023" n="85">
@@ -6933,7 +6933,7 @@
                      <slur xml:id="slur-L1372F2-L1374F2" staff="1" startid="#note-L1372F2" endid="#note-L1374F2" />
                      <slur xml:id="slur-L1377F2-L1379F2" staff="1" startid="#note-L1377F2" endid="#note-L1379F2" />
                      <slur xml:id="slur-L1381F2-L1383F2" staff="1" startid="#note-L1381F2" endid="#note-L1383F2" />
-                     <octave xml:id="w7dtuaw" staff="1" startid="#note-L1377F2" endid="#note-L1452F2" dis="8" dis.place="above" />
+                     <octave xml:id="l1sjaxt4" staff="1" startid="#note-L1377F2" endid="#note-L1452F2" dis="8" dis.place="above" />
                   </measure>
                   <sb xml:id="sb-L1385F1" type="original" />
                   <measure xml:id="measure-L1385" n="100">
@@ -7220,7 +7220,7 @@
                      <slur xml:id="slur-L1450F2-L1452F2" staff="1" startid="#note-L1450F2" endid="#note-L1452F2" />
                      <slur xml:id="slur-L1455F2-L1457F2" staff="1" startid="#note-L1455F2" endid="#note-L1457F2" />
                      <slur xml:id="slur-L1460F2-L1462F2" staff="1" startid="#note-L1460F2" endid="#note-L1462F2" />
-                     <octave xml:id="p1ejgvh9" staff="1" startid="#note-L1460F2" endid="#note-L1462F2" dis="8" dis.place="above" />
+                     <octave xml:id="e11fiqpe" staff="1" startid="#note-L1460F2" endid="#note-L1462F2" dis="8" dis.place="above" />
                   </measure>
                   <measure xml:id="measure-L1464" n="103">
                      <staff xml:id="staff-L1464F2N1" n="1">
@@ -7327,7 +7327,7 @@
                      <slur xml:id="slur-L1476F2-L1477F2" staff="1" startid="#note-L1476F2" endid="#note-L1477F2" />
                      <slur xml:id="slur-L1478F2-L1479F2" staff="1" startid="#note-L1478F2" endid="#note-L1479F2" />
                      <slur xml:id="slur-L1480F2-L1481F2" staff="1" startid="#note-L1480F2" endid="#note-L1481F2" />
-                     <octave xml:id="xwtqwa5" staff="1" startid="#note-L1471F2" endid="#note-L1481F2" dis="8" dis.place="above" />
+                     <octave xml:id="m14jwke8" staff="1" startid="#note-L1471F2" endid="#note-L1481F2" dis="8" dis.place="above" />
                      <slur xml:id="slur-L1483F2-L1484F2" staff="1" startid="#note-L1483F2" endid="#note-L1484F2" />
                      <slur xml:id="slur-L1487F2-L1488F2" staff="1" startid="#chord-L1487F2" endid="#note-L1488F2" />
                   </measure>
@@ -9233,7 +9233,7 @@
                      <tie xml:id="tie-L1833F3S2-L1842F3S2" startid="#note-L1833F3S2" endid="#note-L1842F3S2" />
                   </measure>
                   <sb xml:id="sb-L1839F1" type="original" />
-                  <scoreDef xml:id="qxwrbr7">
+                  <scoreDef xml:id="f1to974t">
                      <keySig xml:id="keysig-L1840F2" sig="6s" />
                   </scoreDef>
                   <measure xml:id="measure-L1839" n="126">
@@ -11215,7 +11215,7 @@
                      <slur xml:id="slur-L2254F1-L2261F1" staff="2" startid="#chord-L2254F1" endid="#chord-L2261F1" />
                   </measure>
                   <sb xml:id="sb-L2259F1" type="original" />
-                  <scoreDef xml:id="no6um73">
+                  <scoreDef xml:id="c1tylpku">
                      <keySig xml:id="keysig-L2260F2" sig="1s" />
                   </scoreDef>
                   <measure xml:id="measure-L2259" n="157">
@@ -11825,7 +11825,7 @@
                      <slur xml:id="slur-L2391F2-L2394F2" staff="2" startid="#note-L2391F2" endid="#note-L2394F2" />
                   </measure>
                   <sb xml:id="sb-L2417F1" type="original" />
-                  <scoreDef xml:id="m111pjex">
+                  <scoreDef xml:id="b1hl3n43">
                      <keySig xml:id="keysig-L2418F2" sig="2s" />
                   </scoreDef>
                   <measure xml:id="measure-L2417" n="165">
@@ -11961,7 +11961,7 @@
                      <slur xml:id="slur-L2441F1-L2446F1" staff="2" startid="#note-L2441F1" endid="#note-L2446F1" />
                      <slur xml:id="slur-L2448F1-L2453F1" staff="2" startid="#note-L2448F1" endid="#note-L2453F1" />
                   </measure>
-                  <scoreDef xml:id="x1i7dt09">
+                  <scoreDef xml:id="m4vkyba">
                      <keySig xml:id="keysig-L2455F2" sig="3s" />
                   </scoreDef>
                   <measure xml:id="measure-L2454" n="166">

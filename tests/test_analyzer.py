@@ -5,7 +5,7 @@ Requires music21 installed and a sample MusicXML file.
 """
 import pytest
 from pathlib import Path
-from analysis.analyzer import analyze_score, detect_texture
+from analysis.analyzer import analyze_score, build_symbolic_layers, detect_texture
 
 
 SAMPLE_XML = Path(__file__).parent / "fixtures" / "sample.musicxml"
@@ -29,3 +29,21 @@ def test_detect_texture_with_music21():
         s.append(note.Note(pitch, quarterLength=1))
     tag = detect_texture(s)
     assert tag in {"stepwise_melody", "cantabile", "chordal", "octaves_or_leaps"}
+
+
+def test_build_symbolic_layers_preserves_events_and_measure_analysis():
+    score_path = Path("data/sonata32-2.krn")
+    if not score_path.exists():
+        pytest.skip("Op. 111 source is not available")
+
+    measures, analyses, global_key = build_symbolic_layers(str(score_path))
+
+    assert measures
+    assert len(measures) == len(analyses)
+    assert global_key != "unknown"
+    first = measures[0]
+    assert first.symbolic_data["encoding_version"] == "1.0"
+    assert first.symbolic_data["parts"]
+    assert any(part["events"] for part in first.symbolic_data["parts"])
+    assert "pitch_classes" in analyses[0].analysis_data
+    assert analyses[0].analysis_data["analysis_version"] == "1.0"

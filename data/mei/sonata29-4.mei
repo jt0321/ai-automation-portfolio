@@ -45,7 +45,7 @@
       </fileDesc>
       <encodingDesc>
          <appInfo>
-            <application isodate="2026-07-28T03:47:27" version="6.2.1-8d42439">
+            <application isodate="2026-08-06T03:31:59" version="6.2.1-8d42439">
                <name>Verovio</name>
                <p>Transcoded from Humdrum</p>
             </application>
@@ -216,35 +216,35 @@
    </meiHead>
    <music decls="#work0_encoded">
       <body>
-         <mdiv xml:id="vdoez8o">
-            <score xml:id="w1fvjsqk">
-               <scoreDef xml:id="x19r83if" midi.bpm="40" tempo.dist="3vu">
-                  <pgHead xml:id="i19pvjhk" func="first">
-                     <rend xml:id="j10lxl6i" halign="center" valign="middle">
-                        <rend xml:id="k56vdj5" fontsize="large">Piano Sonata no. 29 in B-flat major</rend>
-                        <lb xml:id="mj7spe3" /> 
-<lb xml:id="o1v64hao" /> </rend>
-                     <rend xml:id="qpz4z2t" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
-                     <rend xml:id="shzpyj9" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
+         <mdiv xml:id="kwo8mkd">
+            <score xml:id="l1oiui11">
+               <scoreDef xml:id="m1895hpx" midi.bpm="40" tempo.dist="3vu">
+                  <pgHead xml:id="x1ycfl4z" func="first">
+                     <rend xml:id="y1benvzs" halign="center" valign="middle">
+                        <rend xml:id="z7fs0lr" fontsize="large">Piano Sonata no. 29 in B-flat major</rend>
+                        <lb xml:id="b1mfaqnz" /> 
+<lb xml:id="dutpoop" /> </rend>
+                     <rend xml:id="f15cg900" halign="right" valign="bottom" fontsize="small">Ludwig van Beethoven</rend>
+                     <rend xml:id="h5k3s4c" halign="right" valign="bottom" fontsize="small">1770–1827</rend>
                   </pgHead>
-                  <staffGrp xml:id="d1b0pg5l" bar.thru="true" symbol="brace">
-                     <label xml:id="k1qst3x9">Piano</label>
+                  <staffGrp xml:id="s9dp3t0" bar.thru="true" symbol="brace">
+                     <label xml:id="zxyw8k1">Piano</label>
                      <staffDef xml:id="staffdef-L9F2" n="1" lines="5">
                         <clef xml:id="clef-L12F2" shape="G" line="2" />
                         <keySig xml:id="keysig-L13F2" accid="f" mode="major" sig="2f" pname="b" />
                         <meterSig xml:id="metersig-L15F2" count="6" unit="4" />
-                        <instrDef xml:id="p1mohrpv" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="e1x3jyse" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                      <staffDef xml:id="staffdef-L9F1" n="2" lines="5">
                         <clef xml:id="clef-L12F1" shape="F" line="4" />
                         <keySig xml:id="keysig-L13F1" accid="f" mode="major" sig="2f" pname="b" />
                         <meterSig xml:id="metersig-L15F1" count="6" unit="4" />
-                        <instrDef xml:id="c4put77" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
+                        <instrDef xml:id="r1ulwvur" midi.instrnum="0" midi.instrname="Acoustic_Grand_Piano" />
                      </staffDef>
                   </staffGrp>
                </scoreDef>
                <section xml:id="section-L9F1">
-                  <pb xml:id="z16kz65e" />
+                  <pb xml:id="o1t0qttl" />
                   <measure xml:id="measure-L1" right="invis" n="1">
                      <staff xml:id="staff-L9F2" n="1">
                         <layer xml:id="layer-L1F2N1" n="1">
@@ -602,14 +602,14 @@
                      <slur xml:id="slur-L92F3-L4599F2N1" staff="1" startid="#chord-L92F3" endid="#chord-L4599F2" />
                   </measure>
                   <sb xml:id="sb-L98F1" type="original" />
-                  <scoreDef xml:id="h1ko5o9e">
+                  <scoreDef xml:id="wiak1ej">
                      <keySig xml:id="keysig-L99F2" sig="5s" />
-                     <staffGrp xml:id="j1xcnt5q">
-                        <staffDef xml:id="khnc4ld" n="1">
-                           <meterSig xml:id="yoncgde" count="5" unit="4" />
+                     <staffGrp xml:id="ysj2xz0">
+                        <staffDef xml:id="zpff17n" n="1">
+                           <meterSig xml:id="ndl3541" count="5" unit="4" />
                         </staffDef>
-                        <staffDef xml:id="r123w3g8" n="2">
-                           <meterSig xml:id="z1linshf" count="5" unit="4" />
+                        <staffDef xml:id="g15ho68y" n="2">
+                           <meterSig xml:id="o3c02nv" count="5" unit="4" />
                         </staffDef>
                      </staffGrp>
                   </scoreDef>
@@ -811,13 +811,13 @@
                      <tie xml:id="tie-L165F2S3-L168F2S3" startid="#note-L165F2S3" endid="#note-L168F2S3" />
                      <tie xml:id="tie-L165F2S4-L168F2S4" startid="#note-L165F2S4" endid="#note-L168F2S4" />
                   </measure>
-                  <scoreDef xml:id="l1g8amyf">
-                     <staffGrp xml:id="m1w1s3x8">
-                        <staffDef xml:id="ns5lgvg" n="1">
-                           <meterSig xml:id="bsbk0yh" count="4" unit="4" />
+                  <scoreDef xml:id="a1et7hgn">
+                     <staffGrp xml:id="b103xys1">
+                        <staffDef xml:id="cyeghe9" n="1">
+                           <meterSig xml:id="q19aerd8" count="4" unit="4" />
                         </staffDef>
-                        <staffDef xml:id="u14c5byu" n="2">
-                           <meterSig xml:id="c1pdivl8" count="4" unit="4" />
+                        <staffDef xml:id="j10aoles" n="2">
+                           <meterSig xml:id="r15dm42q" count="4" unit="4" />
                         </staffDef>
                      </staffGrp>
                   </scoreDef>
@@ -914,13 +914,13 @@
                      <tie xml:id="tie-L192F1-L194F1" startid="#note-L192F1" endid="#note-L194F1" />
                   </measure>
                   <sb xml:id="sb-L204F1" type="original" />
-                  <scoreDef xml:id="i16g6nhc">
-                     <staffGrp xml:id="jzmqm67">
-                        <staffDef xml:id="kaictjv" n="1">
-                           <meterSig xml:id="y1cb12rq" count="4" unit="4" />
+                  <scoreDef xml:id="x1re1i5o">
+                     <staffGrp xml:id="y1l69i8i">
+                        <staffDef xml:id="ztf8dj9" n="1">
+                           <meterSig xml:id="n9z6s71" count="4" unit="4" />
                         </staffDef>
-                        <staffDef xml:id="rpd01yk" n="2">
-                           <meterSig xml:id="z1t6jrl1" count="4" unit="4" />
+                        <staffDef xml:id="gt6zsm1" n="2">
+                           <meterSig xml:id="onkqu5z" count="4" unit="4" />
                         </staffDef>
                      </staffGrp>
                   </scoreDef>
@@ -1087,13 +1087,13 @@
                      <dynam xml:id="dynam-L253F5" place="between" staff="1 2" tstamp="4">f</dynam>
                   </measure>
                   <sb xml:id="sb-L260F1" type="original" />
-                  <scoreDef xml:id="c1eqll48">
-                     <staffGrp xml:id="dchuebx">
-                        <staffDef xml:id="ef4my5h" n="1">
-                           <meterSig xml:id="s980abi" count="4" unit="4" />
+                  <scoreDef xml:id="r16x44tt">
+                     <staffGrp xml:id="s1iocw7m">
+                        <staffDef xml:id="ts4pvom" n="1">
+                           <meterSig xml:id="h17xh643" count="4" unit="4" />
                         </staffDef>
-                        <staffDef xml:id="l15jebfq" n="2">
-                           <meterSig xml:id="tnpegvh" count="4" unit="4" />
+                        <staffDef xml:id="a191o2yk" n="2">
+                           <meterSig xml:id="i1btdc1a" count="4" unit="4" />
                         </staffDef>
                      </staffGrp>
                   </scoreDef>
@@ -1196,16 +1196,16 @@
                      <tie xml:id="tie-L281F2S2-L284F2S2" startid="#note-L281F2S2" endid="#note-L284F2S2" />
                      <tie xml:id="tie-L281F2S3-L284F2S3" startid="#note-L281F2S3" endid="#note-L284F2S3" />
                      <tie xml:id="tie-L281F2S4-L284F2S4" startid="#note-L281F2S4" endid="#note-L284F2S4" />
-                     <fermata xml:id="wgwp05g" startid="#rest-L262F2" place="above" />
-                     <fermata xml:id="x198jrf" startid="#rest-L262F1" place="above" />
+                     <fermata xml:id="l11g6ims" startid="#rest-L262F2" place="above" />
+                     <fermata xml:id="m1nhyg5f" startid="#rest-L262F1" place="above" />
                   </measure>
-                  <scoreDef xml:id="o1mfhl8b">
-                     <staffGrp xml:id="p1rdxw0n">
-                        <staffDef xml:id="q1bulzl2" n="1">
-                           <meterSig xml:id="e1xsstv" count="3" unit="4" />
+                  <scoreDef xml:id="d1834h4o">
+                     <staffGrp xml:id="e1gayp88">
+                        <staffDef xml:id="f1tu8guw" n="1">
+                           <meterSig xml:id="t1d0i54k" count="3" unit="4" />
                         </staffDef>
-                        <staffDef xml:id="x2cqbm0" n="2">
-                           <meterSig xml:id="f1fikt7g" count="3" unit="4" />
+                        <staffDef xml:id="m1al10lv" n="2">
+                           <meterSig xml:id="ugtl6et" count="3" unit="4" />
                         </staffDef>
                      </staffGrp>
                   </scoreDef>
@@ -1323,13 +1323,13 @@
                      <slur xml:id="slur-L299F2-L304F2" staff="1" startid="#chord-L299F2" endid="#chord-L304F2" />
                   </measure>
                   <sb xml:id="sb-L306F1" type="original" />
-                  <scoreDef xml:id="g1yckfcm">
-                     <staffGrp xml:id="h1ndgsnu">
-                        <staffDef xml:id="i5spmpw" n="1">
-                           <meterSig xml:id="whv8a98" count="10" unit="4" />
+                  <scoreDef xml:id="vi5nyuv">
+                     <staffGrp xml:id="w16paquf">
+                        <staffDef xml:id="x1htwn0z" n="1">
+                           <meterSig xml:id="l9biyi6" count="10" unit="4" />
                         </staffDef>
-                        <staffDef xml:id="pekni6z" n="2">
-                           <meterSig xml:id="xyedxc2" count="10" unit="4" />
+                        <staffDef xml:id="e1isq44h" n="2">
+                           <meterSig xml:id="m1t27p9e" count="10" unit="4" />
                         </staffDef>
                      </staffGrp>
                   </scoreDef>
@@ -1535,14 +1535,14 @@
                      <tie xml:id="tie-L308F1S4-L324F1S4" startid="#note-L308F1S4" endid="#note-L324F1S4" />
                   </measure>
                   <sb xml:id="sb-L354F1" type="original" />
-                  <scoreDef xml:id="gq5f0pw">
+                  <scoreDef xml:id="v13r6frq">
                      <keySig xml:id="keysig-L355F2" sig="0" cancelaccid="before" />
-                     <staffGrp xml:id="ie4s9lv">
-                        <staffDef xml:id="jacc62y" n="1">
-                           <meterSig xml:id="x10wml9a" count="6" unit="4" />
+                     <staffGrp xml:id="x1nx7gxm">
+                        <staffDef xml:id="y1bqiwjs" n="1">
+                           <meterSig xml:id="m10qrnkq" count="6" unit="4" />
                         </staffDef>
-                        <staffDef xml:id="q100dldt" n="2">
-                           <meterSig xml:id="y1dmjglt" count="6" unit="4" />
+                        <staffDef xml:id="fvaw9c0" n="2">
+                           <meterSig xml:id="n1w5m0bd" count="6" unit="4" />
                         </staffDef>
                      </staffGrp>
                   </scoreDef>
@@ -1763,13 +1763,13 @@
                      <tie xml:id="tie-L384F2S2-L385F2S2" startid="#note-L384F2S2" endid="#note-L385F2S2" />
                   </measure>
                   <sb xml:id="sb-L390F1" type="original" />
-                  <scoreDef xml:id="ltiq2jx">
-                     <staffGrp xml:id="mcayw6u">
-                        <staffDef xml:id="ncn0nh2" n="1">
-                           <meterSig xml:id="b1oh0yux" count="6" unit="4" />
+                  <scoreDef xml:id="a18y5hml">
+                     <staffGrp xml:id="bzevimy">
+                        <staffDef xml:id="chkr9lr" n="1">
+                           <meterSig xml:id="qpvapb0" count="6" unit="4" />
                         </staffDef>
-                        <staffDef xml:id="u1mwb167" n="2">
-                           <meterSig xml:id="c125ix2" count="6" unit="4" />
+                        <staffDef xml:id="j59lusf" n="2">
+                           <meterSig xml:id="r1mizdcu" count="6" unit="4" />
                         </staffDef>
                      </staffGrp>
                   </scoreDef>
@@ -2027,14 +2027,14 @@
                      <dynam xml:id="dynam-L419F3" place="between" staff="1 2" tstamp="6.5">pp</dynam>
                   </measure>
                   <sb xml:id="sb-L423F1" type="original" />
-                  <scoreDef xml:id="fzmgl73">
+                  <scoreDef xml:id="u14vp50j">
                      <keySig xml:id="keysig-L424F2" sig="2f" />
-                     <staffGrp xml:id="h10a3hcq">
-                        <staffDef xml:id="i2fyvqa" n="1">
-                           <meterSig xml:id="w4ifyg1" count="3" unit="4" />
+                     <staffGrp xml:id="w11rvamh">
+                        <staffDef xml:id="xlh132y" n="1">
+                           <meterSig xml:id="lf72bn3" count="3" unit="4" />
                         </staffDef>
-                        <staffDef xml:id="p4w83au" n="2">
-                           <meterSig xml:id="x4nwohi" count="3" unit="4" />
+                        <staffDef xml:id="emdfcsv" n="2">
+                           <meterSig xml:id="mcstyd2" count="3" unit="4" />
                         </staffDef>
                      </staffGrp>
                   </scoreDef>
@@ -3738,7 +3738,7 @@
                         </layer>
                      </staff>
                   </measure>
-                  <scoreDef xml:id="f73bfwk">
+                  <scoreDef xml:id="u192zd0k">
                      <keySig xml:id="keysig-L992F2" sig="4f" />
                   </scoreDef>
                   <measure xml:id="measure-L991" n="60">
@@ -5242,7 +5242,7 @@
                      <dynam xml:id="dynam-L1351F4" place="between" staff="1 2" tstamp="1.25">p</dynam>
                   </measure>
                   <sb xml:id="sb-L1364F1" type="original" />
-                  <scoreDef xml:id="x8rhzkv">
+                  <scoreDef xml:id="m10iqzth">
                      <keySig xml:id="keysig-L1365F2" sig="6f" />
                   </scoreDef>
                   <measure xml:id="measure-L1364" n="90">
@@ -6299,7 +6299,7 @@
                      <tie xml:id="tie-L1597F4-L1605F3" startid="#note-L1597F4" endid="#note-L1605F3" />
                   </measure>
                   <sb xml:id="sb-L1602F1" type="original" />
-                  <scoreDef xml:id="n47y1ts">
+                  <scoreDef xml:id="c1ukgi0v">
                      <keySig xml:id="keysig-L1603F2" sig="5f" />
                   </scoreDef>
                   <measure xml:id="measure-L1602" n="115">
@@ -6729,7 +6729,7 @@
                      <tie xml:id="tie-L1693F1-L1698F1" startid="#note-L1693F1" endid="#note-L1698F1" />
                   </measure>
                   <sb xml:id="sb-L1696F1" type="original" />
-                  <scoreDef xml:id="nkjttv2">
+                  <scoreDef xml:id="czimkn">
                      <keySig xml:id="keysig-L1697F3" sig="4f" />
                   </scoreDef>
                   <measure xml:id="measure-L1696" n="128">
@@ -7704,7 +7704,7 @@
                         </layer>
                      </staff>
                   </measure>
-                  <scoreDef xml:id="t1bluqdx">
+                  <scoreDef xml:id="itfvt9r">
                      <keySig xml:id="keysig-L1945F2" sig="5f" />
                   </scoreDef>
                   <measure xml:id="measure-L1944" n="149">
@@ -7989,7 +7989,7 @@
                      <tie xml:id="tie-L2004F1S2-L2008F1S2" startid="#note-L2004F1S2" endid="#note-L2008F1S2" />
                   </measure>
                   <sb xml:id="sb-L2014F1" type="original" />
-                  <scoreDef xml:id="ndy77im">
+                  <scoreDef xml:id="ciju1tv">
                      <keySig xml:id="keysig-L2015F2" sig="2s" />
                   </scoreDef>
                   <measure xml:id="measure-L2014" n="154">
@@ -10225,7 +10225,7 @@
                      <dir xml:id="dir-L2688F4" place="between" staff="1 2" tstamp="3">cresc.</dir>
                      <tie xml:id="tie-L2690F2-L2696F2" startid="#note-L2690F2" endid="#note-L2696F2" />
                   </measure>
-                  <scoreDef xml:id="wwfpok3">
+                  <scoreDef xml:id="l1ehrnlz">
                      <keySig xml:id="keysig-L2694F2" sig="1s" />
                   </scoreDef>
                   <measure xml:id="measure-L2693" n="209">
@@ -11316,7 +11316,7 @@
                      <dynam xml:id="dynam-L3010F4" place="between" staff="1 2" tstamp="1">f</dynam>
                      <tie xml:id="tie-L3018F3-L3024F3" startid="#note-L3018F3" endid="#note-L3024F3" />
                   </measure>
-                  <scoreDef xml:id="y1z0zbtc">
+                  <scoreDef xml:id="n1lmpy2a">
                      <keySig xml:id="keysig-L3023F3" sig="3f" />
                   </scoreDef>
                   <measure xml:id="measure-L3022" n="234">
@@ -11951,7 +11951,7 @@
                         </layer>
                      </staff>
                   </measure>
-                  <scoreDef xml:id="r1kdym8l">
+                  <scoreDef xml:id="gxh24kq">
                      <keySig xml:id="keysig-L3216F2" sig="1f" />
                   </scoreDef>
                   <measure xml:id="measure-L3215" n="250">
@@ -12102,7 +12102,7 @@
                         </layer>
                      </staff>
                   </measure>
-                  <scoreDef xml:id="c1ksimew">
+                  <scoreDef xml:id="r18wxzcv">
                      <keySig xml:id="keysig-L3239F2" sig="2s" />
                   </scoreDef>
                   <measure xml:id="measure-L3238" n="254">
@@ -12737,7 +12737,7 @@
                      </staff>
                      <slur xml:id="slur-L3360F3-L3362F3" staff="1" startid="#note-L3360F3" endid="#note-L3362F3" />
                   </measure>
-                  <scoreDef xml:id="oetpey2">
+                  <scoreDef xml:id="d1xdujys">
                      <keySig xml:id="keysig-L3365F2" sig="2f" />
                   </scoreDef>
                   <measure xml:id="measure-L3364" n="283">
@@ -13600,7 +13600,7 @@
                         </layer>
                         <layer xml:id="layer-L3611F2N2" n="2">
                            <note xml:id="note-L3612F2" type="placed" dur="2" oct="2" pname="a" stem.dir="down" accid.ges="n" />
-                           <space xml:id="v1ohiavs" type="filler" dur="4" />
+                           <space xml:id="kotdwd4" type="filler" dur="4" />
                         </layer>
                      </staff>
                      <dynam xml:id="dynam-L3612F4" place="between" staff="1 2" tstamp="1">ff</dynam>

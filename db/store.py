@@ -5,11 +5,15 @@ and text source chunks to Postgres via SQLAlchemy.
 """
 
 from __future__ import annotations
+import hashlib
 from pathlib import Path
 from sqlalchemy import text
-from db.models import Work, ScoreAsset, ScoreSegment, TextSource
+from db.models import (
+    Work, ScoreAsset, ScoreSegment, TextSource, ScoreSource, ScoreMeasure,
+    MeasureAnalysis,
+)
 from db.session import session_scope
-from analysis.analyzer import MeasureChunk
+from analysis.analyzer import CanonicalMeasure, MeasureChunk, PerMeasureAnalysis
 from pipeline.embedder import embed_texts
 
 
@@ -45,6 +49,52 @@ def store_asset(work_id: int, asset_type: str, file_path: str,
         session.add(asset)
         session.commit()
         return asset.id
+
+
+def store_symbolic_source(work_id: int, file_path: str, source_url: str | None = None) -> int:
+    """Persist an immutable Humdrum source copy, checksum, and provenance."""
+    path = Path(file_path)
+    raw_content = path.read_text(encoding="utf-8")
+    digest = hashlib.sha256(raw_content.encode("utf-8")).hexdigest()
+    with session_scope() as session:
+        source = ScoreSource(
+            work_id=work_id,
+            format="humdrum-kern",
+            file_path=str(path),
+            source_url=source_url,
+            sha256=digest,
+            raw_content=raw_content,
+        )
+        session.add(source)
+        session.commit()
+        return source.id
+
+
+def store_symbolic_layers(
+    work_id: int,
+    measures: list[CanonicalMeasure],
+    analyses: list[PerMeasureAnalysis],
+) -> None:
+    """Store canonical notation and versioned measure analysis atomically."""
+    analyses_by_index = {analysis.measure_index: analysis for analysis in analyses}
+    with session_scope() as session:
+        for encoded_measure in measures:
+            measure = ScoreMeasure(
+                work_id=work_id,
+                measure_index=encoded_measure.measure_index,
+                measure_number=encoded_measure.measure_number,
+                symbolic_data=encoded_measure.symbolic_data,
+            )
+            session.add(measure)
+            session.flush()
+            analysis = analyses_by_index.get(encoded_measure.measure_index)
+            if analysis is not None:
+                session.add(MeasureAnalysis(
+                    measure_id=measure.id,
+                    analysis_version=analysis.analysis_data["analysis_version"],
+                    analysis_data=analysis.analysis_data,
+                ))
+        session.commit()
 
 
 def store_segments(work_id: int, chunks: list[MeasureChunk]) -> None:
@@ -135,8 +185,22 @@ def get_work_mei(work_id: int) -> str | None:
         return path.read_text(encoding="utf-8")
 
 
+def clear_work_symbolic_layers(work_id: int) -> None:
+    """Clear only reproducible symbolic source derivatives for a work."""
+    with session_scope() as session:
+        measure_ids = [m.id for m in session.query(ScoreMeasure.id).filter_by(work_id=work_id)]
+        if measure_ids:
+            session.query(MeasureAnalysis).filter(MeasureAnalysis.measure_id.in_(measure_ids)).delete(
+                synchronize_session=False
+            )
+        session.query(ScoreMeasure).filter_by(work_id=work_id).delete()
+        session.query(ScoreSource).filter_by(work_id=work_id).delete()
+        session.commit()
+
+
 def clear_work_segments_and_assets(work_id: int) -> None:
-    """Clear segments, assets, and text sources for a work to allow clean re-ingestion."""
+    """Clear all derived records for a work to allow a complete re-ingestion."""
+    clear_work_symbolic_layers(work_id)
     with session_scope() as session:
         session.query(ScoreSegment).filter_by(work_id=work_id).delete()
         # Delete text sources (like wikipedia or imslp text chunks)

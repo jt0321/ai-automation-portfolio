@@ -4,7 +4,7 @@
 
 ScoreChat is a Retrieval-Augmented Generation (RAG) system that allows you to chat directly with classical piano scores. By narrowing our scope, we bypass error-prone PDF Optical Music Recognition (OMR) and focus entirely on high-quality symbolic scores in the **Humdrum (`*.krn`)** format.
 
-The system downloads Humdrum scores directly from the [craigsapp/beethoven-piano-sonatas](https://github.com/craigsapp/beethoven-piano-sonatas) repository, converts them to standard MusicXML using `music21`, performs harmonic/texture analysis on measure-level slices, generates embeddings using OpenAI models, and stores them in PostgreSQL with `pgvector`. A web client renders the exact notation slices retrieved during chat sessions dynamically via the **Verovio** WASM toolkit in the browser.
+The system downloads Humdrum scores directly from the [craigsapp/beethoven-piano-sonatas](https://github.com/craigsapp/beethoven-piano-sonatas) repository, preserves their raw symbolic source and checksum, encodes each notated measure through `music21`, and stores versioned measure-level analysis alongside optional retrieval embeddings in PostgreSQL with `pgvector`. A web client renders retrieved notation slices dynamically via the **Verovio** WASM toolkit in the browser.
 
 ---
 
@@ -32,6 +32,39 @@ graph TD
 - **Hybrid Vector Retrieval**: Combines `pgvector` similarity search on musical analytical summaries with metadata filtering.
 - **Double Interface**: Offers both a clean **Streamlit chatbot** and a customized split-screen **HTML/JS frontend** served via a Python HTTP server.
 
+## Symbolic Score Data Model
+
+ScoreChat keeps symbolic notation as its analytical source of truth. Embeddings
+are optional retrieval aids; they do not replace score data or determine the
+musical analysis.
+
+```mermaid
+graph LR
+    A[Raw Humdrum .krn] --> B[score_sources]
+    A --> C[music21 parse]
+    C --> D[score_measures]
+    D --> E[measure_analyses]
+    E --> F[Optional retrieval chunks and embeddings]
+```
+
+- `score_sources` retains the exact Humdrum content, SHA-256 checksum, local
+  path, and upstream source URL. This is the authoritative source for details
+  not represented by a parser.
+- `score_measures` stores a JSON-safe encoding of each measure across all
+  parts: note/chord/rest events, pitch spellings and MIDI values, offsets,
+  durations, ties, articulations, expressions, signatures, directions, and
+  barlines.
+- `measure_analyses` stores versioned, reproducible calculations from those
+  measures: pitch classes, rhythm values, note/rest/chord counts, directions,
+  key candidates, Roman-numeral candidates, and texture. Key and texture
+  candidates currently use the primary part and identify that scope in the
+  stored analysis.
+
+Form, theme, variation, and motif relationships are intentionally not asserted
+in these first layers. They should be added later as evidence-backed analyses
+of the preserved score data, rather than as ungrounded metadata or embedding
+output.
+
 ---
 
 ## Quickstart
@@ -48,6 +81,20 @@ uv pip install -e .
 Launch the local PostgreSQL database preloaded with `pgvector` (requires Docker):
 ```bash
 docker compose up -d
+```
+
+If the database was created before the symbolic layers were added, apply the
+one-time migration before ingesting again:
+
+```bash
+psql "$DATABASE_URL" -f db/migrations/001_symbolic_layers.sql
+```
+
+To rebuild only the symbolic source, measure encodings, and measure analyses
+without regenerating MEI files or embeddings, use:
+
+```bash
+python ingest_scores.py --symbolic-only
 ```
 
 ### 3. Add API Keys

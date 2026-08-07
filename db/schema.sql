@@ -34,6 +34,41 @@ CREATE TABLE score_assets (
     created_at  TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Immutable provenance and raw symbolic source.  Parsed/analysed records are
+-- reproducible derivatives; the .krn content retained here is authoritative.
+CREATE TABLE score_sources (
+    id          SERIAL PRIMARY KEY,
+    work_id     INT NOT NULL REFERENCES works(id) ON DELETE CASCADE,
+    format      TEXT NOT NULL DEFAULT 'humdrum-kern',
+    file_path   TEXT NOT NULL,
+    source_url  TEXT,
+    sha256      TEXT NOT NULL,
+    raw_content TEXT NOT NULL,
+    created_at  TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE (work_id, sha256)
+);
+
+-- Canonical JSON-safe encoding of every notated measure across all parts.
+CREATE TABLE score_measures (
+    id             SERIAL PRIMARY KEY,
+    work_id        INT NOT NULL REFERENCES works(id) ON DELETE CASCADE,
+    measure_index  INT NOT NULL,
+    measure_number INT NOT NULL,
+    symbolic_data  JSONB NOT NULL,
+    created_at     TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE (work_id, measure_index)
+);
+
+-- Versioned deterministic analysis derived from one canonical score measure.
+CREATE TABLE measure_analyses (
+    id               SERIAL PRIMARY KEY,
+    measure_id       INT NOT NULL REFERENCES score_measures(id) ON DELETE CASCADE,
+    analysis_version TEXT NOT NULL,
+    analysis_data    JSONB NOT NULL,
+    created_at       TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE (measure_id, analysis_version)
+);
+
 -- Score segments: measure-level chunks (analogue of text paragraphs)
 CREATE TABLE score_segments (
     id              SERIAL PRIMARY KEY,
@@ -70,6 +105,8 @@ CREATE TABLE text_sources (
 CREATE INDEX ON score_segments USING hnsw (embedding vector_cosine_ops);
 CREATE INDEX ON text_sources   USING hnsw (embedding vector_cosine_ops);
 CREATE INDEX ON score_segments (work_id, measure_start, measure_end);
+CREATE INDEX ON score_measures (work_id, measure_index);
+CREATE INDEX ON measure_analyses (measure_id);
 CREATE INDEX ON score_segments (local_key);
 CREATE INDEX ON score_segments (formal_function);
 CREATE INDEX ON works (composer);
