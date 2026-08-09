@@ -8,16 +8,23 @@ this isn't locked to OpenAI.
 """
 
 from __future__ import annotations
+import json
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from pipeline.providers import get_chat_model, chat_provider_ready
 from pipeline.retrieval import retrieve
+from db.store import get_measure_evidence
+
+MAX_SYMBOLIC_CONTEXT_MEASURES = 24
 
 SYSTEM_PROMPT = """You are Scorechat, an expert musicologist and piano pedagogue.
 Answer questions about musical scores using the retrieved score excerpts and
 reference materials provided below. Cite specific measure ranges when discussing
 musical passages (e.g. "mm. 17–20"). Be precise about harmony, texture, and form.
-If the retrieved material doesn't cover the question, say so clearly."""
+The `symbolic_evidence` JSON is score-derived evidence; analysis values labelled
+as candidates are not definitive claims. Do not assert a musical fact that is
+not supported by the supplied evidence. If the retrieved material doesn't cover
+the question, say so clearly."""
 
 PROMPT = ChatPromptTemplate.from_messages([
     ("system", SYSTEM_PROMPT),
@@ -27,13 +34,29 @@ PROMPT = ChatPromptTemplate.from_messages([
 
 def _build_context(results: dict) -> str:
     context_parts = []
+    included_measures: set[tuple[int, int]] = set()
 
     for seg in results["segments"]:
+        evidence = get_measure_evidence(
+            seg["work_id"], seg["measure_start"], seg["measure_end"]
+        )
+        # Segments can overlap. Limit the context by unique measures so a
+        # broad retrieval remains readable and economical for the LLM.
+        unique_evidence = []
+        for measure in evidence:
+            identity = (seg["work_id"], measure["measure_index"])
+            if identity in included_measures:
+                continue
+            if len(included_measures) >= MAX_SYMBOLIC_CONTEXT_MEASURES:
+                break
+            included_measures.add(identity)
+            unique_evidence.append(measure)
         context_parts.append(
             f"[Score excerpt] {seg['composer']} — {seg['title']} "
             f"({seg.get('opus','')}) "
             f"mm. {seg['measure_start']}–{seg['measure_end']}: "
-            f"{seg['summary_text']}"
+            f"{seg['summary_text']}\n"
+            f"symbolic_evidence={json.dumps(unique_evidence, ensure_ascii=False, separators=(',', ':'))}"
         )
 
     for ts in results["text_sources"]:

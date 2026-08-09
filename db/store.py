@@ -97,6 +97,42 @@ def store_symbolic_layers(
         session.commit()
 
 
+def get_measure_evidence(work_id: int, measure_start: int, measure_end: int) -> list[dict]:
+    """Return canonical notation and current analysis for an inclusive range."""
+    with session_scope() as session:
+        rows = (
+            session.query(ScoreMeasure, MeasureAnalysis)
+            .outerjoin(MeasureAnalysis, MeasureAnalysis.measure_id == ScoreMeasure.id)
+            .filter(
+                ScoreMeasure.work_id == work_id,
+                ScoreMeasure.measure_number >= measure_start,
+                ScoreMeasure.measure_number <= measure_end,
+            )
+            .order_by(
+                ScoreMeasure.measure_index,
+                MeasureAnalysis.created_at.desc(),
+                # PostgreSQL NOW() is transaction-scoped, so versions written
+                # in one transaction share created_at. The sequence-backed ID
+                # is a deterministic insertion-order tie-breaker.
+                MeasureAnalysis.id.desc(),
+            )
+            .all()
+        )
+
+        # A measure may gain a newer analysis version later. Keep the newest
+        # inserted one (created_at, then ID) while retaining one score record.
+        evidence_by_measure: dict[int, dict] = {}
+        for measure, measure_analysis in rows:
+            if measure.id not in evidence_by_measure:
+                evidence_by_measure[measure.id] = {
+                    "measure_index": measure.measure_index,
+                    "measure_number": measure.measure_number,
+                    "notation": measure.symbolic_data,
+                    "analysis": measure_analysis.analysis_data if measure_analysis else None,
+                }
+        return list(evidence_by_measure.values())
+
+
 def store_segments(work_id: int, chunks: list[MeasureChunk]) -> None:
     """Embed all chunk summaries and bulk-insert into score_segments."""
     texts = [c.summary_text for c in chunks]

@@ -2,32 +2,42 @@
 
 ![ScoreChat Logo](scorechat_ui_mockup.png)
 
-ScoreChat is a Retrieval-Augmented Generation (RAG) system that allows you to chat directly with classical piano scores. By narrowing our scope, we bypass error-prone PDF Optical Music Recognition (OMR) and focus entirely on high-quality symbolic scores in the **Humdrum (`*.krn`)** format.
+ScoreChat is a symbolic-score analysis and retrieval system for classical piano music in **Humdrum (`*.krn`)** format. It preserves the source notation, derives reproducible musical facts from it, and uses retrieval and an LLM only to help locate and explain evidence-backed score passages.
 
 The system downloads Humdrum scores directly from the [craigsapp/beethoven-piano-sonatas](https://github.com/craigsapp/beethoven-piano-sonatas) repository, preserves their raw symbolic source and checksum, encodes each notated measure through `music21`, and stores versioned measure-level analysis alongside optional retrieval embeddings in PostgreSQL with `pgvector`. A web client renders retrieved notation slices dynamically via the **Verovio** WASM toolkit in the browser.
 
 ---
 
-## Simplified Pipeline Flow
+## Architecture
 
 ```mermaid
 graph TD
-    A[Download .krn via download_beethoven_piano_sonatas.py] --> B[Convert .krn to .musicxml using music21]
-    B --> C[Generate MEI using Verovio bindings]
-    B --> D[Analyze musical features using music21]
-    D --> E[Segment score into measure chunks]
-    E --> F[Generate embeddings for chunks]
-    F --> G[Store segments & vectors in pgvector]
-    G --> H[Query chatbot via Streamlit or HTML/JS UI]
-    H --> I[Retrieve segments & render SVG slices in UI via Verovio WASM]
+    A[Humdrum .krn source] --> B[score_sources
+raw content, checksum, provenance]
+    A --> C[music21 parse]
+    C --> D[score_measures
+canonical measure encoding]
+    D --> E[measure_analyses
+versioned score-derived facts]
+    E --> F[score_segments
+optional retrieval windows]
+    F --> G[Text embeddings + pgvector]
+    D --> H[MEI via Verovio]
+    G --> I[Retriever + LLM explanation]
+    H --> J[Notation viewer]
+    I --> J
 ```
+
+The raw score and deterministic symbolic layers are the source of musical
+evidence. Retrieval narrows passages for a question; it does not replace the
+underlying notation or create analytical facts.
 
 ---
 
 ## Features
 
 - **High-Quality Symbolic Ingestion**: Pulls verified Humdrum (`.krn`) files directly from GitHub.
-- **Auto-Conversion & Analysis**: Converts `.krn` to MusicXML via `music21` and performs local key, Roman numeral progression, harmonic rhythm, and texture analyses.
+- **Score-Derived Analysis**: Uses `music21` to create canonical measure encodings and versioned key, harmony, rhythm, and texture candidates.
 - **WASM Notation Rendering**: Generates MEI (`.mei`) files via `verovio` python bindings so that the frontend can dynamically render exact SVG notation slices of the retrieved measures.
 - **Hybrid Vector Retrieval**: Combines `pgvector` similarity search on musical analytical summaries with metadata filtering.
 - **Double Interface**: Offers both a clean **Streamlit chatbot** and a customized split-screen **HTML/JS frontend** served via a Python HTTP server.
@@ -37,15 +47,6 @@ graph TD
 ScoreChat keeps symbolic notation as its analytical source of truth. Embeddings
 are optional retrieval aids; they do not replace score data or determine the
 musical analysis.
-
-```mermaid
-graph LR
-    A[Raw Humdrum .krn] --> B[score_sources]
-    A --> C[music21 parse]
-    C --> D[score_measures]
-    D --> E[measure_analyses]
-    E --> F[Optional retrieval chunks and embeddings]
-```
 
 - `score_sources` retains the exact Humdrum content, SHA-256 checksum, local
   path, and upstream source URL. This is the authoritative source for details
