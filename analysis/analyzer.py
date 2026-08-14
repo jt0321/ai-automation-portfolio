@@ -18,6 +18,7 @@ from music21 import converter, analysis, stream, roman
 # preserved independently, so every derived record can be regenerated.
 SYMBOLIC_ENCODING_VERSION = "1.0"
 MEASURE_ANALYSIS_VERSION = "1.0"
+SPAN_ANALYSIS_VERSION = "1.0"
 
 
 @dataclass
@@ -49,6 +50,78 @@ class PerMeasureAnalysis:
     measure_index: int
     measure_number: int
     analysis_data: dict[str, Any]
+
+
+@dataclass
+class SpanCandidate:
+    """A score-derived, variable-length candidate for later formal analysis."""
+    measure_start: int
+    measure_end: int
+    measure_start_index: int
+    measure_end_index: int
+    evidence: dict[str, Any]
+    features: dict[str, Any]
+
+
+def build_span_candidates(
+    measures: list[CanonicalMeasure], analyses: list[PerMeasureAnalysis],
+) -> list[SpanCandidate]:
+    """Segment a movement at explicit or score-derived structural changes.
+
+    These are intentionally *candidates*, not claims that a span is a theme,
+    variation, or phrase.  The evidence is retained for later validation.
+    """
+    if not measures:
+        return []
+    analyses_by_index = {item.measure_index: item.analysis_data for item in analyses}
+    boundaries: dict[int, list[str]] = {0: ["movement_start"]}
+
+    for index in range(1, len(measures)):
+        previous = measures[index - 1]
+        current = measures[index]
+        previous_analysis = analyses_by_index.get(previous.measure_index, {})
+        current_analysis = analyses_by_index.get(current.measure_index, {})
+        signals = []
+        if current_analysis.get("time_signature") != previous_analysis.get("time_signature"):
+            signals.append("meter_change")
+        if current_analysis.get("directions"):
+            signals.append("notated_direction")
+        previous_barlines = [
+            part.get("right_barline") for part in previous.symbolic_data.get("parts", [])
+        ]
+        if any(barline in {"final", "repeat"} for barline in previous_barlines):
+            signals.append("structural_barline")
+        if signals:
+            boundaries[index] = signals
+    boundaries[len(measures)] = ["movement_end"]
+
+    boundary_indexes = sorted(boundaries)
+    candidates: list[SpanCandidate] = []
+    for start_index, end_index in zip(boundary_indexes, boundary_indexes[1:]):
+        span_measures = measures[start_index:end_index]
+        if not span_measures:
+            continue
+        span_analyses = [analyses_by_index.get(item.measure_index, {}) for item in span_measures]
+        candidates.append(SpanCandidate(
+            measure_start=span_measures[0].measure_number,
+            measure_end=span_measures[-1].measure_number,
+            measure_start_index=span_measures[0].measure_index,
+            measure_end_index=span_measures[-1].measure_index,
+            evidence={
+                "analysis_version": SPAN_ANALYSIS_VERSION,
+                "start_boundary": boundaries[start_index],
+                "end_boundary": boundaries[end_index],
+            },
+            features={
+                "measure_count": len(span_measures),
+                "time_signatures": sorted({a.get("time_signature") for a in span_analyses if a.get("time_signature")}),
+                "local_key_candidates": sorted({a.get("local_key_candidate") for a in span_analyses if a.get("local_key_candidate")}),
+                "texture_tags": sorted({a.get("texture_tag") for a in span_analyses if a.get("texture_tag")}),
+                "pitch_classes": sorted({pc for a in span_analyses for pc in a.get("pitch_classes", [])}),
+                "roman_numerals": [rn for a in span_analyses for rn in a.get("roman_numerals_global_key", [])],
+            },
+        ))
+    return candidates
 
 
 def _duration_data(element) -> dict[str, Any]:

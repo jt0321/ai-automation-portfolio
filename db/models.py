@@ -1,5 +1,5 @@
 from sqlalchemy import (
-    Column, Integer, Text, ARRAY, TIMESTAMP, ForeignKey, CheckConstraint,
+    Column, Integer, Float, Text, ARRAY, TIMESTAMP, ForeignKey, CheckConstraint,
     UniqueConstraint, func
 )
 from sqlalchemy.dialects.postgresql import JSONB
@@ -37,6 +37,8 @@ class Work(Base):
     text_sources    = relationship("TextSource",   back_populates="work", cascade="all, delete")
     sources         = relationship("ScoreSource",  back_populates="work", cascade="all, delete")
     measures        = relationship("ScoreMeasure", back_populates="work", cascade="all, delete")
+    analysis_runs   = relationship("AnalysisRun",  back_populates="work", cascade="all, delete")
+    spans           = relationship("SpanAnalysis", back_populates="work", cascade="all, delete")
 
 
 class ScoreAsset(Base):
@@ -104,6 +106,76 @@ class MeasureAnalysis(Base):
     created_at       = Column(TIMESTAMP(timezone=True), server_default=func.now())
 
     measure = relationship("ScoreMeasure", back_populates="analyses")
+
+
+class AnalysisRun(Base):
+    """Provenance for a reproducible derived-analysis pass over one work."""
+    __tablename__ = "analysis_runs"
+
+    id                 = Column(Integer, primary_key=True)
+    work_id            = Column(Integer, ForeignKey("works.id", ondelete="CASCADE"), nullable=False)
+    analyzer_name      = Column(Text, nullable=False)
+    analyzer_version   = Column(Text, nullable=False)
+    configuration_data = Column(JSONB, nullable=False, default=dict)
+    source_sha256      = Column(Text, nullable=False)
+    created_at         = Column(TIMESTAMP(timezone=True), server_default=func.now())
+
+    work = relationship("Work", back_populates="analysis_runs")
+    spans = relationship("SpanAnalysis", back_populates="analysis_run", cascade="all, delete")
+    relations = relationship("SpanRelation", back_populates="analysis_run", cascade="all, delete")
+
+
+class SpanAnalysis(Base):
+    """A variable-length, evidence-backed candidate or formal analysis span."""
+    __tablename__ = "span_analyses"
+    __table_args__ = (
+        CheckConstraint("measure_start_index <= measure_end_index"),
+        CheckConstraint("span_type IN ('candidate','phrase','theme','variation','transition')"),
+        CheckConstraint("status IN ('proposed','accepted','rejected')"),
+    )
+
+    id            = Column(Integer, primary_key=True)
+    work_id       = Column(Integer, ForeignKey("works.id", ondelete="CASCADE"), nullable=False)
+    analysis_run_id = Column(Integer, ForeignKey("analysis_runs.id", ondelete="CASCADE"), nullable=False)
+    measure_start_index = Column(Integer, nullable=False)
+    measure_end_index   = Column(Integer, nullable=False)
+    measure_start = Column(Integer, nullable=False)
+    measure_end   = Column(Integer, nullable=False)
+    span_type     = Column(Text, nullable=False, default="candidate")
+    label         = Column(Text)
+    confidence    = Column(Float)
+    status        = Column(Text, nullable=False, default="proposed")
+    evidence_data = Column(JSONB, nullable=False)
+    features_data = Column(JSONB, nullable=False)
+    created_at    = Column(TIMESTAMP(timezone=True), server_default=func.now())
+
+    work = relationship("Work", back_populates="spans")
+    analysis_run = relationship("AnalysisRun", back_populates="spans")
+    outgoing_relations = relationship("SpanRelation", foreign_keys="SpanRelation.source_span_id", back_populates="source_span")
+    incoming_relations = relationship("SpanRelation", foreign_keys="SpanRelation.target_span_id", back_populates="target_span")
+
+
+class SpanRelation(Base):
+    """Evidence-backed relation between two variable-length analysis spans."""
+    __tablename__ = "span_relations"
+    __table_args__ = (
+        CheckConstraint("relation_type IN ('repeats','varies','inverts','diminishes','augments','changes_meter_from','contrasts_with')"),
+        CheckConstraint("status IN ('proposed','accepted','rejected')"),
+    )
+
+    id              = Column(Integer, primary_key=True)
+    analysis_run_id = Column(Integer, ForeignKey("analysis_runs.id", ondelete="CASCADE"), nullable=False)
+    source_span_id  = Column(Integer, ForeignKey("span_analyses.id", ondelete="CASCADE"), nullable=False)
+    target_span_id  = Column(Integer, ForeignKey("span_analyses.id", ondelete="CASCADE"), nullable=False)
+    relation_type   = Column(Text, nullable=False)
+    confidence      = Column(Float)
+    status          = Column(Text, nullable=False, default="proposed")
+    evidence_data   = Column(JSONB, nullable=False)
+    created_at      = Column(TIMESTAMP(timezone=True), server_default=func.now())
+
+    analysis_run = relationship("AnalysisRun", back_populates="relations")
+    source_span = relationship("SpanAnalysis", foreign_keys=[source_span_id], back_populates="outgoing_relations")
+    target_span = relationship("SpanAnalysis", foreign_keys=[target_span_id], back_populates="incoming_relations")
 
 
 class ScoreSegment(Base):

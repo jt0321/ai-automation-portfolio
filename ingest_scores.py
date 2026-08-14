@@ -20,9 +20,9 @@ from download_beethoven_piano_sonatas import DATA_DIR
 from db.store import (
     upsert_work, store_asset, store_segments,
     clear_work_segments_and_assets, clear_work_symbolic_layers,
-    store_symbolic_layers, store_symbolic_source,
+    store_symbolic_layers, store_symbolic_source, store_span_candidates,
 )
-from analysis.analyzer import analyze_score, build_symbolic_layers
+from analysis.analyzer import analyze_score, build_symbolic_layers, build_span_candidates
 from pipeline.mei_converter import score_to_mei
 
 # Sonata number -> (title, opus, key, nickname). Covers all 32 published
@@ -241,6 +241,9 @@ def main(window: int, symbolic_only: bool):
             measures, measure_analyses, _ = build_symbolic_layers(str(krn))
             store_symbolic_layers(work_id, measures, measure_analyses)
             click.echo(f"   ✓ {len(measures)} canonical measures and analyses stored")
+            span_candidates = build_span_candidates(measures, measure_analyses)
+            store_span_candidates(work_id, span_candidates)
+            click.echo(f"   ✓ {len(span_candidates)} evidence-backed span candidates stored")
 
             if symbolic_only:
                 continue

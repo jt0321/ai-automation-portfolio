@@ -10,10 +10,13 @@ from pathlib import Path
 from sqlalchemy import text
 from db.models import (
     Work, ScoreAsset, ScoreSegment, TextSource, ScoreSource, ScoreMeasure,
-    MeasureAnalysis,
+    MeasureAnalysis, AnalysisRun, SpanAnalysis,
 )
 from db.session import session_scope
-from analysis.analyzer import CanonicalMeasure, MeasureChunk, PerMeasureAnalysis
+from analysis.analyzer import (
+    CanonicalMeasure, MeasureChunk, PerMeasureAnalysis, SpanCandidate,
+    SPAN_ANALYSIS_VERSION,
+)
 from pipeline.embedder import embed_texts
 
 
@@ -95,6 +98,39 @@ def store_symbolic_layers(
                     analysis_data=analysis.analysis_data,
                 ))
         session.commit()
+
+
+def store_span_candidates(work_id: int, candidates: list[SpanCandidate]) -> int:
+    """Persist one deterministic candidate-span analysis run for a work."""
+    with session_scope() as session:
+        source = session.query(ScoreSource).filter_by(work_id=work_id).order_by(ScoreSource.id.desc()).first()
+        if source is None:
+            raise ValueError(f"Cannot analyse spans without a symbolic source for work {work_id}")
+        run = AnalysisRun(
+            work_id=work_id,
+            analyzer_name="deterministic_boundary_candidates",
+            analyzer_version=SPAN_ANALYSIS_VERSION,
+            configuration_data={"boundary_signals": ["meter_change", "notated_direction", "structural_barline"]},
+            source_sha256=source.sha256,
+        )
+        session.add(run)
+        session.flush()
+        for candidate in candidates:
+            session.add(SpanAnalysis(
+                work_id=work_id,
+                analysis_run_id=run.id,
+                measure_start_index=candidate.measure_start_index,
+                measure_end_index=candidate.measure_end_index,
+                measure_start=candidate.measure_start,
+                measure_end=candidate.measure_end,
+                span_type="candidate",
+                confidence=1.0,
+                status="proposed",
+                evidence_data=candidate.evidence,
+                features_data=candidate.features,
+            ))
+        session.commit()
+        return run.id
 
 
 def get_measure_evidence(work_id: int, measure_start: int, measure_end: int) -> list[dict]:
@@ -224,6 +260,8 @@ def get_work_mei(work_id: int) -> str | None:
 def clear_work_symbolic_layers(work_id: int) -> None:
     """Clear only reproducible symbolic source derivatives for a work."""
     with session_scope() as session:
+        # Span analyses and relations cascade from their analysis run.
+        session.query(AnalysisRun).filter_by(work_id=work_id).delete()
         measure_ids = [m.id for m in session.query(ScoreMeasure.id).filter_by(work_id=work_id)]
         if measure_ids:
             session.query(MeasureAnalysis).filter(MeasureAnalysis.measure_id.in_(measure_ids)).delete(

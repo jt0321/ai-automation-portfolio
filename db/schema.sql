@@ -69,6 +69,54 @@ CREATE TABLE measure_analyses (
     UNIQUE (measure_id, analysis_version)
 );
 
+-- Provenance for a reproducible pass that creates broader score analyses.
+CREATE TABLE analysis_runs (
+    id                 SERIAL PRIMARY KEY,
+    work_id            INT NOT NULL REFERENCES works(id) ON DELETE CASCADE,
+    analyzer_name      TEXT NOT NULL,
+    analyzer_version   TEXT NOT NULL,
+    configuration_data JSONB NOT NULL DEFAULT '{}'::jsonb,
+    source_sha256      TEXT NOT NULL,
+    created_at         TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Variable-length, evidence-backed spans. Initially these are deterministic
+-- boundary candidates, not claims about phrase, theme, or variation.
+CREATE TABLE span_analyses (
+    id              SERIAL PRIMARY KEY,
+    work_id         INT NOT NULL REFERENCES works(id) ON DELETE CASCADE,
+    analysis_run_id INT NOT NULL REFERENCES analysis_runs(id) ON DELETE CASCADE,
+    measure_start_index INT NOT NULL,
+    measure_end_index   INT NOT NULL,
+    measure_start   INT NOT NULL,
+    measure_end     INT NOT NULL,
+    span_type       TEXT NOT NULL DEFAULT 'candidate'
+                    CHECK (span_type IN ('candidate','phrase','theme','variation','transition')),
+    label           TEXT,
+    confidence      REAL,
+    status          TEXT NOT NULL DEFAULT 'proposed'
+                    CHECK (status IN ('proposed','accepted','rejected')),
+    evidence_data   JSONB NOT NULL,
+    features_data   JSONB NOT NULL,
+    created_at      TIMESTAMPTZ DEFAULT NOW(),
+    CHECK (measure_start_index <= measure_end_index)
+);
+
+-- Relations are reserved for validated symbolic comparisons between spans.
+CREATE TABLE span_relations (
+    id              SERIAL PRIMARY KEY,
+    analysis_run_id INT NOT NULL REFERENCES analysis_runs(id) ON DELETE CASCADE,
+    source_span_id  INT NOT NULL REFERENCES span_analyses(id) ON DELETE CASCADE,
+    target_span_id  INT NOT NULL REFERENCES span_analyses(id) ON DELETE CASCADE,
+    relation_type   TEXT NOT NULL CHECK (relation_type IN
+                    ('repeats','varies','inverts','diminishes','augments','changes_meter_from','contrasts_with')),
+    confidence      REAL,
+    status          TEXT NOT NULL DEFAULT 'proposed'
+                    CHECK (status IN ('proposed','accepted','rejected')),
+    evidence_data   JSONB NOT NULL,
+    created_at      TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Score segments: measure-level chunks (analogue of text paragraphs)
 CREATE TABLE score_segments (
     id              SERIAL PRIMARY KEY,
@@ -107,6 +155,10 @@ CREATE INDEX ON text_sources   USING hnsw (embedding vector_cosine_ops);
 CREATE INDEX ON score_segments (work_id, measure_start, measure_end);
 CREATE INDEX ON score_measures (work_id, measure_index);
 CREATE INDEX ON measure_analyses (measure_id);
+CREATE INDEX ON analysis_runs (work_id, created_at);
+CREATE INDEX ON span_analyses (work_id, measure_start_index, measure_end_index);
+CREATE INDEX ON span_analyses (analysis_run_id);
+CREATE INDEX ON span_relations (source_span_id, target_span_id);
 CREATE INDEX ON score_segments (local_key);
 CREATE INDEX ON score_segments (formal_function);
 CREATE INDEX ON works (composer);

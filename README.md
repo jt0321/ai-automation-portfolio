@@ -60,6 +60,21 @@ musical analysis.
   key candidates, Roman-numeral candidates, and texture. Key and texture
   candidates currently use the primary part and identify that scope in the
   stored analysis.
+- `analysis_runs` records the analyser, version, configuration, and source
+  checksum for each broader analysis pass.
+- `span_analyses` stores variable-length, evidence-backed candidates and later
+  phrase/theme/variation/transition claims. The initial analyser only creates
+  `candidate` spans at meter changes, notated directions, and structural
+  barlines; it does not infer formal labels.
+- `span_relations` records relations between spans, such as repetition,
+  variation, inversion, diminution, augmentation, or meter change. No
+  relations are generated until a symbolic comparison analyser is added.
+
+Span analyses and relations have a review lifecycle: `proposed`, `accepted`,
+or `rejected`. The current pipeline creates only `proposed` analytical claims;
+the user interface does not yet expose review controls. A future UI should let
+users inspect each claim's score evidence and explicitly accept or reject it
+without changing the underlying source notation.
 
 Form, theme, variation, and motif relationships are intentionally not asserted
 in these first layers. They should be added later as evidence-backed analyses
@@ -89,6 +104,7 @@ one-time migration before ingesting again:
 
 ```bash
 psql "$DATABASE_URL" -f db/migrations/001_symbolic_layers.sql
+psql "$DATABASE_URL" -f db/migrations/002_span_analysis.sql
 ```
 
 To rebuild only the symbolic source, measure encodings, and measure analyses
