@@ -6,6 +6,7 @@ and text source chunks to Postgres via SQLAlchemy.
 
 from __future__ import annotations
 import hashlib
+import re
 from fractions import Fraction
 from pathlib import Path
 from sqlalchemy import text
@@ -258,6 +259,95 @@ def get_measure_total_durations(
                 _parse_quarter_length(e["duration"]["quarter_length"]) for e in parts[part_index]["events"]
             ))
         return totals
+
+
+def get_max_measure_index(work_id: int) -> int | None:
+    """Highest measure_index stored for a work, or None if it has no measures."""
+    with session_scope() as session:
+        return session.query(ScoreMeasure.measure_index).filter_by(work_id=work_id).order_by(
+            ScoreMeasure.measure_index.desc()
+        ).limit(1).scalar()
+
+
+def get_global_key(work_id: int, measure_index: int) -> str | None:
+    """The stored global_key (e.g. "f minor") analysis for one measure, or
+    None if that measure has no analysis or no key was determined."""
+    with session_scope() as session:
+        row = (
+            session.query(MeasureAnalysis.analysis_data)
+            .join(ScoreMeasure, MeasureAnalysis.measure_id == ScoreMeasure.id)
+            .filter(ScoreMeasure.work_id == work_id, ScoreMeasure.measure_index == measure_index)
+            .order_by(MeasureAnalysis.created_at.desc(), MeasureAnalysis.id.desc())
+            .first()
+        )
+        return row[0].get("global_key") if row else None
+
+
+def get_tempo_markings(work_id: int) -> list[tuple[int, str | None]]:
+    """(measure_index, first MetronomeMark value found in that measure's
+    stored directions) for every measure of a work, in order. A measure
+    with no tempo direction of its own gets None (tempo unchanged)."""
+    with session_scope() as session:
+        rows = (
+            session.query(ScoreMeasure.measure_index, MeasureAnalysis.analysis_data)
+            .join(MeasureAnalysis, MeasureAnalysis.measure_id == ScoreMeasure.id)
+            .filter(ScoreMeasure.work_id == work_id)
+            .order_by(ScoreMeasure.measure_index)
+            .all()
+        )
+        markings = []
+        for measure_index, analysis_data in rows:
+            tempo = None
+            for direction in analysis_data.get("directions", []):
+                if direction.get("type") == "MetronomeMark":
+                    tempo = direction.get("value")
+                    break
+            markings.append((measure_index, tempo))
+        return markings
+
+
+_REPEAT_OPEN_BARLINE = re.compile(r"^=(\d+)")
+
+
+def get_theme_repeat_open_index(work_id: int) -> int | None:
+    """measure_index of the first repeat-open barline (Humdrum "|:") in the
+    raw source, or None if the movement has none. When a movement opens
+    with a slow introduction, the notated theme conventionally begins
+    exactly at this barline, making it a more precise theme-start signal
+    than tempo-marking changes.
+    """
+    with session_scope() as session:
+        source = (
+            session.query(ScoreSource)
+            .filter_by(work_id=work_id)
+            .order_by(ScoreSource.id.desc())
+            .first()
+        )
+        if source is None:
+            return None
+
+        measure_number = None
+        for line in source.raw_content.splitlines():
+            if not line.startswith("="):
+                continue
+            first_field = line.split("\t", 1)[0]
+            if "|:" not in first_field:
+                continue
+            match = _REPEAT_OPEN_BARLINE.match(first_field)
+            if match:
+                measure_number = int(match.group(1))
+                break
+
+        if measure_number is None:
+            return None
+
+        return (
+            session.query(ScoreMeasure.measure_index)
+            .filter_by(work_id=work_id, measure_number=measure_number)
+            .order_by(ScoreMeasure.measure_index)
+            .limit(1)
+            .scalar()
+        )
 
 
 def store_segments(work_id: int, chunks: list[MeasureChunk]) -> None:
