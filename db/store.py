@@ -6,6 +6,7 @@ and text source chunks to Postgres via SQLAlchemy.
 
 from __future__ import annotations
 import hashlib
+from fractions import Fraction
 from pathlib import Path
 from sqlalchemy import text
 from db.models import (
@@ -141,6 +142,10 @@ def get_measure_evidence(work_id: int, measure_start: int, measure_end: int) -> 
             .outerjoin(MeasureAnalysis, MeasureAnalysis.measure_id == ScoreMeasure.id)
             .filter(
                 ScoreMeasure.work_id == work_id,
+                # TODO: measure_number is notated/display numbering (music21
+                # resets it to 0 after repeat barlines and it can repeat
+                # across a work); this can match the wrong section. Range
+                # filters should key on measure_index instead.
                 ScoreMeasure.measure_number >= measure_start,
                 ScoreMeasure.measure_number <= measure_end,
             )
@@ -167,6 +172,92 @@ def get_measure_evidence(work_id: int, measure_start: int, measure_end: int) -> 
                     "analysis": measure_analysis.analysis_data if measure_analysis else None,
                 }
         return list(evidence_by_measure.values())
+
+
+def _parse_quarter_length(value: str) -> float:
+    """symbolic_data stores durations/offsets as music21 quarterLength
+    strings, which may be plain decimals ("1.5") or fractions ("5/3")."""
+    return float(Fraction(value))
+
+
+def _ordered_events(
+    work_id: int, measure_start_index: int, measure_end_index: int, part_index: int = 0
+) -> list[dict]:
+    """One part's note/chord/rest events across an inclusive measure_index
+    range, ordered by measure then offset within the measure."""
+    with session_scope() as session:
+        measures = (
+            session.query(ScoreMeasure)
+            .filter(
+                ScoreMeasure.work_id == work_id,
+                ScoreMeasure.measure_index >= measure_start_index,
+                ScoreMeasure.measure_index <= measure_end_index,
+            )
+            .order_by(ScoreMeasure.measure_index)
+            .all()
+        )
+        events: list[dict] = []
+        for measure in measures:
+            parts = measure.symbolic_data.get("parts", [])
+            if part_index >= len(parts):
+                continue
+            events.extend(sorted(parts[part_index]["events"], key=lambda e: _parse_quarter_length(e["offset"])))
+        return events
+
+
+def extract_ordered_pitch_classes(
+    work_id: int, measure_start_index: int, measure_end_index: int, part_index: int = 0
+) -> list[int]:
+    """Ordered pitch-class sequence for one part across a measure range.
+    Chords contribute every pitch class they contain, in stored order, not
+    just one note. Rests contribute nothing (no pitch to compare)."""
+    pitch_classes: list[int] = []
+    for event in _ordered_events(work_id, measure_start_index, measure_end_index, part_index):
+        if event["kind"] == "note":
+            pitch_classes.append(event["pitch"]["pitch_class"])
+        elif event["kind"] == "chord":
+            pitch_classes.extend(p["pitch_class"] for p in event["pitches"])
+    return pitch_classes
+
+
+def extract_ordered_rhythm(
+    work_id: int, measure_start_index: int, measure_end_index: int, part_index: int = 0
+) -> list[float]:
+    """Ordered quarter-length duration per event for one part across a
+    measure range. Notes, chords, and rests all count."""
+    return [
+        _parse_quarter_length(event["duration"]["quarter_length"])
+        for event in _ordered_events(work_id, measure_start_index, measure_end_index, part_index)
+    ]
+
+
+def get_measure_total_durations(
+    work_id: int, measure_start_index: int, measure_end_index: int, part_index: int = 0
+) -> list[float]:
+    """Total event duration per measure (one entry per measure_index in
+    range), for loose rhythmic comparison that doesn't require identical
+    subdivision of each measure."""
+    with session_scope() as session:
+        measures = (
+            session.query(ScoreMeasure)
+            .filter(
+                ScoreMeasure.work_id == work_id,
+                ScoreMeasure.measure_index >= measure_start_index,
+                ScoreMeasure.measure_index <= measure_end_index,
+            )
+            .order_by(ScoreMeasure.measure_index)
+            .all()
+        )
+        totals = []
+        for measure in measures:
+            parts = measure.symbolic_data.get("parts", [])
+            if part_index >= len(parts):
+                totals.append(0.0)
+                continue
+            totals.append(sum(
+                _parse_quarter_length(e["duration"]["quarter_length"]) for e in parts[part_index]["events"]
+            ))
+        return totals
 
 
 def store_segments(work_id: int, chunks: list[MeasureChunk]) -> None:
