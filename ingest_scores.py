@@ -22,7 +22,9 @@ from db.store import (
     clear_work_segments_and_assets, clear_work_symbolic_layers,
     store_symbolic_layers, store_symbolic_source, store_span_candidates,
 )
-from analysis.analyzer import analyze_score, build_symbolic_layers, build_span_candidates
+from analysis.analyzer import (
+    analyze_score, build_span_candidates, build_symbolic_layers, humdrum_measure_count,
+)
 from pipeline.mei_converter import score_to_mei
 
 # Sonata number -> (title, opus, key, nickname). Covers all 32 published
@@ -239,6 +241,16 @@ def main(window: int, symbolic_only: bool):
         click.echo("   Encoding score and analysing measures...")
         try:
             measures, measure_analyses, _ = build_symbolic_layers(str(krn))
+            # A parse that silently drops music is worse than a failed one: the
+            # stored analysis looks healthy while covering only part of the
+            # movement. Check it against the barlines the source itself notates.
+            expected_measures = humdrum_measure_count(krn.read_text(encoding="utf-8"))
+            if expected_measures and len(measures) < expected_measures - 2:
+                click.echo(
+                    f"   ✗ Parsed only {len(measures)} of {expected_measures} notated "
+                    f"measures — skipping rather than storing a truncated score."
+                )
+                continue
             store_symbolic_layers(work_id, measures, measure_analyses)
             click.echo(f"   ✓ {len(measures)} canonical measures and analyses stored")
             span_candidates = build_span_candidates(measures, measure_analyses)

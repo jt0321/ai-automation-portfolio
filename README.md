@@ -89,6 +89,15 @@ It is a pure function of stored `score_measures.symbolic_data`, so a harmonic
 pass is reproducible from the database alone and can be re-run and re-versioned
 without re-parsing the source `.krn`.
 
+**Score loading.** `.krn` files are parsed through `load_score()`, which
+validates the result against the numbered barlines in the source. music21's
+Humdrum reader silently drops music at nested spine splits — four movements in
+this corpus lost between 10 and 150 measures, one of them 93% of the piece —
+so a short parse falls back to Verovio's importer via MEI. Key and meter are
+read directly from the Humdrum text rather than from whichever importer ran,
+since they are notated facts in the source and are load-bearing for key
+estimation. Ingestion refuses to store a score that still parses short.
+
 **Key trajectory.** Duration-weighted pitch-class profiles are correlated
 against Krumhansl-Kessler key profiles over a sliding window, then smoothed by
 a Viterbi pass so a modulation must outweigh a change penalty rather than

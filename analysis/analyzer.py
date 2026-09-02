@@ -11,9 +11,96 @@ from pathlib import Path
 from typing import Any, Optional
 
 import music21
-from music21 import converter, analysis, stream, roman
+from music21 import converter, analysis, key as key_module, meter, stream, roman
 
 from analysis.harmony import HARMONY_ANALYSIS_VERSION, analyze_harmony
+
+
+# A Humdrum key signature (`*k[b-e-a-d-]`) and meter (`*M2/4`) are notated
+# facts in the source.  They are read from the raw text rather than from a
+# parsed score because they are load-bearing for key estimation and no
+# importer preserves them reliably -- Verovio's MEI carries them in elements
+# music21's MEI reader ignores, yielding a score with no signature at all.
+_KERN_KEY_SIGNATURE = re.compile(r"^\*k\[([^\]]*)\]", re.M)
+_KERN_TIME_SIGNATURE = re.compile(r"^\*M(\d+)/(\d+)", re.M)
+# A movement's barlines are numbered `=N`; the count bounds how many measures
+# a correct parse must produce.
+_KERN_BARLINE = re.compile(r"^=(\d+)", re.M)
+
+
+def humdrum_signatures(source_text: str) -> tuple[int | None, str | None]:
+    """Opening key signature (as a count of sharps, negative for flats) and
+    meter, read straight from Humdrum source."""
+    sharps = None
+    match = _KERN_KEY_SIGNATURE.search(source_text)
+    if match:
+        accidentals = match.group(1)
+        sharps = accidentals.count("#") - accidentals.count("-")
+    meter_match = _KERN_TIME_SIGNATURE.search(source_text)
+    time_signature = f"{meter_match.group(1)}/{meter_match.group(2)}" if meter_match else None
+    return sharps, time_signature
+
+
+def humdrum_measure_count(source_text: str) -> int:
+    """How many numbered barlines the source notates."""
+    return len({int(number) for number in _KERN_BARLINE.findall(source_text)})
+
+
+def _parse_via_verovio(source_text: str):
+    """Re-parse Humdrum through Verovio's importer, via MEI.
+
+    music21's Humdrum reader silently truncates scores containing nested
+    spine splits -- Op. 14 No. 1/i loses 150 of its 162 measures -- while
+    Verovio's humlib-based reader handles them.  The MEI it emits loses the
+    signature and barline detail music21's Humdrum path preserves, so this is
+    a fallback for provably-truncated scores only, never the default.
+    """
+    import tempfile
+    import verovio
+
+    toolkit = verovio.toolkit()
+    toolkit.setOptions({"inputFrom": "humdrum", "outputTo": "mei"})
+    if not toolkit.loadData(source_text):
+        return None
+    with tempfile.NamedTemporaryFile("w", suffix=".mei", delete=False, encoding="utf-8") as handle:
+        handle.write(toolkit.getMEI())
+        mei_path = handle.name
+    try:
+        return converter.parse(mei_path, forceSource=True)
+    finally:
+        Path(mei_path).unlink(missing_ok=True)
+
+
+def load_score(score_path: str) -> tuple[Any, str | None]:
+    """Parse a score, verifying a Humdrum parse against the source's own
+    barline count and falling back to Verovio when it comes up short.
+
+    Returns the score and the raw Humdrum text (None for other formats), so
+    callers can read notated signatures from the source rather than trusting
+    whichever importer ran.
+    """
+    path = Path(score_path)
+    if path.suffix.lower() != ".krn":
+        return converter.parse(score_path), None
+
+    source_text = path.read_text(encoding="utf-8")
+    expected = humdrum_measure_count(source_text)
+    score = converter.parse(score_path)
+    parts = list(score.parts)
+    parsed = len(list(parts[0].getElementsByClass(stream.Measure))) if parts else 0
+    # A parse one or two measures off is anacrusis/final-barline bookkeeping;
+    # a parse materially short of the notated barlines has dropped music.
+    if expected and parsed < expected - 2:
+        fallback = _parse_via_verovio(source_text)
+        if fallback is not None:
+            fallback_parts = list(fallback.parts)
+            fallback_count = (
+                len(list(fallback_parts[0].getElementsByClass(stream.Measure)))
+                if fallback_parts else 0
+            )
+            if fallback_count > parsed:
+                return fallback, source_text
+    return score, source_text
 
 
 # Increment these whenever a derived representation changes.  Raw Humdrum is
@@ -171,11 +258,26 @@ def _barline_type(barline) -> str | None:
     return getattr(barline, "type", None) if barline is not None else None
 
 
-def _measure_encoding(measure: stream.Measure, part_index: int) -> dict[str, Any]:
-    """Extract notation facts belonging to a single part/measure."""
+def _measure_encoding(
+    measure: stream.Measure, part_index: int, use_context: bool = False
+) -> dict[str, Any]:
+    """Extract notation facts belonging to a single part/measure.
+
+    Signatures are notated only where they change, so a measure normally
+    carries one only at a change point.  `use_context` (set for a part's first
+    measure) resolves the signature in force from the enclosing part instead,
+    which matters because some importers hang the opening signature on the
+    score rather than on measure 1 -- and `local_key` estimation depends on
+    the notated key signature being present somewhere to forward-fill from.
+    """
     part = measure.getContextByClass(stream.Part)
     time_signature = measure.timeSignature
     key_signature = measure.keySignature
+    if use_context:
+        if time_signature is None:
+            time_signature = measure.getContextByClass(meter.TimeSignature)
+        if key_signature is None:
+            key_signature = measure.getContextByClass(key_module.KeySignature)
     directions = []
     for element in measure.recurse():
         name = element.__class__.__name__
@@ -200,10 +302,13 @@ def build_symbolic_layers(score_path: str) -> tuple[list[CanonicalMeasure], list
     The raw .krn remains the authoritative source for details not exposed by
     this convenient JSON representation.
     """
-    score = converter.parse(score_path)
+    score, source_text = load_score(score_path)
     parts = list(score.parts)
     if not parts:
         return [], [], "unknown"
+    source_sharps, source_time_signature = (
+        humdrum_signatures(source_text) if source_text else (None, None)
+    )
 
     key_analyzer = analysis.discrete.KrumhanslSchmuckler()
     global_key_obj = key_analyzer.getSolution(score)
@@ -221,10 +326,19 @@ def build_symbolic_layers(score_path: str) -> tuple[list[CanonicalMeasure], list
             if measure_index < len(measures)
         ]
         encoded_parts = [
-            _measure_encoding(measures[measure_index], part_index)
+            _measure_encoding(measures[measure_index], part_index, use_context=measure_index == 0)
             for part_index, measures in enumerate(part_measures)
             if measure_index < len(measures)
         ]
+        if measure_index == 0 and encoded_parts:
+            # Fall back to the signatures notated in the Humdrum source when
+            # the importer produced none.  Everything downstream forward-fills
+            # from the opening measure, so an absent signature here would
+            # silently disable the key-signature anchor for the whole movement.
+            if all(part["key_signature_sharps"] is None for part in encoded_parts):
+                encoded_parts[0]["key_signature_sharps"] = source_sharps
+            if all(part["time_signature"] is None for part in encoded_parts):
+                encoded_parts[0]["time_signature"] = source_time_signature
         canonical_measures.append(CanonicalMeasure(
             measure_index,
             measure_number,
@@ -332,7 +446,7 @@ def analyze_score(score_path: str, window: int = 4) -> tuple[list[MeasureChunk],
     Parse a score file (Humdrum, MusicXML, etc.) and return a list of MeasureChunk objects,
     windowed by `window` measures (analogous to paragraph-level chunking).
     """
-    score = converter.parse(score_path)
+    score, _ = load_score(score_path)
     parts = score.parts
 
     # Key analysis over full score

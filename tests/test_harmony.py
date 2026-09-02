@@ -254,3 +254,52 @@ def test_bass_entering_after_the_beat_still_counts():
          "pitch": {"name": "F3", "midi": 53, "pitch_class": 5}},
     ]}]}, "2/2")
     assert windows[0]["bass"] == 5
+
+
+# --- score loading -------------------------------------------------------
+
+def test_humdrum_signatures_read_from_source():
+    """Key signature and meter are notated facts in the .krn; they must not
+    depend on which importer parsed the score."""
+    from analysis.analyzer import humdrum_signatures
+    assert humdrum_signatures("*k[b-e-a-d-]\n*M2/4\n") == (-4, "2/4")
+    assert humdrum_signatures("*k[f#c#g#d#]\n*M3/4\n") == (4, "3/4")
+    assert humdrum_signatures("*k[]\n") == (0, None)
+    assert humdrum_signatures("no signatures here\n") == (None, None)
+
+
+def test_humdrum_measure_count_counts_distinct_barlines():
+    from analysis.analyzer import humdrum_measure_count
+    assert humdrum_measure_count("=1\tx\n=2\tx\n=2\tx\n=3\tx\n") == 3
+    assert humdrum_measure_count("no barlines\n") == 0
+
+
+@pytest.mark.parametrize("name,expected", [
+    ("sonata09-1.krn", 162),   # Op. 14 No. 1/i  -- music21's Humdrum reader gave 12
+    ("sonata18-1.krn", 253),   # Op. 31 No. 3/i  -- gave 136
+    ("sonata04-1.krn", 362),   # Op. 7/i         -- gave 264
+])
+def test_scores_with_nested_spine_splits_parse_complete(name, expected):
+    """music21's Humdrum reader silently truncates these at their first nested
+    spine split; load_score must detect the shortfall and fall back to Verovio."""
+    measures = _load(name)
+    assert len(measures) >= expected - 2
+
+
+def test_recovered_score_still_carries_its_key_signature():
+    """The Verovio fallback's MEI drops signatures music21 would have read, so
+    the source-derived fallback must supply them -- without it Op. 31 No. 3
+    loses the key-signature anchor entirely."""
+    measures = _load("sonata18-1.krn")
+    signatures = measure_key_signatures(
+        [(m.measure_index, m.symbolic_data) for m in measures]
+    )
+    assert signatures[0] == -3  # E- major
+    assert estimate_key_trajectory(measures)[0].key == "E- major"
+
+
+def test_op31no3_reaches_its_tonic_ending():
+    """The truncated parse ended on an F minor sonority mid-movement; the
+    movement actually closes in E- major."""
+    trajectory = estimate_key_trajectory(_load("sonata18-1.krn"))
+    assert trajectory[-1].key == "E- major"
