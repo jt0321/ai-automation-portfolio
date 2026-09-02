@@ -13,10 +13,73 @@ from typing import Any
 
 from db.store import (
     extract_ordered_pitch_classes, extract_ordered_rhythm, get_measure_total_durations,
-    get_max_measure_index, get_global_key, get_tempo_markings, get_theme_repeat_open_index,
+    get_max_measure_index, get_global_key, get_local_key, get_span_candidates,
+    get_tempo_markings, get_theme_repeat_open_index, load_work_features,
 )
 
 RHYTHM_MATCH_TOLERANCE = 0.05  # quarter-length slack for measure-total duration comparisons
+
+
+class WorkFeatures:
+    """One work's per-measure comparison features, held in memory.
+
+    Relation search scores a reference span against every same-length window in
+    the movement. Fetching each window from the database would issue tens of
+    thousands of queries per movement; loading once and slicing makes the same
+    search a matter of seconds. The comparison functions below take an optional
+    `features` argument so a batch pass can supply this while a one-off call
+    still works straight off the database.
+    """
+
+    def __init__(self, work_id: int, measures: list[dict]):
+        self.work_id = work_id
+        self._by_index = {measure["measure_index"]: measure for measure in measures}
+        self.max_index = max(self._by_index) if self._by_index else None
+
+    @classmethod
+    def load(cls, work_id: int, part_index: int = 0) -> "WorkFeatures":
+        return cls(work_id, load_work_features(work_id, part_index))
+
+    def _range(self, start: int, end: int) -> list[dict]:
+        return [self._by_index[i] for i in range(start, end + 1) if i in self._by_index]
+
+    def pitch_classes(self, start: int, end: int) -> list[int]:
+        return [pc for m in self._range(start, end) for pc in m["pitch_classes"]]
+
+    def rhythm(self, start: int, end: int) -> list[float]:
+        return [value for m in self._range(start, end) for value in m["rhythm"]]
+
+    def measure_durations(self, start: int, end: int) -> list[float]:
+        return [m["total_duration"] for m in self._range(start, end)]
+
+    def local_key(self, measure_index: int) -> str | None:
+        measure = self._by_index.get(measure_index)
+        return measure["local_key"] if measure else None
+
+    def measure_number(self, measure_index: int) -> int | None:
+        measure = self._by_index.get(measure_index)
+        return measure["measure_number"] if measure else None
+
+
+def _pitch_classes(span: dict, features: WorkFeatures | None) -> list[int]:
+    if features is not None:
+        return features.pitch_classes(span["measure_start_index"], span["measure_end_index"])
+    return extract_ordered_pitch_classes(
+        span["work_id"], span["measure_start_index"], span["measure_end_index"])
+
+
+def _rhythm(span: dict, features: WorkFeatures | None) -> list[float]:
+    if features is not None:
+        return features.rhythm(span["measure_start_index"], span["measure_end_index"])
+    return extract_ordered_rhythm(
+        span["work_id"], span["measure_start_index"], span["measure_end_index"])
+
+
+def _measure_durations(span: dict, features: WorkFeatures | None) -> list[float]:
+    if features is not None:
+        return features.measure_durations(span["measure_start_index"], span["measure_end_index"])
+    return get_measure_total_durations(
+        span["work_id"], span["measure_start_index"], span["measure_end_index"])
 
 
 def _span_length(span: dict) -> int:
@@ -45,7 +108,28 @@ def _interval_sequence(pitch_classes: list[int]) -> list[int]:
     return [(b - a) % 12 for a, b in zip(pitch_classes, pitch_classes[1:])]
 
 
-def check_repeats(span_a: dict, span_b: dict) -> tuple[float, dict[str, Any]]:
+def _worth_comparing(
+    span_a: dict, span_b: dict, features: WorkFeatures, min_confidence: float
+) -> bool:
+    """Cheap exact bound: can this window possibly reach min_confidence?
+
+    Both scorers divide matches by the *longer* sequence, so two spans whose
+    event counts are far apart cannot score well however their contents line
+    up. `varies` averages the interval ratio with a rhythm ratio that can reach
+    1.0, making (ratio + 1) / 2 the highest either scorer could return -- so a
+    window failing that bound is skipped without comparing a single pitch.
+    """
+    count_a = len(features.pitch_classes(span_a["measure_start_index"], span_a["measure_end_index"]))
+    count_b = len(features.pitch_classes(span_b["measure_start_index"], span_b["measure_end_index"]))
+    if count_a == 0 or count_b == 0:
+        return count_a == count_b
+    ratio = min(count_a, count_b) / max(count_a, count_b)
+    return (ratio + 1) / 2 >= min_confidence
+
+
+def check_repeats(
+    span_a: dict, span_b: dict, features: WorkFeatures | None = None
+) -> tuple[float, dict[str, Any]]:
     """Does span_b look like a literal repeat of span_a: near-identical
     ordered pitch-class sequence and rhythm sequence, on the primary part.
 
@@ -58,10 +142,10 @@ def check_repeats(span_a: dict, span_b: dict) -> tuple[float, dict[str, Any]]:
             "span_b_measures": _span_length(span_b),
         }
 
-    pitches_a = extract_ordered_pitch_classes(span_a["work_id"], span_a["measure_start_index"], span_a["measure_end_index"])
-    pitches_b = extract_ordered_pitch_classes(span_b["work_id"], span_b["measure_start_index"], span_b["measure_end_index"])
-    rhythm_a = extract_ordered_rhythm(span_a["work_id"], span_a["measure_start_index"], span_a["measure_end_index"])
-    rhythm_b = extract_ordered_rhythm(span_b["work_id"], span_b["measure_start_index"], span_b["measure_end_index"])
+    pitches_a = _pitch_classes(span_a, features)
+    pitches_b = _pitch_classes(span_b, features)
+    rhythm_a = _rhythm(span_a, features)
+    rhythm_b = _rhythm(span_b, features)
 
     pitch_ratio = _sequence_match_ratio(pitches_a, pitches_b)
     rhythm_ratio = _sequence_match_ratio(rhythm_a, rhythm_b)
@@ -80,7 +164,9 @@ def check_repeats(span_a: dict, span_b: dict) -> tuple[float, dict[str, Any]]:
     return confidence, evidence
 
 
-def check_varies(span_a: dict, span_b: dict) -> tuple[float, dict[str, Any]]:
+def check_varies(
+    span_a: dict, span_b: dict, features: WorkFeatures | None = None
+) -> tuple[float, dict[str, Any]]:
     """Does span_b look like a varied restatement of span_a: similar melodic
     contour (interval sequence mod 12) and similar rhythmic weight per
     measure, without requiring pitch identity or event-for-event rhythm.
@@ -94,14 +180,14 @@ def check_varies(span_a: dict, span_b: dict) -> tuple[float, dict[str, Any]]:
             "span_b_measures": _span_length(span_b),
         }
 
-    pitches_a = extract_ordered_pitch_classes(span_a["work_id"], span_a["measure_start_index"], span_a["measure_end_index"])
-    pitches_b = extract_ordered_pitch_classes(span_b["work_id"], span_b["measure_start_index"], span_b["measure_end_index"])
+    pitches_a = _pitch_classes(span_a, features)
+    pitches_b = _pitch_classes(span_b, features)
     intervals_a = _interval_sequence(pitches_a)
     intervals_b = _interval_sequence(pitches_b)
     interval_ratio = _sequence_match_ratio(intervals_a, intervals_b)
 
-    durations_a = get_measure_total_durations(span_a["work_id"], span_a["measure_start_index"], span_a["measure_end_index"])
-    durations_b = get_measure_total_durations(span_b["work_id"], span_b["measure_start_index"], span_b["measure_end_index"])
+    durations_a = _measure_durations(span_a, features)
+    durations_b = _measure_durations(span_b, features)
     rhythm_ratio = _measure_duration_similarity(durations_a, durations_b)
 
     confidence = (interval_ratio + rhythm_ratio) / 2
@@ -131,6 +217,7 @@ def search_for_matches(
     search_start_index: int | None = None,
     search_end_index: int | None = None,
     min_confidence: float = 0.5,
+    features: WorkFeatures | None = None,
 ) -> list[dict]:
     """Slide a window the same length as reference_span across
     [search_start_index, search_end_index] of the same work (default: the
@@ -150,7 +237,7 @@ def search_for_matches(
     if search_start_index is None:
         search_start_index = 0
     if search_end_index is None:
-        max_index = get_max_measure_index(work_id)
+        max_index = features.max_index if features is not None else get_max_measure_index(work_id)
         if max_index is None:
             return []
         search_end_index = max_index
@@ -165,8 +252,12 @@ def search_for_matches(
             continue  # skip windows overlapping the reference span itself
 
         candidate = {"work_id": work_id, "measure_start_index": start, "measure_end_index": end}
-        repeats_confidence, repeats_evidence = check_repeats(reference_span, candidate)
-        varies_confidence, varies_evidence = check_varies(reference_span, candidate)
+        if features is not None and not _worth_comparing(
+            reference_span, candidate, features, min_confidence
+        ):
+            continue
+        repeats_confidence, repeats_evidence = check_repeats(reference_span, candidate, features)
+        varies_confidence, varies_evidence = check_varies(reference_span, candidate, features)
 
         if max(repeats_confidence, varies_confidence) >= min_confidence:
             results.append({
@@ -213,17 +304,239 @@ def detect_intro_end_index(work_id: int) -> int:
     return 0
 
 
-def corroborate_key_match(work_id: int, reference_span: dict, candidate: dict) -> bool:
-    """Does the candidate span open in the same global key as the
-    reference span? A cheap independent check on a repeats/varies match:
-    a genuine primary-theme recapitulation should return in the tonic, the
-    same key the movement (and its reference span) opened in.
+def corroborate_key_match(
+    work_id: int, reference_span: dict, candidate: dict,
+    features: WorkFeatures | None = None,
+) -> bool:
+    """Does the candidate span open in the same key as the reference span?
 
-    Returns False (not corroborated) if either measure has no stored key,
-    since an unknown key can't confirm a match.
+    An independent check on a repeats/varies match: a genuine primary-theme
+    recapitulation returns in the tonic, whereas the same material quoted in
+    the development or restated in the second group does not.
+
+    This compares the *local* key from the windowed trajectory. It formerly
+    compared `global_key`, which is now one value for a whole movement, so the
+    check would have corroborated every match unconditionally.
+
+    Returns False (not corroborated) when either key is unknown, since an
+    absent key cannot confirm anything.
     """
-    reference_key = get_global_key(reference_span["work_id"], reference_span["measure_start_index"])
-    candidate_key = get_global_key(work_id, candidate["measure_start_index"])
+    if features is not None:
+        reference_key = features.local_key(reference_span["measure_start_index"])
+        candidate_key = features.local_key(candidate["measure_start_index"])
+    else:
+        reference_key = get_local_key(reference_span["work_id"], reference_span["measure_start_index"])
+        candidate_key = get_local_key(work_id, candidate["measure_start_index"])
     if reference_key is None or candidate_key is None:
         return False
     return reference_key == candidate_key
+
+
+# --- The relations pass ---------------------------------------------------
+
+RELATION_ANALYSIS_VERSION = "1.0"
+
+# A relation must clear a higher bar than a bare search hit. At the search
+# default of 0.5, four-bar windows of ordinary accompaniment figuration match
+# each other constantly; these thresholds keep only matches strong enough to
+# be worth a musician's attention.
+MIN_RELATION_CONFIDENCE = 0.75
+# One- and two-measure spans recur by coincidence in tonal music, so a
+# reference span shorter than this says nothing about thematic identity.
+MIN_RELATION_MEASURES = 3
+# ... as does a span with too few notes to have a shape, however many bars it
+# spans (a held chord, a bar of rests).
+MIN_RELATION_EVENTS = 8
+# Matches per reference span. A theme returning three or four times is normal;
+# a reference producing dozens of hits is matching filler, not a theme.
+MAX_MATCHES_PER_SPAN = 4
+
+# Reference spans are tiled at these lengths rather than taken solely from
+# `span_analyses`. Boundary candidates segment a movement but do not index its
+# themes: they break at every notated direction, so two thirds of them are one
+# or two measures long, while a movement with no internal directions collapses
+# into a single 226-measure span. Neither extreme can act as a thematic
+# reference, which left a quarter of the corpus with no relations at all.
+# Four and eight measures are the phrase lengths this repertoire is built from.
+REFERENCE_WINDOW_LENGTHS = (4, 8)
+
+
+def _reference_spans(
+    features: WorkFeatures, spans: list[dict], min_measures: int, min_events: int
+) -> list[dict]:
+    """Spans to search for recurrences of: musically-bounded candidates that
+    are long enough, plus a uniform tiling so coverage does not depend on how
+    finely the boundary analyser happened to cut the movement."""
+    references: dict[tuple[int, int], dict] = {}
+
+    def offer(start: int, end: int) -> None:
+        if (start, end) in references or features.measure_number(start) is None:
+            return
+        if end - start + 1 < min_measures or features.measure_number(end) is None:
+            return
+        if len(features.pitch_classes(start, end)) < min_events:
+            return
+        references[(start, end)] = {
+            "measure_start_index": start, "measure_end_index": end,
+            "measure_start": features.measure_number(start),
+            "measure_end": features.measure_number(end),
+        }
+
+    for span in spans:
+        offer(span["measure_start_index"], span["measure_end_index"])
+    if features.max_index is not None:
+        for length in REFERENCE_WINDOW_LENGTHS:
+            stride = max(1, length // 2)
+            for start in range(0, features.max_index - length + 2, stride):
+                offer(start, start + length - 1)
+    return [references[key] for key in sorted(references)]
+
+
+def _overlaps(a_start: int, a_end: int, b_start: int, b_end: int) -> bool:
+    return a_start <= b_end and b_start <= a_end
+
+
+def _select_distinct_matches(matches: list[dict], limit: int) -> list[dict]:
+    """Keep the strongest matches that do not overlap each other.
+
+    A sliding window scores a thematic return at several adjacent offsets, so
+    the raw hits cluster around each real recurrence. Taking the best of each
+    cluster turns that into one relation per return.
+    """
+    selected: list[dict] = []
+    for match in matches:  # already sorted by confidence descending
+        if any(_overlaps(match["measure_start_index"], match["measure_end_index"],
+                         chosen["measure_start_index"], chosen["measure_end_index"])
+               for chosen in selected):
+            continue
+        selected.append(match)
+        if len(selected) >= limit:
+            break
+    return selected
+
+
+def _merge_by_offset(relations: list[dict]) -> list[dict]:
+    """Collapse relations that describe one correspondence into one relation.
+
+    References are tiled with overlap, so a single thematic return is reported
+    by every window covering it. Such reports share an *offset* (target start
+    minus source start) and have touching source ranges; merging those keeps
+    the musical fact and drops the duplication. Ranges at the same offset that
+    do not touch stay separate -- the gap between them was never compared, and
+    joining them would claim a longer correspondence than was verified.
+
+    A merged relation takes the *lowest* confidence of its parts: the claim
+    spans all of them, so it is only as good as its weakest verified section.
+    """
+    by_offset: dict[int, list[dict]] = {}
+    for relation in relations:
+        offset = relation["target_start_index"] - relation["source_start_index"]
+        by_offset.setdefault(offset, []).append(relation)
+
+    merged: list[dict] = []
+    for offset, group in by_offset.items():
+        group.sort(key=lambda r: r["source_start_index"])
+        current = dict(group[0])
+        for relation in group[1:]:
+            if relation["source_start_index"] <= current["source_end_index"] + 1:
+                if relation["source_end_index"] > current["source_end_index"]:
+                    current["source_end_index"] = relation["source_end_index"]
+                    current["source_end"] = relation["source_end"]
+                    current["target_end_index"] = relation["target_end_index"]
+                    current["target_end"] = relation["target_end"]
+                current["confidence"] = min(current["confidence"], relation["confidence"])
+                if relation["relation_type"] == "varies":
+                    current["relation_type"] = "varies"
+                current["evidence"] = dict(current["evidence"])
+                current["evidence"]["merged_windows"] = current["evidence"].get("merged_windows", 1) + 1
+                current["evidence"]["returns_in_same_key"] = (
+                    current["evidence"]["returns_in_same_key"]
+                    and relation["evidence"]["returns_in_same_key"]
+                )
+            else:
+                merged.append(current)
+                current = dict(relation)
+        merged.append(current)
+    merged.sort(key=lambda r: (r["source_start_index"], r["target_start_index"]))
+    return merged
+
+
+def build_span_relations(
+    work_id: int,
+    min_confidence: float = MIN_RELATION_CONFIDENCE,
+    min_measures: int = MIN_RELATION_MEASURES,
+    min_events: int = MIN_RELATION_EVENTS,
+    max_matches: int = MAX_MATCHES_PER_SPAN,
+    features: WorkFeatures | None = None,
+) -> list[dict]:
+    """Propose `repeats`/`varies` relations between spans of one work.
+
+    For each candidate span long enough to carry an identity, slide it across
+    the movement and keep the strongest non-overlapping matches. Relations are
+    emitted forward in time only -- a return points back to its first statement
+    rather than each recurrence relating to every other -- which keeps the
+    graph a statement-and-return structure instead of a clique.
+
+    Returns dicts ready for `store_span_relations`; nothing is written here, so
+    thresholds can be explored without touching the database.
+    """
+    if features is None:
+        features = WorkFeatures.load(work_id)
+    references = _reference_spans(
+        features, get_span_candidates(work_id), min_measures, min_events
+    )
+
+    relations: list[dict] = []
+    seen: set[tuple[int, int, int, int]] = set()
+    for span in references:
+        matches = search_for_matches(
+            {"work_id": work_id,
+             "measure_start_index": span["measure_start_index"],
+             "measure_end_index": span["measure_end_index"]},
+            min_confidence=min_confidence,
+            features=features,
+        )
+        for match in _select_distinct_matches(matches, max_matches):
+            # Forward only: the earlier span is the statement, the later one
+            # the return. Without this every pair appears twice, mirrored.
+            if match["measure_start_index"] <= span["measure_start_index"]:
+                continue
+            key = (span["measure_start_index"], span["measure_end_index"],
+                   match["measure_start_index"], match["measure_end_index"])
+            if key in seen:
+                continue
+            seen.add(key)
+
+            repeats, varies = match["repeats_confidence"], match["varies_confidence"]
+            is_repeat = repeats >= varies
+            candidate = {"measure_start_index": match["measure_start_index"]}
+            same_key = corroborate_key_match(work_id, span, candidate, features)
+            relations.append({
+                "relation_type": "repeats" if is_repeat else "varies",
+                "confidence": round(max(repeats, varies), 4),
+                "source_start_index": span["measure_start_index"],
+                "source_end_index": span["measure_end_index"],
+                "source_start": span["measure_start"],
+                "source_end": span["measure_end"],
+                "target_start_index": match["measure_start_index"],
+                "target_end_index": match["measure_end_index"],
+                "target_start": features.measure_number(match["measure_start_index"]),
+                "target_end": features.measure_number(match["measure_end_index"]),
+                "evidence": {
+                    "analysis_version": RELATION_ANALYSIS_VERSION,
+                    "repeats_confidence": round(repeats, 4),
+                    "varies_confidence": round(varies, 4),
+                    "comparison": (match["repeats_evidence"] if is_repeat
+                                   else match["varies_evidence"]),
+                    # An independent signal, recorded rather than folded into
+                    # the confidence: material returning in the key it was
+                    # stated in is the mark of a recapitulation, while the same
+                    # material transposed is a sequence or a second-group
+                    # restatement. Downstream form analysis needs to tell those
+                    # apart, so the raw fact is kept separate from the score.
+                    "returns_in_same_key": same_key,
+                    "source_local_key": features.local_key(span["measure_start_index"]),
+                    "target_local_key": features.local_key(match["measure_start_index"]),
+                },
+            })
+    return _merge_by_offset(relations)

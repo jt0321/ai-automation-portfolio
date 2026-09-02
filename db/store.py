@@ -12,7 +12,7 @@ from pathlib import Path
 from sqlalchemy import text
 from db.models import (
     Work, ScoreAsset, ScoreSegment, TextSource, ScoreSource, ScoreMeasure,
-    MeasureAnalysis, AnalysisRun, SpanAnalysis,
+    MeasureAnalysis, AnalysisRun, SpanAnalysis, SpanRelation,
 )
 from db.session import session_scope
 from analysis.analyzer import (
@@ -286,6 +286,19 @@ def get_global_key(work_id: int, measure_index: int) -> str | None:
         return row[0].get("global_key") if row else None
 
 
+def get_local_key(work_id: int, measure_index: int) -> str | None:
+    """The windowed local_key estimate for one measure, or None if absent."""
+    with session_scope() as session:
+        row = (
+            session.query(MeasureAnalysis.analysis_data)
+            .join(ScoreMeasure, MeasureAnalysis.measure_id == ScoreMeasure.id)
+            .filter(ScoreMeasure.work_id == work_id, ScoreMeasure.measure_index == measure_index)
+            .order_by(MeasureAnalysis.created_at.desc(), MeasureAnalysis.id.desc())
+            .first()
+        )
+        return row[0].get("local_key") if row else None
+
+
 def get_tempo_markings(work_id: int) -> list[tuple[int, str | None]]:
     """(measure_index, first MetronomeMark value found in that measure's
     stored directions) for every measure of a work, in order. A measure
@@ -465,4 +478,163 @@ def clear_work_segments_and_assets(work_id: int) -> None:
         session.query(TextSource).filter_by(work_id=work_id).delete()
         # Delete all assets (PDF will be re-added by the ingestion script)
         session.query(ScoreAsset).filter_by(work_id=work_id).delete()
+        session.commit()
+
+
+def load_work_features(work_id: int, part_index: int = 0) -> list[dict]:
+    """Every measure's comparison features for one work, in one query.
+
+    Relation search compares a reference span against every same-length window
+    in the movement, so a per-comparison query would issue tens of thousands of
+    round trips for a single movement. Loading once and slicing in memory is
+    what makes the pass tractable.
+
+    Each entry: measure_index, measure_number, pitch_classes (ordered, chords
+    contributing every pitch), rhythm (ordered quarter lengths), total_duration,
+    and local_key.
+    """
+    with session_scope() as session:
+        rows = (
+            session.query(ScoreMeasure, MeasureAnalysis.analysis_data)
+            .outerjoin(MeasureAnalysis, MeasureAnalysis.measure_id == ScoreMeasure.id)
+            .filter(ScoreMeasure.work_id == work_id)
+            .order_by(ScoreMeasure.measure_index, MeasureAnalysis.created_at.desc())
+            .all()
+        )
+        features: list[dict] = []
+        seen: set[int] = set()
+        for measure, analysis_data in rows:
+            if measure.measure_index in seen:
+                continue  # keep only the newest analysis per measure
+            seen.add(measure.measure_index)
+            parts = measure.symbolic_data.get("parts", [])
+            events = (
+                sorted(parts[part_index]["events"], key=lambda e: _parse_quarter_length(e["offset"]))
+                if part_index < len(parts) else []
+            )
+            pitch_classes: list[int] = []
+            rhythm: list[float] = []
+            for event in events:
+                rhythm.append(_parse_quarter_length(event["duration"]["quarter_length"]))
+                if event["kind"] == "note":
+                    pitch_classes.append(event["pitch"]["pitch_class"])
+                elif event["kind"] == "chord":
+                    pitch_classes.extend(p["pitch_class"] for p in event["pitches"])
+            features.append({
+                "measure_index": measure.measure_index,
+                "measure_number": measure.measure_number,
+                "pitch_classes": pitch_classes,
+                "rhythm": rhythm,
+                "total_duration": sum(rhythm),
+                "local_key": (analysis_data or {}).get("local_key"),
+            })
+        return features
+
+
+def get_span_candidates(work_id: int) -> list[dict]:
+    """Candidate spans from the work's most recent boundary-analysis run."""
+    with session_scope() as session:
+        latest_run = (
+            session.query(SpanAnalysis.analysis_run_id)
+            .filter(SpanAnalysis.work_id == work_id)
+            .order_by(SpanAnalysis.analysis_run_id.desc())
+            .first()
+        )
+        if latest_run is None:
+            return []
+        spans = (
+            session.query(SpanAnalysis)
+            .filter(SpanAnalysis.work_id == work_id,
+                    SpanAnalysis.analysis_run_id == latest_run[0])
+            .order_by(SpanAnalysis.measure_start_index)
+            .all()
+        )
+        return [{
+            "id": span.id,
+            "work_id": span.work_id,
+            "measure_start_index": span.measure_start_index,
+            "measure_end_index": span.measure_end_index,
+            "measure_start": span.measure_start,
+            "measure_end": span.measure_end,
+            "span_type": span.span_type,
+        } for span in spans]
+
+
+def store_span_relations(
+    work_id: int, relations: list[dict], analyzer_version: str,
+    configuration: dict | None = None,
+) -> int:
+    """Persist one symbolic-comparison run and the relations it proposed.
+
+    A relation's target need not coincide with an existing candidate span --
+    a thematic return rarely aligns with a boundary-derived segmentation -- so
+    a target range without a span of its own gets one created here, as a
+    `candidate`. Naming it a theme or a recapitulation would be a formal claim
+    the comparison alone does not support.
+    """
+    with session_scope() as session:
+        source = (session.query(ScoreSource).filter_by(work_id=work_id)
+                  .order_by(ScoreSource.id.desc()).first())
+        if source is None:
+            raise ValueError(f"Cannot relate spans without a symbolic source for work {work_id}")
+        run = AnalysisRun(
+            work_id=work_id,
+            analyzer_name="symbolic_span_comparison",
+            analyzer_version=analyzer_version,
+            configuration_data=configuration or {},
+            source_sha256=source.sha256,
+        )
+        session.add(run)
+        session.flush()
+
+        existing = {
+            (span.measure_start_index, span.measure_end_index): span.id
+            for span in session.query(SpanAnalysis).filter_by(work_id=work_id).all()
+        }
+
+        def span_id_for(relation: dict, prefix: str) -> int:
+            key = (relation[f"{prefix}_start_index"], relation[f"{prefix}_end_index"])
+            if key not in existing:
+                span = SpanAnalysis(
+                    work_id=work_id,
+                    analysis_run_id=run.id,
+                    measure_start_index=key[0],
+                    measure_end_index=key[1],
+                    measure_start=relation[f"{prefix}_start"],
+                    measure_end=relation[f"{prefix}_end"],
+                    span_type="candidate",
+                    confidence=relation["confidence"],
+                    status="proposed",
+                    evidence_data={"origin": "symbolic_span_comparison"},
+                    features_data={},
+                )
+                session.add(span)
+                session.flush()
+                existing[key] = span.id
+            return existing[key]
+
+        for relation in relations:
+            session.add(SpanRelation(
+                analysis_run_id=run.id,
+                source_span_id=span_id_for(relation, "source"),
+                target_span_id=span_id_for(relation, "target"),
+                relation_type=relation["relation_type"],
+                confidence=relation["confidence"],
+                status="proposed",
+                evidence_data=relation["evidence"],
+            ))
+        session.commit()
+        return run.id
+
+
+def clear_work_span_relations(work_id: int) -> None:
+    """Drop previous comparison runs for a work so the pass is re-runnable."""
+    with session_scope() as session:
+        runs = (session.query(AnalysisRun.id)
+                .filter(AnalysisRun.work_id == work_id,
+                        AnalysisRun.analyzer_name == "symbolic_span_comparison").all())
+        for (run_id,) in runs:
+            session.query(SpanRelation).filter_by(analysis_run_id=run_id).delete()
+            session.query(SpanAnalysis).filter_by(analysis_run_id=run_id).delete()
+            session.query(AnalysisRun).filter_by(id=run_id).delete()
         session.commit()

@@ -73,8 +73,13 @@ musical analysis.
   `candidate` spans at meter changes, notated directions, and structural
   barlines; it does not infer formal labels.
 - `span_relations` records relations between spans, such as repetition,
-  variation, inversion, diminution, augmentation, or meter change. No
-  relations are generated until a symbolic comparison analyser is added.
+  variation, inversion, diminution, augmentation, or meter change.
+  `build_relations.py` proposes `repeats` and `varies` relations by comparing
+  ordered pitch-class and rhythm sequences between every same-length window of
+  a movement; the remaining relation types have no analyser yet. Each relation
+  carries its comparison evidence and, separately, whether the material returns
+  in the key it was stated in — the signal that distinguishes a recapitulation
+  from a transposed restatement.
 
 Span analyses and relations have a review lifecycle: `proposed`, `accepted`,
 or `rejected`. The current pipeline creates only `proposed` analytical claims;
@@ -142,6 +147,21 @@ against published analyses of specific movements, not against the
 implementation's own output.
 
 ---
+
+## Finding Recurring Material
+
+The relations pass slides each reference span across its movement and scores
+every same-length window, so a thematic return is found without pre-identified
+section boundaries or repeat signs. On Beethoven's Op. 2 No. 1/i it relates the
+opening material at mm. 2–11 to a return at mm. 102–111 in the tonic; the
+movement's recapitulation begins at m. 101. On the Hammerklavier it reports
+several correspondences sharing a 238-measure offset — the exposition mapped
+onto the recapitulation — derived entirely from symbolic comparison, with no
+model of sonata form anywhere in the system.
+
+Relations remain proposals. Nothing in the pass asserts that a span *is* a
+theme or a recapitulation; it records that two ranges correspond, how strongly,
+and whether the key returned.
 
 Form, theme, variation, and motif relationships are intentionally not asserted
 in these first layers. They should be added later as evidence-backed analyses

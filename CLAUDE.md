@@ -27,6 +27,8 @@ Ingestion pipeline:
 python download_beethoven_piano_sonatas.py --sonata 32   # fetch .krn from craigsapp/beethoven-piano-sonatas
 python ingest_scores.py                                  # parse -> analyze -> MEI -> embed -> store
 python ingest_scores.py --symbolic-only                  # skip MEI/embeddings, just rebuild symbolic layers
+python build_relations.py                                # propose span_relations from stored data (no .krn needed)
+python build_relations.py --work-id 197 --dry-run        # tune thresholds without writing
 ```
 
 Run the app:
@@ -66,7 +68,9 @@ Measure numbering — two numbering schemes exist and confusing them fails silen
 
 Verovio agrees with printed numbering in its MEI (`@n` absent on a pickup), but its `select({"measureRange": ...})` counts **ordinal positions from 1**, in which the pickup *is* position 1 — so printed bar N is ordinal N+1 wherever an anacrusis exists. Translate via `measure_ordinals()` (Python) or `measureInfo()` (`frontend/score_viewer.html`); `frontend/index.html` sidesteps it by resolving `@n` to `xml:id` and navigating with `getPageWithElement`. Note the older `select` *option* is silently unsupported in Verovio 6 and renders the whole movement — use the `select()` **method**, with a dict, before `loadData`.
 
-Span/relation review lifecycle: `span_analyses` and `span_relations` rows carry a status of `proposed`, `accepted`, or `rejected`. The current pipeline only ever creates `proposed` rows — there is no UI yet for accept/reject, and no analyser yet generates `span_relations` (needs a symbolic comparison analyser). Don't assume higher-level form/theme/motif claims exist; they're explicitly deferred until backed by real symbolic comparison, not inferred from embeddings.
+- `analysis/span_relations.py` — symbolic comparison between spans, and the relations pass (`build_span_relations`, driven by `build_relations.py`). Depends only on the database, never on the source `.krn`, so it is re-runnable and re-tunable without re-ingesting. Three things carry the quality of the output and each has tests: reference spans come from a **uniform tiling** (`REFERENCE_WINDOW_LENGTHS`) as well as from `span_analyses`, because boundary candidates break at every notated direction and so are not a thematic index (two thirds are 1–2 measures, while a movement with no directions collapses to one span — relying on them alone left a quarter of the corpus with no relations); overlapping matches of one return collapse to the strongest (`_select_distinct_matches`); and relations sharing a target-minus-source *offset* with touching source ranges merge into one (`_merge_by_offset`), taking the weakest part's confidence, while ranges separated by a gap stay apart since that gap was never compared. `corroborate_key_match` compares the windowed `local_key`, not `global_key` — the latter is now one value per movement and would corroborate everything.
+
+Span/relation review lifecycle: `span_analyses` and `span_relations` rows carry a status of `proposed`, `accepted`, or `rejected`. Every row the pipeline creates is `proposed` — there is no UI yet for accept/reject. `span_relations` now carries `repeats`/`varies` proposals from the pass above; the other relation types (`inverts`, `diminishes`, `augments`, `changes_meter_from`, `contrasts_with`) still have no analyser. Relations are evidence, not form labels: a target range with no span of its own gets one created as a `candidate`, never as a `theme` or `variation`, and `returns_in_same_key` is recorded alongside the confidence rather than folded into it, because distinguishing a tonic recapitulation from a transposed restatement is exactly what downstream form analysis needs.
 
 ## Environment
 
