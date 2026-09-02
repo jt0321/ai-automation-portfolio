@@ -89,6 +89,15 @@ It is a pure function of stored `score_measures.symbolic_data`, so a harmonic
 pass is reproducible from the database alone and can be re-run and re-versioned
 without re-parsing the source `.krn`.
 
+**Measure numbering.** Two schemes coexist. `measure_number` is printed
+numbering — bar 1 is the first complete measure, an anacrusis is uncounted and
+stored as `0` — and is what the interface displays, what a user types, and what
+the LLM cites. `measure_index` is the internal 0-based position, including
+unnumbered measures, and is what span analysis and relation matching key on.
+Verovio's MEI uses printed numbering too, but its measure *selection* counts
+ordinal positions in which a pickup counts as one, so rendering a cited range
+translates between the two rather than passing numbers through.
+
 **Score loading.** `.krn` files are parsed through `load_score()`, which
 validates the result against the numbered barlines in the source. music21's
 Humdrum reader silently drops music at nested spine splits — four movements in

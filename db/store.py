@@ -143,10 +143,13 @@ def get_measure_evidence(work_id: int, measure_start: int, measure_end: int) -> 
             .outerjoin(MeasureAnalysis, MeasureAnalysis.measure_id == ScoreMeasure.id)
             .filter(
                 ScoreMeasure.work_id == work_id,
-                # TODO: measure_number is notated/display numbering (music21
-                # resets it to 0 after repeat barlines and it can repeat
-                # across a work); this can match the wrong section. Range
-                # filters should key on measure_index instead.
+                # measure_number is printed/engraved numbering: the numbers a
+                # performer reads off the page and the LLM cites back. Bar 1 is
+                # the first *complete* measure; an anacrusis is not counted and
+                # is stored as 0, as is any measure music21 could not number.
+                # That makes this the right key for a user-facing lookup, but a
+                # range whose bounds include 0 can match several unrelated
+                # measures -- internal span work keys on measure_index instead.
                 ScoreMeasure.measure_number >= measure_start,
                 ScoreMeasure.measure_number <= measure_end,
             )

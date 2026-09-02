@@ -118,25 +118,64 @@ document.getElementById("render-btn").addEventListener("click", () => {
     pageHeight: 2000,
     scale:      40,
     adjustPageHeight: true,
-    select: [`${mStart}-${mEnd}`],
   });
 
-  const ok = vrvToolkit.loadData(loadedData);
-  if (!ok) { setStatus("Verovio failed to parse score."); return; }
+  // Load once unselected so the MEI can be inspected for its own numbering,
+  // then reload with the resolved selection. Verovio's measureRange counts
+  // ordinal positions from 1, in which an (unnumbered) anacrusis is position
+  // 1 -- so printed bar 1 is ordinal 2 in any movement with an upbeat.
+  if (!vrvToolkit.loadData(loadedData)) {
+    setStatus("Verovio failed to parse score."); return;
+  }
+  const measures = measureInfo(vrvToolkit.getMEI());
+  const startOrdinal = measures.ordinals[mStart];
+  const endOrdinal   = measures.ordinals[mEnd];
+  if (startOrdinal === undefined || endOrdinal === undefined) {
+    setStatus(`This score has no printed mm. ${mStart}–${mEnd}.`); return;
+  }
+
+  vrvToolkit.select({ measureRange: `${startOrdinal}-${endOrdinal}` });
+  if (!vrvToolkit.loadData(loadedData)) {
+    setStatus("Verovio failed to parse score."); return;
+  }
 
   const svg = vrvToolkit.renderToSVG(1);
   const container = document.getElementById("score-container");
   container.innerHTML = svg;
   setStatus(`Rendered mm. ${mStart}–${mEnd}`);
 
-  // Highlight the selected measures in the SVG
-  highlightMeasures(mStart, mEnd);
+  highlightMeasures(mStart, mEnd, measures.ids);
 });
 
-function highlightMeasures(start, end) {
-  // Verovio SVG: measures have id="measure-N"
+// Printed measure number -> {ordinal position, xml:id}. An anacrusis carries
+// no @n in MEI and is addressed as measure 0, matching the convention used in
+// score_measures.measure_number and in every measure range shown to the user.
+function measureInfo(meiXml) {
+  const ordinals = {}, ids = {};
+  try {
+    const doc = new DOMParser().parseFromString(meiXml, "application/xml");
+    let position = 0;
+    doc.querySelectorAll("measure").forEach(el => {
+      position += 1;
+      const raw = el.getAttribute("n");
+      const number = raw === null ? 0 : parseInt(raw, 10);
+      if (Number.isNaN(number)) return;
+      if (!(number in ordinals)) {
+        ordinals[number] = position;
+        ids[number] = el.getAttribute("xml:id") || el.getAttribute("id");
+      }
+    });
+  } catch (e) {
+    console.warn("Failed to parse MEI for measure numbering", e);
+  }
+  return { ordinals, ids };
+}
+
+function highlightMeasures(start, end, ids) {
+  // Verovio SVG elements carry the MEI xml:id (e.g. "measure-L25"), not the
+  // printed number, so the id map is what connects the two.
   for (let m = start; m <= end; m++) {
-    const el = document.querySelector(`#measure-${m}`);
+    const el = ids[m] ? document.getElementById(ids[m]) : null;
     if (el) {
       const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
       const bbox = el.getBBox();

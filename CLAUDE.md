@@ -55,10 +55,16 @@ Key modules:
 - `pipeline/embedder.py` — embedding generation via the configured `EMBEDDING_PROVIDER`.
 - `pipeline/providers.py` — env-driven selection of chat/embedding backends (`CHAT_PROVIDER`/`EMBEDDING_PROVIDER`: openai/anthropic/ollama/gemini) via LangChain, so no code is hardcoded to OpenAI. Anthropic has no embeddings API. Switching `EMBEDDING_PROVIDER` to a model with a different output dimension than the schema's `vector(1536)` columns requires a schema migration + full re-embedding.
 - `pipeline/chat.py` — RAG chain (prompt | chat model | parser). Builds LLM context from retrieved segments, capping unique measures per response (`MAX_SYMBOLIC_CONTEXT_MEASURES`) and injecting `symbolic_evidence` JSON per measure so answers are grounded and measure-cited.
-- `pipeline/mei_converter.py` — MusicXML → MEI via Verovio bindings, for exact SVG notation rendering in-browser.
+- `pipeline/mei_converter.py` — MusicXML → MEI via Verovio bindings, for exact SVG notation rendering in-browser. `mei_to_svg` takes **printed** measure numbers and translates them through `measure_ordinals()`; see the measure numbering note below.
 - `frontend/index.html`, `frontend/score_viewer.html` — HTML/JS client; renders notation slices client-side via Verovio WASM.
 - `server.py` — API + static file server backing the HTML/JS client.
 - `scorechat_app.py` — alternate Streamlit-based chat client.
+
+Measure numbering — two numbering schemes exist and confusing them fails silently (the viewer just shows neighbouring bars):
+- **Printed/engraved** (`score_measures.measure_number`) — what a performer reads, what a user types, and what the LLM must cite. Bar 1 is the first *complete* measure; an anacrusis is not counted and is stored as `0`, as is any measure music21 could not number (so `0` is not unique — never use it as a range bound).
+- **Internal** (`score_measures.measure_index`) — 0-based position including unnumbered measures. All span/relation work (`span_analyses.measure_start_index`, `analysis/span_relations.py`) keys on this.
+
+Verovio agrees with printed numbering in its MEI (`@n` absent on a pickup), but its `select({"measureRange": ...})` counts **ordinal positions from 1**, in which the pickup *is* position 1 — so printed bar N is ordinal N+1 wherever an anacrusis exists. Translate via `measure_ordinals()` (Python) or `measureInfo()` (`frontend/score_viewer.html`); `frontend/index.html` sidesteps it by resolving `@n` to `xml:id` and navigating with `getPageWithElement`. Note the older `select` *option* is silently unsupported in Verovio 6 and renders the whole movement — use the `select()` **method**, with a dict, before `loadData`.
 
 Span/relation review lifecycle: `span_analyses` and `span_relations` rows carry a status of `proposed`, `accepted`, or `rejected`. The current pipeline only ever creates `proposed` rows — there is no UI yet for accept/reject, and no analyser yet generates `span_relations` (needs a symbolic comparison analyser). Don't assume higher-level form/theme/motif claims exist; they're explicitly deferred until backed by real symbolic comparison, not inferred from embeddings.
 

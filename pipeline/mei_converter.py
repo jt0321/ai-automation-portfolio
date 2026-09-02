@@ -5,6 +5,7 @@ MEI is used for front-end rendering (Verovio → SVG) and scholarly addressing.
 Install: pip install verovio
 """
 
+import re
 from pathlib import Path
 from typing import Optional
 
@@ -48,20 +49,73 @@ def score_to_mei(score_path: str, output_dir: Optional[str] = None) -> Optional[
     return mei_path
 
 
+# Printed measure numbers follow engraving convention: an anacrusis is not
+# numbered, so bar 1 is the first *complete* measure.  Verovio agrees (it emits
+# the pickup with no @n) but its measureRange selection counts ordinal
+# positions from 1, in which the pickup *is* position 1.  The two therefore
+# differ by one for any movement with an upbeat, and this is the seam where
+# that gets reconciled -- see measure_ordinals().
+_MEI_MEASURE = re.compile(r"<measure\b([^>]*)>")
+_MEI_MEASURE_NUMBER = re.compile(r'\bn="([^"]*)"')
+
+
+def measure_ordinals(mei_str: str) -> dict[int, int]:
+    """Map printed measure number -> Verovio ordinal position for one MEI.
+
+    Built from the document itself rather than assumed, because a score's
+    printed numbering need not be contiguous (pickups, repeated bar numbers,
+    editorial renumbering) and the MEI is the authority for what Verovio will
+    count.  An unnumbered pickup is reachable as measure 0, matching how
+    music21 and `score_measures.measure_number` denote it.
+    """
+    ordinals: dict[int, int] = {}
+    for position, attributes in enumerate(_MEI_MEASURE.findall(mei_str), start=1):
+        match = _MEI_MEASURE_NUMBER.search(attributes)
+        if match is None:
+            ordinals.setdefault(0, position)  # unnumbered anacrusis
+            continue
+        try:
+            number = int(match.group(1))
+        except ValueError:
+            continue
+        ordinals.setdefault(number, position)
+    return ordinals
+
+
 def mei_to_svg(mei_path: str, measure_start: int = 1, measure_end: int = 4) -> str:
     """
     Render a range of measures from an MEI file to SVG.
     Used by the API to return rendered score excerpts for RAG results.
+
+    `measure_start`/`measure_end` are *printed* measure numbers, as stored in
+    `score_measures.measure_number` and as cited to the user, not internal
+    indices.
     """
     import verovio
-    tk = verovio.toolkit()
-    tk.setOptions({
-        "inputFrom": "mei",
-        "select":    [f"{measure_start}-{measure_end}"],
-    })
+
     with open(mei_path, "r", encoding="utf-8") as f:
         mei_str = f.read()
 
+    ordinals = measure_ordinals(mei_str)
+    start = ordinals.get(measure_start)
+    end = ordinals.get(measure_end)
+    if start is None or end is None:
+        # Fall back to the nearest numbers actually present rather than
+        # rendering the whole movement, which is what a failed selection does.
+        known = sorted(ordinals)
+        if not known:
+            return ""
+        start = start or ordinals[min(known, key=lambda n: abs(n - measure_start))]
+        end = end or ordinals[min(known, key=lambda n: abs(n - measure_end))]
+    if end < start:
+        start, end = end, start
+
+    tk = verovio.toolkit()
+    tk.setOptions({"inputFrom": "mei", "adjustPageHeight": True,
+                   "header": "none", "footer": "none"})
+    # select() takes a dict and must be called before loadData; the older
+    # "select" *option* is silently unsupported and renders the entire
+    # movement instead of the excerpt.
+    tk.select({"measureRange": f"{start}-{end}"})
     tk.loadData(mei_str)
-    svg = tk.renderToSVG(1)
-    return svg
+    return tk.renderToSVG(1)
