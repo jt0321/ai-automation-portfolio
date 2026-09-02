@@ -1,6 +1,6 @@
 # ScoreChat — Classical Score RAG (Humdrum Edition)
 
-![ScoreChat Logo](scorechat_ui_mockup.png)
+![ScoreChat — Beethoven, Piano Sonata No. 32 in C minor, Op. 111, i, mm. 1–2, rendered by Verovio from the project's own Humdrum source](scorechat_ui_mockup.png)
 
 ScoreChat is a symbolic-score analysis and retrieval system for classical piano music in **Humdrum (`*.krn`)** format. It preserves the source notation, derives reproducible musical facts from it, and uses retrieval and an LLM only to help locate and explain evidence-backed score passages.
 
