@@ -13,11 +13,13 @@ from typing import Any, Optional
 import music21
 from music21 import converter, analysis, stream, roman
 
+from analysis.harmony import HARMONY_ANALYSIS_VERSION, analyze_harmony
+
 
 # Increment these whenever a derived representation changes.  Raw Humdrum is
 # preserved independently, so every derived record can be regenerated.
 SYMBOLIC_ENCODING_VERSION = "1.0"
-MEASURE_ANALYSIS_VERSION = "1.0"
+MEASURE_ANALYSIS_VERSION = "2.0"
 SPAN_ANALYSIS_VERSION = "1.0"
 
 
@@ -115,10 +117,14 @@ def build_span_candidates(
             features={
                 "measure_count": len(span_measures),
                 "time_signatures": sorted({a.get("time_signature") for a in span_analyses if a.get("time_signature")}),
-                "local_key_candidates": sorted({a.get("local_key_candidate") for a in span_analyses if a.get("local_key_candidate")}),
+                "local_key_candidates": sorted({a.get("local_key") for a in span_analyses if a.get("local_key")}),
                 "texture_tags": sorted({a.get("texture_tag") for a in span_analyses if a.get("texture_tag")}),
                 "pitch_classes": sorted({pc for a in span_analyses for pc in a.get("pitch_classes", [])}),
-                "roman_numerals": [rn for a in span_analyses for rn in a.get("roman_numerals_global_key", [])],
+                "roman_numerals": [
+                    chord["figure"]
+                    for a in span_analyses for chord in a.get("chords", [])
+                    if chord.get("figure")
+                ],
             },
         ))
     return candidates
@@ -202,8 +208,6 @@ def build_symbolic_layers(score_path: str) -> tuple[list[CanonicalMeasure], list
     key_analyzer = analysis.discrete.KrumhanslSchmuckler()
     global_key_obj = key_analyzer.getSolution(score)
     global_key = str(global_key_obj) if global_key_obj else "unknown"
-    global_key_for_roman = global_key_obj or music21.key.Key("C")
-    chordified_score = score.chordify()
     part_measures = [list(part.getElementsByClass(stream.Measure)) for part in parts]
     primary_measures = part_measures[0]
     canonical_measures: list[CanonicalMeasure] = []
@@ -231,14 +235,6 @@ def build_symbolic_layers(score_path: str) -> tuple[list[CanonicalMeasure], list
             },
         ))
 
-        # One-measure key estimates are intentionally candidates, not claims
-        # about form or tonality.  Preserve the global estimate alongside them.
-        try:
-            local_key_obj = key_analyzer.getSolution(primary_measure)
-            local_key = str(local_key_obj) if local_key_obj else global_key
-        except Exception:
-            local_key = global_key
-
         notes_and_rests = [
             element for measure in notated_measures for element in measure.recurse().notesAndRests
         ]
@@ -248,13 +244,6 @@ def build_symbolic_layers(score_path: str) -> tuple[list[CanonicalMeasure], list
         pitches = [n.pitch for n in notes]
         for chord in chords:
             pitches.extend(chord.pitches)
-        roman_numerals = []
-        try:
-            chordified_measure = chordified_score.measures(measure_number, measure_number)
-            for chord in chordified_measure.flatten().getElementsByClass("Chord"):
-                roman_numerals.append(roman.romanNumeralFromChord(chord, global_key_for_roman).figure)
-        except Exception:
-            pass
         voice_ids = {
             event["voice"]
             for part in encoded_parts for event in part["events"]
@@ -266,8 +255,6 @@ def build_symbolic_layers(score_path: str) -> tuple[list[CanonicalMeasure], list
             {
                 "analysis_version": MEASURE_ANALYSIS_VERSION,
                 "global_key": global_key,
-                "local_key_candidate": local_key,
-                "local_key_scope": "primary_part_measure",
                 "time_signature": encoded_parts[0]["time_signature"] if encoded_parts else None,
                 "directions": [d for part in encoded_parts for d in part["directions"]],
                 "pitch_classes": sorted({pitch.pitchClass for pitch in pitches}),
@@ -277,11 +264,48 @@ def build_symbolic_layers(score_path: str) -> tuple[list[CanonicalMeasure], list
                 "rest_count": len(rests),
                 "voice_count": len(voice_ids) or len([part for part in encoded_parts if part["events"]]),
                 "rhythm_quarter_lengths": [str(e.duration.quarterLength) for e in notes_and_rests],
-                "roman_numerals_global_key": roman_numerals,
                 "texture_tag": detect_texture(primary_measure),
                 "texture_scope": "primary_part_measure",
             },
         ))
+
+    # Harmony is a second pass over the finished canonical layer rather than
+    # per-measure work inside the loop: key estimation needs a window of
+    # surrounding measures, and chord fitting needs the meter carried forward.
+    trajectory, chord_spans = analyze_harmony(canonical_measures, measure_analyses)
+    keys_by_index = {estimate.measure_index: estimate for estimate in trajectory}
+    chords_by_index: dict[int, list[dict[str, Any]]] = {}
+    for span in chord_spans:
+        chords_by_index.setdefault(span.measure_index, []).append({
+            "figure": span.figure,
+            "root_pitch_class": span.root,
+            "quality": span.quality,
+            "bass_pitch_class": span.bass,
+            "beat_start": span.beat_start,
+            "beat_end": span.beat_end,
+            "confidence": round(span.confidence, 3),
+            "non_chord_tones": span.non_chord_tones,
+        })
+
+    for item in measure_analyses:
+        estimate = keys_by_index.get(item.measure_index)
+        item.analysis_data.update({
+            "harmony_version": HARMONY_ANALYSIS_VERSION,
+            "local_key": estimate.key if estimate else None,
+            "local_key_scope": "windowed_viterbi",
+            "local_key_correlation": round(estimate.correlation, 3) if estimate else None,
+            "local_key_in_signature": estimate.in_key_signature if estimate else None,
+            "chords": chords_by_index.get(item.measure_index, []),
+        })
+
+    # music21's whole-score Krumhansl estimate is subject to the same
+    # dominant-bias as the per-measure one (it reads Op. 13/ii as E- major);
+    # the smoothed, signature-anchored trajectory is the better answer.
+    if trajectory:
+        opening_key = trajectory[0].key
+        for item in measure_analyses:
+            item.analysis_data["global_key"] = opening_key
+        global_key = opening_key
 
     return canonical_measures, measure_analyses, global_key
 

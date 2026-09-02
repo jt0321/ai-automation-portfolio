@@ -19,6 +19,9 @@ raw content, checksum, provenance]
 canonical measure encoding]
     D --> E[measure_analyses
 versioned score-derived facts]
+    D --> K[harmony pass
+key trajectory + chords]
+    K --> E
     E --> F[score_segments
 optional retrieval windows]
     F --> G[Text embeddings + pgvector]
@@ -37,7 +40,8 @@ underlying notation or create analytical facts.
 ## Features
 
 - **High-Quality Symbolic Ingestion**: Pulls verified Humdrum (`.krn`) files directly from GitHub.
-- **Score-Derived Analysis**: Uses `music21` to create canonical measure encodings and versioned key, harmony, rhythm, and texture candidates.
+- **Score-Derived Analysis**: Uses `music21` to create canonical measure encodings and versioned rhythm and texture candidates.
+- **Harmonic Analysis**: Key trajectory and Roman-numeral chord labels derived from the canonical layer, anchored to notated evidence (staff key signature, closing bass) rather than statistical inference alone. Passages that determine no chord are left unlabelled instead of guessed.
 - **WASM Notation Rendering**: Generates MEI (`.mei`) files via `verovio` python bindings so that the frontend can dynamically render exact SVG notation slices of the retrieved measures.
 - **Hybrid Vector Retrieval**: Combines `pgvector` similarity search on musical analytical summaries with metadata filtering.
 - **Double Interface**: Offers both a clean **Streamlit chatbot** and a customized split-screen **HTML/JS frontend** served via a Python HTTP server.
@@ -57,9 +61,11 @@ musical analysis.
   barlines.
 - `measure_analyses` stores versioned, reproducible calculations from those
   measures: pitch classes, rhythm values, note/rest/chord counts, directions,
-  key candidates, Roman-numeral candidates, and texture. Key and texture
-  candidates currently use the primary part and identify that scope in the
-  stored analysis.
+  `local_key` with its correlation, and `chords` — beat-aligned spans carrying
+  a Roman-numeral `figure`, root, quality, bass, confidence, and the pitch
+  classes the chord does not explain (non-chord tones). Texture candidates use
+  the primary part and identify that scope in the stored analysis; the key
+  estimate is whole-texture and windowed.
 - `analysis_runs` records the analyser, version, configuration, and source
   checksum for each broader analysis pass.
 - `span_analyses` stores variable-length, evidence-backed candidates and later
@@ -75,6 +81,49 @@ or `rejected`. The current pipeline creates only `proposed` analytical claims;
 the user interface does not yet expose review controls. A future UI should let
 users inspect each claim's score evidence and explicitly accept or reject it
 without changing the underlying source notation.
+
+## Harmonic Analysis
+
+`analysis/harmony.py` runs as a second pass over the finished canonical layer.
+It is a pure function of stored `score_measures.symbolic_data`, so a harmonic
+pass is reproducible from the database alone and can be re-run and re-versioned
+without re-parsing the source `.krn`.
+
+**Key trajectory.** Duration-weighted pitch-class profiles are correlated
+against Krumhansl-Kessler key profiles over a sliding window, then smoothed by
+a Viterbi pass so a modulation must outweigh a change penalty rather than
+following every passing tonicisation. Profile correlation alone is biased
+toward the *dominant* of the true key, because a cantabile melody dwells on the
+fifth — unaided, it reads the Pathétique Adagio as E♭ major. Two pieces of
+notated evidence correct this: the staff key signature, which admits exactly
+two keys, and the bass of the final sounding measure, which separates a key
+from its relative. Both are engraved in the source, not inferred.
+
+**Chords.** Beat-sized windows aggregate sounding duration — a note is
+apportioned to every beat it overlaps, so a held bass supports the harmony for
+its full length — and each window is fitted against triad and seventh-chord
+templates. Pitches the winning template does not explain are reported as
+non-chord tones. Adjacent windows agreeing on a chord are merged, so output
+tracks harmonic rhythm rather than note onsets. A window too thin to determine
+a triad borrows pitch content from the narrowest surrounding context that can,
+which is what lets an arpeggiated measure read as the single chord it outlines.
+Roman numerals are computed arithmetically from scale degree, quality, and
+inversion, sidestepping enharmonic spelling entirely.
+
+**Confidence and abstention.** Roughly 82% of chord spans across the corpus
+carry a figure. The remainder are scalar, chromatic, or otherwise
+under-determined passages where no single chord is defensible, and these are
+deliberately left unlabelled — an honest gap is preferable to a confident
+fabrication reaching the LLM as evidence. Reported `correlation` and
+`confidence` values exclude the signature, home-key, and bass weightings used
+to *select* an answer, so a stored confidence reflects the score evidence
+alone.
+
+Tuning constants are pinned by ground-truth tests in `tests/test_harmony.py`
+against published analyses of specific movements, not against the
+implementation's own output.
+
+---
 
 Form, theme, variation, and motif relationships are intentionally not asserted
 in these first layers. They should be added later as evidence-backed analyses

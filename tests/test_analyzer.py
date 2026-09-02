@@ -46,7 +46,7 @@ def test_build_symbolic_layers_preserves_events_and_measure_analysis():
     assert first.symbolic_data["parts"]
     assert any(part["events"] for part in first.symbolic_data["parts"])
     assert "pitch_classes" in analyses[0].analysis_data
-    assert analyses[0].analysis_data["analysis_version"] == "1.0"
+    assert analyses[0].analysis_data["analysis_version"] == "2.0"
 
 
 def test_span_candidates_cover_score_with_score_derived_boundaries():
