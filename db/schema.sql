@@ -91,7 +91,9 @@ CREATE TABLE span_analyses (
     measure_start   INT NOT NULL,
     measure_end     INT NOT NULL,
     span_type       TEXT NOT NULL DEFAULT 'candidate'
-                    CHECK (span_type IN ('candidate','phrase','theme','variation','transition')),
+                    -- 'section' is notated structure read from Humdrum
+                    -- expansion records; the rest are derived analyses.
+                    CHECK (span_type IN ('candidate','section','phrase','theme','variation','transition')),
     label           TEXT,
     confidence      REAL,
     status          TEXT NOT NULL DEFAULT 'proposed'

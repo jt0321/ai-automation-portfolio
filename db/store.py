@@ -638,3 +638,78 @@ def clear_work_span_relations(work_id: int) -> None:
             session.query(SpanAnalysis).filter_by(analysis_run_id=run_id).delete()
             session.query(AnalysisRun).filter_by(id=run_id).delete()
         session.commit()
+
+
+def get_source_text(work_id: int) -> str | None:
+    """The work's raw Humdrum source, as stored at ingest."""
+    with session_scope() as session:
+        source = (session.query(ScoreSource.raw_content).filter_by(work_id=work_id)
+                  .order_by(ScoreSource.id.desc()).first())
+        return source[0] if source else None
+
+
+def store_notated_sections(work_id: int, expansion: list, sections: list) -> int:
+    """Persist notated sections as spans, replacing any previous section run.
+
+    Sections are engraved, not inferred, so they are stored with span_type
+    'section' and confidence 1.0 to distinguish them from derived candidates.
+    """
+    from analysis.sections import SECTION_ANALYSIS_VERSION, section_evidence
+
+    with session_scope() as session:
+        source = (session.query(ScoreSource).filter_by(work_id=work_id)
+                  .order_by(ScoreSource.id.desc()).first())
+        if source is None:
+            raise ValueError(f"Cannot store sections without a symbolic source for work {work_id}")
+
+        for (run_id,) in session.query(AnalysisRun.id).filter(
+            AnalysisRun.work_id == work_id,
+            AnalysisRun.analyzer_name == "notated_sections",
+        ).all():
+            session.query(SpanAnalysis).filter_by(analysis_run_id=run_id).delete()
+            session.query(AnalysisRun).filter_by(id=run_id).delete()
+
+        # Printed measure numbers come from the source; spans are keyed by
+        # measure_index, so resolve through the stored measures. A number can
+        # repeat (unnumbered measures are all 0), so the first wins.
+        index_of: dict[int, int] = {}
+        for number, index in session.query(
+            ScoreMeasure.measure_number, ScoreMeasure.measure_index
+        ).filter_by(work_id=work_id).order_by(ScoreMeasure.measure_index).all():
+            index_of.setdefault(number, index)
+        if not index_of:
+            return 0
+
+        run = AnalysisRun(
+            work_id=work_id,
+            analyzer_name="notated_sections",
+            analyzer_version=SECTION_ANALYSIS_VERSION,
+            configuration_data={"repeat_scheme": ",".join(expansion)},
+            source_sha256=source.sha256,
+        )
+        session.add(run)
+        session.flush()
+
+        stored = 0
+        for section in sections:
+            start = index_of.get(section.measure_start)
+            end = index_of.get(section.measure_end)
+            if start is None or end is None:
+                continue  # a label whose barlines are not in the parsed score
+            session.add(SpanAnalysis(
+                work_id=work_id,
+                analysis_run_id=run.id,
+                measure_start_index=start,
+                measure_end_index=end,
+                measure_start=section.measure_start,
+                measure_end=section.measure_end,
+                span_type="section",
+                label=section.label,
+                confidence=1.0,  # notated, not estimated
+                status="proposed",
+                evidence_data=section_evidence(expansion, sections, section),
+                features_data={},
+            ))
+            stored += 1
+        session.commit()
+        return stored

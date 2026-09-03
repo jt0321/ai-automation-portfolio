@@ -148,6 +148,28 @@ implementation's own output.
 
 ---
 
+## Notated Structure
+
+Humdrum scores label their sections and state the order they are played in
+(`*>[A,A,B]` — play A twice, then B). This is engraved structure rather than
+inference, and it records exactly which stretch of music was marked to repeat.
+`music21` discards these records, so ScoreChat reads them from the preserved
+raw source and stores them as spans.
+
+A repeat covering much of a movement is the clearest single indicator of sonata
+form — 62% of first movements in this corpus have one spanning at least a third
+of the movement, against 16% of second movements and none of the fourth — and
+*which* section repeats characterises the movement. Both halves repeated is the
+Classical norm (Op. 2 No. 1/i). A repeated second section with an unrepeated
+first is Beethoven inverting it: Op. 57's finale plays its exposition once and
+repeats its development and recapitulation. A short unrepeated section before a
+repeated one is usually a slow introduction standing outside the form
+(Op. 111/i). No expansion record at all means no repeat was notated, as in
+Op. 57's first movement.
+
+The parser records the scheme; it does not name any section an exposition or a
+development.
+
 ## Finding Recurring Material
 
 The relations pass slides each reference span across its movement and scores

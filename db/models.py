@@ -130,7 +130,7 @@ class SpanAnalysis(Base):
     __tablename__ = "span_analyses"
     __table_args__ = (
         CheckConstraint("measure_start_index <= measure_end_index"),
-        CheckConstraint("span_type IN ('candidate','phrase','theme','variation','transition')"),
+        CheckConstraint("span_type IN ('candidate','section','phrase','theme','variation','transition')"),
         CheckConstraint("status IN ('proposed','accepted','rejected')"),
     )
 
