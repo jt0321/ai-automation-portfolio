@@ -104,6 +104,33 @@ def _measure_duration_similarity(a: list[float], b: list[float], tolerance: floa
     return matches / length
 
 
+def transposition_interval(
+    pitches_a: list[int], pitches_b: list[int]
+) -> tuple[int | None, float]:
+    """Semitones separating two pitch-class sequences, and how consistently.
+
+    `check_varies` compares interval sequences, which is transposition
+    invariant by design -- it recognises a transposed return but says nothing
+    about the transposition. That distinction is the difference between a
+    recapitulation restating material at pitch and one bringing a second group
+    home from another key, so the offset is measured here and recorded as
+    evidence: 0 for a return at pitch, 5 for one a perfect fourth higher.
+
+    Returns the most common offset and the fraction of positions holding it.
+    A low consistency means no single transposition explains the pair, so the
+    interval should not be read as one.
+    """
+    length = min(len(pitches_a), len(pitches_b))
+    if length == 0:
+        return None, 0.0
+    offsets: dict[int, int] = {}
+    for a, b in zip(pitches_a[:length], pitches_b[:length]):
+        offset = (b - a) % 12
+        offsets[offset] = offsets.get(offset, 0) + 1
+    interval = max(offsets, key=offsets.__getitem__)
+    return interval, offsets[interval] / length
+
+
 def _interval_sequence(pitch_classes: list[int]) -> list[int]:
     return [(b - a) % 12 for a, b in zip(pitch_classes, pitch_classes[1:])]
 
@@ -453,6 +480,15 @@ def _merge_by_offset(relations: list[dict]) -> list[dict]:
                     current["evidence"]["returns_in_same_key"]
                     and relation["evidence"]["returns_in_same_key"]
                 )
+                # Parts disagreeing on the transposition describe a passage no
+                # single interval explains; report none rather than one part's.
+                if (current["evidence"].get("transposed_semitones")
+                        != relation["evidence"].get("transposed_semitones")):
+                    current["evidence"]["transposed_semitones"] = None
+                current["evidence"]["transposition_consistency"] = min(
+                    current["evidence"].get("transposition_consistency", 0.0),
+                    relation["evidence"].get("transposition_consistency", 0.0),
+                )
             else:
                 merged.append(current)
                 current = dict(relation)
@@ -511,6 +547,10 @@ def build_span_relations(
             is_repeat = repeats >= varies
             candidate = {"measure_start_index": match["measure_start_index"]}
             same_key = corroborate_key_match(work_id, span, candidate, features)
+            interval, consistency = transposition_interval(
+                features.pitch_classes(span["measure_start_index"], span["measure_end_index"]),
+                features.pitch_classes(match["measure_start_index"], match["measure_end_index"]),
+            )
             relations.append({
                 "relation_type": "repeats" if is_repeat else "varies",
                 "confidence": round(max(repeats, varies), 4),
@@ -535,6 +575,8 @@ def build_span_relations(
                     # restatement. Downstream form analysis needs to tell those
                     # apart, so the raw fact is kept separate from the score.
                     "returns_in_same_key": same_key,
+                    "transposed_semitones": interval,
+                    "transposition_consistency": round(consistency, 4),
                     "source_local_key": features.local_key(span["measure_start_index"]),
                     "target_local_key": features.local_key(match["measure_start_index"]),
                 },

@@ -159,9 +159,18 @@ several correspondences sharing a 238-measure offset — the exposition mapped
 onto the recapitulation — derived entirely from symbolic comparison, with no
 model of sonata form anywhere in the system.
 
+Each relation also records the interval separating the two passages. Because
+variation matching compares interval sequences, it recognises transposed
+material without knowing the transposition — yet that offset is precisely what
+distinguishes a theme restated at pitch from a second group brought home from
+another key. On Op. 27 No. 2/iii the pass reports the main theme returning at
+mm. 103–118 *at pitch*, while second-group material from mm. 39–48 returns at
+mm. 134–143 transposed up a perfect fourth with every note accounted for — the
+textbook shape of a minor-key sonata recapitulation, recovered from the notes.
+
 Relations remain proposals. Nothing in the pass asserts that a span *is* a
 theme or a recapitulation; it records that two ranges correspond, how strongly,
-and whether the key returned.
+in what key, and at what transposition.
 
 Form, theme, variation, and motif relationships are intentionally not asserted
 in these first layers. They should be added later as evidence-backed analyses

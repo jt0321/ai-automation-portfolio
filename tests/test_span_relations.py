@@ -189,3 +189,58 @@ def test_op2no1_primary_theme_is_found_returning_in_the_tonic():
         and r["evidence"]["returns_in_same_key"]
     ]
     assert returns, "no tonic return of the opening material near the recapitulation"
+
+
+# --- transposition ---------------------------------------------------------
+
+def test_transposition_interval_reports_the_offset_and_its_consistency():
+    from analysis.span_relations import transposition_interval
+    theme = [0, 4, 7, 11]
+    up_a_fourth = [(pc + 5) % 12 for pc in theme]
+    assert transposition_interval(theme, up_a_fourth) == (5, 1.0)
+    assert transposition_interval(theme, theme) == (0, 1.0)
+    assert transposition_interval([], [0]) == (None, 0.0)
+
+
+def test_transposition_consistency_falls_when_no_single_interval_explains_it():
+    from analysis.span_relations import transposition_interval
+    interval, consistency = transposition_interval([0, 1, 2, 3], [5, 9, 1, 6])
+    assert consistency < 0.5  # no offset accounts for most positions
+
+
+def test_merged_relation_drops_a_transposition_its_parts_disagree_on():
+    merged = _merge_by_offset([
+        {**_relation(0, 3, 10, 13), "evidence": {"returns_in_same_key": True,
+         "transposed_semitones": 5, "transposition_consistency": 0.9}},
+        {**_relation(2, 5, 12, 15), "evidence": {"returns_in_same_key": True,
+         "transposed_semitones": 0, "transposition_consistency": 0.8}},
+    ])
+    assert merged[0]["evidence"]["transposed_semitones"] is None
+
+
+@requires_db
+def test_moonlight_finale_recapitulates_its_theme_at_pitch_and_its_second_group_up_a_fourth():
+    """Op. 27 No. 2/iii. The textbook shape of a minor-key sonata recapitulation:
+    the main theme returns in the tonic at pitch, while the second group -- in
+    the minor dominant (g# minor) in the exposition -- is brought home to c#
+    minor, which is a transposition up a perfect fourth."""
+    from analysis.span_relations import build_span_relations
+    from db.store import list_works
+    work = next((w for w in list_works()
+                 if "No. 14" in w["title"] and w.get("movement_number") == 3), None)
+    if work is None:
+        pytest.skip("Op. 27 No. 2/iii is not ingested")
+    relations = build_span_relations(work["id"])
+
+    theme = [r for r in relations if r["source_start"] <= 2 and r["target_start"] > 90]
+    assert theme, "the opening theme's return was not found"
+    assert theme[0]["evidence"]["transposed_semitones"] == 0
+    assert theme[0]["evidence"]["transposition_consistency"] > 0.8
+    assert theme[0]["evidence"]["returns_in_same_key"]
+
+    # Second-group material, returned a fourth higher, at high consistency.
+    fourths = [r for r in relations
+               if r["evidence"]["transposed_semitones"] == 5
+               and r["evidence"]["transposition_consistency"] > 0.9
+               and r["source_start"] > 20]
+    assert fourths, "no exact fourth-transposed return of second-group material"
